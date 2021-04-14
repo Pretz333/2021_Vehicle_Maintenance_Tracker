@@ -3,7 +3,7 @@
 ## Preface
 The latest build of the APK will be posted here in the repository located at *vmt/app/release/app-release.apk*. Follow the instructions below to install the application on your physical Android device. To install the application on an Android Emulator, check out the Installation section.
 
-Download the APK file located in the root of this repository. If you downloaded it onto your computer, email yourself the APK file to receive it on your Android device. If you downloaded it by visiting this page directly on your device, it should be in your Downloads folder.
+For starters, download the APK file. If you downloaded it onto your computer, email yourself the APK file to receive it on your Android device. If you downloaded it by visiting this page directly on your device, it should be in your Downloads folder.
 
 ## Enabling "Unknown Sources"
 Before you continue to install it, you must allow your device to install apps from unknown sources. This allows unknown apps not downloaded by the Play Store to be installed on your device. Enabling "Unknown Sources" differs greatly depending on which version of Android you are using. Follow the steps below depending on your version. If you don't know which version you have, try both steps! (Only one will work.)
