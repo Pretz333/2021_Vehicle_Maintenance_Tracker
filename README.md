@@ -1,7 +1,7 @@
 # 2021_Vehicle-Maintenance-Tracker
 
 ## Preface
-The latest build of the APK will be posted here in the repository located at *vmt/app/release/app-release.apk*. Follow the instructions below to install the application on your physical Android device. To install the application on an Android Emulator, check out the Installation section.
+The latest build of the APK will be posted here in the repository located at [vmt/app/release/app-release.apk](https://github.com/Pretz333/2021_Vehicle_Maintenance_Tracker/tree/main/vmt/app/release). Follow the instructions below to install the application on your physical Android device. To install the application on an Android Emulator, check out the Installation section.
 
 For starters, download the APK file. If you downloaded it onto your computer, email yourself the APK file to receive it on your Android device. If you downloaded it by visiting this page directly on your device, it should be in your Downloads folder.
 
