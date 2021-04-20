@@ -2,16 +2,18 @@
     <string name="app_name">Vehicle Maintenance Tracker</string>
 
     <!-- Filler Strings for MainActivity's RecyclerView Cards -->
-    <!-- It follows the TYPE_CLASS_WIDGET format for naming Strings -->
-    <string name="card_mainActivity_nickname">Blue Whale</string>
-    <string name="card_mainActivity_makeAndModel">Chevy Impala</string>
-    <string name="card_mainActivity_colorAndYear">Blue, 2008 LTS</string>
-    <string name="card_mainActivity_plateNumber">SUX-2987</string>
+    <!-- It follows the TYPE_CLASS_NAME format for naming Strings -->
+
+    <!-- Strings regarding the vehicle card in the MainActivity's RecyclerView -->
+    <string name="card_mainActivity_nickname">Nickname</string>
+    <string name="card_mainActivity_makeAndModel">Make Model</string>
+    <string name="card_mainActivity_colorAndYear">Color, Year SubModel</string>
+    <string name="card_mainActivity_plateNumber">XXX-XXXX</string>
 
     <string name="card_mainActivity_logIconDescription">Pencil above road icon</string>
     <string name="card_mainActivity_issueIconDescription">Warning symbol</string>
-    <string name="card_mainActivity_logDescription">12 Maintenance Logs</string>
-    <string name="card_mainActivity_issueDescription">6 Unresolved Issues</string>
+    <string name="card_mainActivity_logDescription"># Maintenance Logs</string>
+    <string name="card_mainActivity_issueDescription"># Unresolved Issues</string>
 
     <string name="card_mainActivity_viewDetails">Tap to view details…</string>
 </resources>
