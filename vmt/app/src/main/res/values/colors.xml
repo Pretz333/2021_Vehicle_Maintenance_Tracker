@@ -12,4 +12,10 @@
     <!-- Colors for MainActivity's RecyclerView Cards -->
     <color name="textColorWhite">#FFFFFF</color>
     <color name="textColorWhiteSecondary">#DCDCDC</color>
+
+    <!-- Colors for OptionActivity's list item icons-->
+    <color name="colorMaintenance">#4BB9B9</color>
+    <color name="colorIssues">#B94B4B</color>
+    <color name="colorSystems">#B99B4B</color>
+    <color name="colorVehicleSettings">#7EB94B</color>
 </resources>
