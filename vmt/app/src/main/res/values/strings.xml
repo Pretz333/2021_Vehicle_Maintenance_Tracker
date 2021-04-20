@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Vehicle Maintenance Tracker</string>
+
+    <!-- Filler Strings for MainActivity's RecyclerView Cards -->
+    <!-- It follows the TYPE_CLASS_WIDGET format for naming Strings -->
+    <string name="card_mainActivity_nickname">Vehicle Nickname</string>
 </resources>
