@@ -128,27 +128,8 @@
         android:textColor="@color/textColorWhite"
         android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/card_mainActivity_issueIcon"
-        app:layout_constraintTop_toTopOf="@+id/card_mainActivity_issueIcon" />
+        app:layout_constraintTop_toTopOf="@+id/card_mainActivity_issueIcon"
+        android:paddingBottom="@dimen/adultPadding"/>
 
-    <!--
-        Friendly text view telling the user to tap on the card
-        to view more details.
-        Adding a button to a layout within a RecyclerView would
-        cause issues with an inner-child onClickListener. No bueno!
-    -->
-    <TextView
-        android:id="@+id/card_mainActivity_viewDetailButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:layout_marginBottom="@dimen/minorPadding"
-        android:text="@string/card_mainActivity_viewDetails"
-        android:textAlignment="center"
-        android:textColor="@color/textColorWhiteSecondary"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/card_mainActivity_issueIcon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
