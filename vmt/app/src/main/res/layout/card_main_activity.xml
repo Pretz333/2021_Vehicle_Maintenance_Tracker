@@ -1,20 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/card_main_activity_background">
 
+    <!--
+        TextView for displaying the nickname
+    -->
     <TextView
         android:id="@+id/card_mainActivity_nickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="@dimen/adultPadding"
+        android:layout_marginTop="@dimen/adultPadding"
         android:text="@string/card_mainActivity_nickname"
         android:textColor="@color/textColorWhite"
+        android:textSize="32sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <!--
+    TextView for displaying the make and model
+    -->
+    <TextView
+        android:id="@+id/card_mainActivity_vehicleMakeAndModel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="38dp"
+        android:layout_marginEnd="@dimen/adultPadding"
+        android:text="@string/card_mainActivity_makeAndModel"
+        android:textColor="@color/textColorWhite"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!--
+    TextView for displaying the color and year, along with
+    the sub model of the vehicle.
+    For example: Black 2008 F150, Black 2008 F250, etc...
+    -->
+    <TextView
+        android:id="@+id/card_mainActivity_vehicleColorAndYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/adultPadding"
+        android:text="@string/card_mainActivity_colorAndYear"
+        android:textColor="@color/textColorWhiteSecondary"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card_mainActivity_vehicleMakeAndModel" />
+
+    <!--
+    TextView for displaying the plate number of the vehicle
+    -->
+    <TextView
+        android:id="@+id/card_mainActivity_vehiclePlateNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/adultPadding"
+        android:text="@string/card_mainActivity_plateNumber"
+        android:textColor="@color/textColorWhiteSecondary"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card_mainActivity_vehicleColorAndYear" />
+
+    <!--
+    ImageView for the log icon
+    -->
+    <ImageView
+        android:id="@+id/card_mainActivity_logIcon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="@dimen/adultPadding"
+        android:layout_marginTop="@dimen/adultPadding"
+        android:contentDescription="@string/card_mainActivity_logIconDescription"
+        android:src="@drawable/ic_log_light"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card_mainActivity_vehiclePlateNumber" />
+
+    <!--
+    TextView for displaying the log description.
+    The name description is misleading, but I'll think of something
+    better later on. It should display "# Maintenance logs" where #
+    is the number of logs this vehicle currently has.
+    -->
+    <TextView
+        android:id="@+id/card_mainActivity_logDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/minorPadding"
+        android:layout_marginTop="12dp"
+        android:text="@string/card_mainActivity_logDescription"
+        android:textColor="@color/textColorWhite"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/card_mainActivity_logIcon"
+        app:layout_constraintTop_toTopOf="@+id/card_mainActivity_logIcon" />
+
+    <!--
+    ImageView for the issue icon
+    -->
+    <ImageView
+        android:id="@+id/card_mainActivity_issueIcon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="@dimen/adultPadding"
+        android:layout_marginTop="@dimen/minorPadding"
+        android:contentDescription="@string/card_mainActivity_issueIconDescription"
+        android:src="@drawable/ic_issue_light"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card_mainActivity_logIcon" />
+
+    <!--
+    TextView for displaying the issue description.
+    The name description is misleading, but I'll think of something
+    better later on. It should display "# Vehicle Issues" where #
+    is the number of issues this vehicle currently has.
+    -->
+    <TextView
+        android:id="@+id/card_mainActivity_issueDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/minorPadding"
+        android:layout_marginTop="12dp"
+        android:text="@string/card_mainActivity_issueDescription"
+        android:textColor="@color/textColorWhite"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/card_mainActivity_issueIcon"
+        app:layout_constraintTop_toTopOf="@+id/card_mainActivity_issueIcon" />
+
+    <!--
+        Friendly text view telling the user to tap on the card
+        to view more details.
+        Adding a button to a layout within a RecyclerView would
+        cause issues with an inner-child onClickListener. No bueno!
+    -->
+    <TextView
+        android:id="@+id/card_mainActivity_viewDetailButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="@dimen/minorPadding"
+        android:text="@string/card_mainActivity_viewDetails"
+        android:textAlignment="center"
+        android:textColor="@color/textColorWhiteSecondary"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card_mainActivity_issueIcon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
