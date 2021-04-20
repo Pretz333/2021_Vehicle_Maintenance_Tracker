@@ -15,7 +15,7 @@
     <string name="card_mainActivity_logDescription"># Maintenance Logs</string>
     <string name="card_mainActivity_issueDescription"># Unresolved Issues</string>
 
-    <string name="card_mainActivity_viewDetails">Tap to view details…</string>
+    <string name="card_mainActivity_viewDetails">View details</string>
 
     <!-- Strings regarding the vehicle options list in the VehicleOptionActivity page -->
     <string name="listItem_optionActivity_iconDescription">A colored circle</string>
