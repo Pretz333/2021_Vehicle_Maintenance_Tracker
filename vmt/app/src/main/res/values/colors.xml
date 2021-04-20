@@ -11,5 +11,5 @@
 
     <!-- Colors for MainActivity's RecyclerView Cards -->
     <color name="textColorWhite">#FFFFFF</color>
-    <color name="textColorWhiteSecondary">#EFEFEF</color>
+    <color name="textColorWhiteSecondary">#DCDCDC</color>
 </resources>
