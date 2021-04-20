@@ -5,10 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -63,9 +66,6 @@ public class MainActivity extends AppCompatActivity {
         vehicleRecyclerAdapter = new VehicleRecyclerAdapter(vehicleArrayList);
         recyclerView.setAdapter(vehicleRecyclerAdapter);
 
-        // Maybe don't use this?
-        vehicleRecyclerAdapter.notifyDataSetChanged();
-
     }
 
     //Populates the Vehicle array list with some sample data.
@@ -117,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
 /*
     A RecyclerView adapter for each vehicle displayed. Although we could use a more simple
     approach such as ArrayAdapter using a ListView, the layout for displaying the vehicles
@@ -126,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
 class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter.ViewHolder> {
 
     // The DataSet that contains the vehicle objects
-    private ArrayList<Vehicle> vehicleDataSet;
+    public ArrayList<Vehicle> vehicleDataSet;
 
     // Default constructor to receive vehicle data
     public VehicleRecyclerAdapter(ArrayList<Vehicle> vehicleDataSet){
@@ -138,21 +137,28 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
     // Heads up, it's quite a bit!
     // NOTE: ViewHolder is a child class, not a function!
     // hopefully that saves some confusion.
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+
+        // Context of super class
+        Context context;
 
         // TextView members of the card_vehicle.xml
         // layout file.
-        private TextView nickname;
-        private TextView makeAndModel;
-        private TextView colorAndYear;
-        private TextView plateNumber;
+        private final TextView nickname;
+        private final TextView makeAndModel;
+        private final TextView colorAndYear;
+        private final TextView plateNumber;
 
-        private TextView logDescription;
-        private TextView issueDescription;
+        private final TextView logDescription;
+        private final TextView issueDescription;
 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+
+            // Context used mainly for OnClickListener
+            context = itemView.getContext();
+
             // Find the views within the itemView (cardview)
             // layout and set them to the member variables above.
             nickname = itemView.findViewById(R.id.card_mainActivity_nickname);
@@ -162,6 +168,30 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
 
             logDescription = itemView.findViewById(R.id.card_mainActivity_logDescription);
             issueDescription = itemView.findViewById(R.id.card_mainActivity_issueDescription);
+
+            Button dummyButton = itemView.findViewById(R.id.card_mainActivity_dummyButton);
+
+            // Onclick Listener for card. If you're confused
+            // about why there's a button, checkout the card_vehicle.xml
+            // where the button view resides for more information.
+            dummyButton.setOnClickListener(this);
+        }
+
+        // Click listener for the card. This should take
+        // the user to the VehicleOptionsActivity
+        @Override
+        public void onClick(View v) {
+            // Get the layout position
+            int layoutPosition = getLayoutPosition();
+
+            // Create the target intent
+            Intent intent = new Intent(context, VehicleOptionActivity.class);
+
+            // Extras include the ID of the vehicle and the Nickname
+            intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, layoutPosition);
+            //intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_NICKNAME, 0);
+
+            context.startActivity(intent);
         }
 
         // One-hitter method for setting the values for all views
@@ -181,6 +211,7 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
             this.logDescription.setText(logDescription);
             this.issueDescription.setText(issueDescription);
         }
+
     }
 
     // Inflate the view layout and attaching a ViewHolder to it as well
