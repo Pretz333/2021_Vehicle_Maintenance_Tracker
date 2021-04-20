@@ -130,27 +130,14 @@
                 app:layout_constraintTop_toTopOf="@+id/card_mainActivity_issueIcon" />
 
             <!--
-                This is a dummy button. Do not implement an
-                onClickListener to this. When the RecyclerView
-                creates layouts, we let it handle view clicks.
-                If we have a child view that also has a click
-                listener, it will cause errors. A click listener
-                inside of a click listener doesn't make too much
-                sense in this case. But we still want the button
-                here to subtly hint to the user they can tap
-                this card.
-
-                TLDR: Creating an onClickListener inside of an
-                onClickListener will not work and doesn't make
-                sense. The button is just for subtle user hints.
+                This is dummy button. Ignore the naming
+                convention.
             -->
             <Button
                 android:id="@+id/card_mainActivity_dummyButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:enabled="false"
                 android:text="@string/card_mainActivity_viewDetails"
-                android:textColor="#000000"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/card_mainActivity_issueDescription"
                 android:layout_marginTop="@dimen/minorPadding"/>
