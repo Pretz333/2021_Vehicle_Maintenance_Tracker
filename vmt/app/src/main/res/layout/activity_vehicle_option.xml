@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="@dimen/adultPadding"
-        android:text="Options for Blue Whale"
+        android:text="@string/optionActivity_userHint"
         android:textStyle="bold"
         android:textAlignment="center"/>
 
