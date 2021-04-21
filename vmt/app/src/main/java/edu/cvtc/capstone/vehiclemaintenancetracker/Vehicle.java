@@ -12,7 +12,7 @@ public class Vehicle {
     private int mileage;
     private String VIN;
     private String LicensePlate;
-    private String purchaseDate;
+    private Date purchaseDate;
     private double Value;
 
     //Constructors
@@ -27,7 +27,7 @@ public class Vehicle {
     }
 
     //Everything, for use when reading from the database
-    public Vehicle(int id, String name, String make, String model, String year, String color, int mileage, String VIN, String licensePlate, String purchaseDate, double value) {
+    public Vehicle(int id, String name, String make, String model, String year, String color, int mileage, String VIN, String licensePlate, Date purchaseDate, double value) {
         this.id = id;
         this.name = name;
         this.make = make;
@@ -116,11 +116,11 @@ public class Vehicle {
         LicensePlate = licensePlate;
     }
 
-    public String getPurchaseDate() {
+    public Date getPurchaseDate() {
         return purchaseDate;
     }
 
-    public void setPurchaseDate(String purchaseDate) {
+    public void setPurchaseDate(Date purchaseDate) {
         this.purchaseDate = purchaseDate;
     }
 

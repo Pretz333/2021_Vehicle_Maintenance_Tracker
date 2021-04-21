@@ -47,7 +47,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(VehicleSQL.COLUMN_VEHICLE_MILEAGE, vehicle.getMileage());
         values.put(VehicleSQL.COLUMN_VEHICLE_VIN, vehicle.getVIN());
         values.put(VehicleSQL.COLUMN_VEHICLE_LICENSE_PLATE, vehicle.getLicensePlate());
-        values.put(VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED, vehicle.getPurchaseDate());
+        values.put(VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED, vehicle.getPurchaseDate().getTime());
         values.put(VehicleSQL.COLUMN_VEHICLE_VALUE, vehicle.getValue());
 
         long newRowId = db.insert(VehicleSQL.TABLE_NAME_VEHICLE, null, values);
@@ -62,11 +62,10 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(MaintenanceLogSQL._ID, maintenanceLog.getId());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE, maintenanceLog.getId());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DESCRIPTION, maintenanceLog.getDescription());
-        values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE, maintenanceLog.getDate());
+        values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE, maintenanceLog.getDate().getTime());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_COST, maintenanceLog.getCost());
-        values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TOTAL_TIME, maintenanceLog.getTime());
+        values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TOTAL_TIME, maintenanceLog.getTime().getTime());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_MILEAGE, maintenanceLog.getMileage());
-
 
         long newRowId = db.insert(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, null, values);
 
@@ -81,8 +80,6 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(IssueSQL.COLUMN_ISSUE_TITLE, issue.getTitle());
         values.put(IssueSQL.COLUMN_ISSUE_DESCRIPTION, issue.getDescription());
         values.put(IssueSQL.COLUMN_ISSUE_PRIORITY, issue.getPriority());
-
-
 
         long newRowId = db.insert(IssueSQL.TABLE_NAME_ISSUE, null, values);
 
@@ -114,7 +111,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     COLUMN_VEHICLE_MILEAGE + " INTEGER NOT NULL, " +
                     COLUMN_VEHICLE_VIN + " INTEGER NOT NULL, " +
                     COLUMN_VEHICLE_LICENSE_PLATE + " TEXT NOT NULL, " +
-                    COLUMN_VEHICLE_DATE_PURCHASED + " TEXT, " +
+                    COLUMN_VEHICLE_DATE_PURCHASED + " INTEGER, " +
                     COLUMN_VEHICLE_VALUE + " INTEGER)";
 
         // Constant to drop the vehicle table
@@ -137,9 +134,9 @@ public class DBHelper extends SQLiteOpenHelper {
                         _ID + " INTEGER PRIMARY KEY, " +
                         COLUMN_MAINTENANCE_LOG_TITLE + " TEXT NOT NULL, " +
                         COLUMN_MAINTENANCE_LOG_DESCRIPTION + " TEXT, " +
-                        COLUMN_MAINTENANCE_LOG_DATE + " TEXT, " +
+                        COLUMN_MAINTENANCE_LOG_DATE + " INTEGER, " +
                         COLUMN_MAINTENANCE_LOG_COST + " INTEGER, " +
-                        COLUMN_MAINTENANCE_LOG_TOTAL_TIME + " TEXT, " +
+                        COLUMN_MAINTENANCE_LOG_TOTAL_TIME + " INTEGER, " +
                         COLUMN_MAINTENANCE_LOG_MILEAGE + " INTEGER NOT NULL)";
 
         // Constant to drop the maintenance log table
