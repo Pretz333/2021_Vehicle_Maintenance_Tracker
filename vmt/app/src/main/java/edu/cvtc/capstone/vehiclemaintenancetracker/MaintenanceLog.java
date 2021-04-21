@@ -7,9 +7,9 @@ public class MaintenanceLog {
     private int id;
     private String title;
     private String description;
-    private Date date;
+    private String date;
     private double cost;
-    private Time time;
+    private String time;
     private int mileage;
     private int vehicleId;
     private int statusId;
@@ -27,7 +27,7 @@ public class MaintenanceLog {
     }
 
     //Everything
-    public MaintenanceLog(int id, String title, String description, Date date, double cost, Time time, int mileage, int vehicleId, int statusId) {
+    public MaintenanceLog(int id, String title, String description, String date, double cost, String time, int mileage, int vehicleId, int statusId) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -65,11 +65,11 @@ public class MaintenanceLog {
         description = description;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -81,11 +81,11 @@ public class MaintenanceLog {
         this.cost = cost;
     }
 
-    public Time getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(Time time) {
+    public void setTime(String time) {
         this.time = time;
     }
 
