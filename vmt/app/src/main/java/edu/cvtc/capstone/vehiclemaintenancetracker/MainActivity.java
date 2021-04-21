@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
         // Initialize the vehicle list
         vehicleArrayList = new ArrayList<>();
 
+        // TODO: This function will be overwritten for
+        //  receiving the database objects.
         // Populate the vehicle list using the function below
         populateVehicleList();
 
@@ -171,9 +173,7 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
 
             Button dummyButton = itemView.findViewById(R.id.card_mainActivity_dummyButton);
 
-            // Onclick Listener for card. If you're confused
-            // about why there's a button, checkout the card_vehicle.xml
-            // where the button view resides for more information.
+            // Onclick Listener for card, err, button
             dummyButton.setOnClickListener(this);
         }
 
