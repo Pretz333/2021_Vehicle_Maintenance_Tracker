@@ -8,7 +8,7 @@
     ImageView for the colored icon
     -->
     <ImageView
-        android:id="@+id/listItem_optionActivity_Icon"
+        android:id="@+id/card_optionActivity_Icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="@dimen/adultPadding"
@@ -22,7 +22,7 @@
     TextView for displaying the option item's title
     -->
     <TextView
-        android:id="@+id/listItem_optionActivity_title"
+        android:id="@+id/card_optionActivity_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/minorPadding"
@@ -30,18 +30,18 @@
         android:text="@string/listItem_optionActivity_Title"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/listItem_optionActivity_Icon"
+        app:layout_constraintStart_toEndOf="@+id/card_optionActivity_Icon"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!--
     TextView for displaying the option item's subtitle
     -->
     <TextView
-        android:id="@+id/listItem_optionActivity_subTitle"
+        android:id="@+id/card_optionActivity_subTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/listItem_optionActivity_Subtitle"
-        app:layout_constraintStart_toStartOf="@id/listItem_optionActivity_title"
-        app:layout_constraintTop_toBottomOf="@id/listItem_optionActivity_title" />
+        app:layout_constraintStart_toStartOf="@id/card_optionActivity_title"
+        app:layout_constraintTop_toBottomOf="@id/card_optionActivity_title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
