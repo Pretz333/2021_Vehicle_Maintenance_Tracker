@@ -25,13 +25,13 @@
     <string name="listItem_optionActivity_Title">ListItem Title</string>
     <string name="listItem_optionActivity_Subtitle">ListItem Subtitle</string>
 
-    <string name="listItem_optionActivity_maintenanceTitle">Maintenance Log</string>
-    <string name="listItem_optionActivity_maintenanceSubtitle">Add, remove and edit maintenance logs.</string>
-    <string name="listItem_optionActivity_issuesTitle">Issue Tracker</string>
-    <string name="listItem_optionActivity_issuesSubtitle">Add issues to see what needs to be resolved.</string>
-    <string name="listItem_optionActivity_systemsTitle">Systems</string>
-    <string name="listItem_optionActivity_systemSubtitle">Various systems in your vehicle.</string>
-    <string name="listItem_optionActivity_vehicleSettingsTitle">Vehicle Settings</string>
-    <string name="listItem_optionActivity_vehicleSettingsSubtitle">Modify or delete this vehicle profile.</string>
+    <string name="optionActivity_maintenanceTitle">Maintenance Log</string>
+    <string name="optionActivity_maintenanceSubtitle">Add, remove and edit maintenance logs.</string>
+    <string name="optionActivity_issuesTitle">Issue Tracker</string>
+    <string name="optionActivity_issuesSubtitle">Add issues to see what needs to be resolved.</string>
+    <string name="optionActivity_systemsTitle">Systems</string>
+    <string name="optionActivity_systemSubtitle">Various systems in your vehicle.</string>
+    <string name="optionActivity_vehicleSettingsTitle">Vehicle Settings</string>
+    <string name="optionActivity_vehicleSettingsSubtitle">Modify or delete this vehicle profile.</string>
 
 </resources>
