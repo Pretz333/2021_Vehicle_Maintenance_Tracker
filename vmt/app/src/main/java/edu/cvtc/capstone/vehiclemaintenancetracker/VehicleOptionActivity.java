@@ -24,7 +24,7 @@ public class VehicleOptionActivity extends AppCompatActivity {
 
     // The list that contains item objects used in the
     // RecyclerView's menu
-    ArrayList<OptionItemObject> optionItemObjectArrayList;
+    ArrayList<OptionItem> optionItemArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +46,7 @@ public class VehicleOptionActivity extends AppCompatActivity {
 
 
         // Initialize the option menu list
-        optionItemObjectArrayList = new ArrayList<>();
+        optionItemArrayList = new ArrayList<>();
 
         // Generate each option item to be used in the RecyclerView
         prepListObjects();
@@ -60,16 +60,16 @@ public class VehicleOptionActivity extends AppCompatActivity {
     // the RecyclerView
     private void prepListObjects() {
         // Create objects
-        OptionItemObject itemMaintenance = new OptionItemObject("Maintenance", "Add, remove and edit maintenance logs", R.drawable.card_options_maintenance);
-        OptionItemObject itemIssue = new OptionItemObject("Issue Tracker", "See what issues you need to resolve", R.drawable.card_options_issue);
-        OptionItemObject itemSystems = new OptionItemObject("Systems", "I really don't know", R.drawable.card_options_systems);
-        OptionItemObject itemVehicleSettings = new OptionItemObject("Vehicle Settings", "Modify this vehicle profile or delete it", R.drawable.card_options_vehicle_settings);
+        OptionItem itemMaintenance = new OptionItem(getString(R.string.optionActivity_maintenanceTitle), getString(R.string.optionActivity_maintenanceSubtitle), R.drawable.card_options_maintenance);
+        OptionItem itemIssue = new OptionItem(getString(R.string.optionActivity_issuesTitle), getString(R.string.optionActivity_issuesSubtitle), R.drawable.card_options_issue);
+        OptionItem itemSystems = new OptionItem(getString(R.string.optionActivity_systemsTitle), getString(R.string.optionActivity_systemSubtitle), R.drawable.card_options_systems);
+        OptionItem itemVehicleSettings = new OptionItem(getString(R.string.optionActivity_vehicleSettingsTitle), getString(R.string.optionActivity_vehicleSettingsSubtitle), R.drawable.card_options_vehicle_settings);
 
         // Add them to the array list
-        optionItemObjectArrayList.add(itemMaintenance);
-        optionItemObjectArrayList.add(itemIssue);
-        optionItemObjectArrayList.add(itemSystems);
-        optionItemObjectArrayList.add(itemVehicleSettings);
+        optionItemArrayList.add(itemMaintenance);
+        optionItemArrayList.add(itemIssue);
+        optionItemArrayList.add(itemSystems);
+        optionItemArrayList.add(itemVehicleSettings);
     }
 
     // Prepare the RecyclerView and its Adapter with data
@@ -81,7 +81,7 @@ public class VehicleOptionActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Create the adapter and make the RecyclerView use it
-        OptionRecyclerAdapter optionRecyclerAdapter = new OptionRecyclerAdapter(optionItemObjectArrayList);
+        OptionRecyclerAdapter optionRecyclerAdapter = new OptionRecyclerAdapter(optionItemArrayList);
         recyclerView.setAdapter(optionRecyclerAdapter);
     }
 
@@ -89,19 +89,19 @@ public class VehicleOptionActivity extends AppCompatActivity {
 
 
 // Custom class representing each option menu item (Did not track in pivotal)
-class OptionItemObject {
+class OptionItem {
     // Member variables
     private String title;
     private String subtitle;
     private int colorResource;
 
     // No-param constructor
-    public OptionItemObject() {
+    public OptionItem() {
         // ...
     }
 
     // Overloaded Constructor
-    public OptionItemObject(String title, String subtitle, int colorResource) {
+    public OptionItem(String title, String subtitle, int colorResource) {
         this.title = title;
         this.subtitle = subtitle;
         this.colorResource = colorResource;
@@ -143,10 +143,10 @@ class OptionItemObject {
 // alright... - Alexander
 class OptionRecyclerAdapter extends RecyclerView.Adapter<OptionRecyclerAdapter.ViewHolder> {
     // DataSet for the list items
-    ArrayList<OptionItemObject> dataset;
+    ArrayList<OptionItem> optionItemArrayList;
 
-    public OptionRecyclerAdapter(ArrayList<OptionItemObject> dataset) {
-        this.dataset = dataset;
+    public OptionRecyclerAdapter(ArrayList<OptionItem> optionItemArrayList) {
+        this.optionItemArrayList = optionItemArrayList;
     }
 
     // Provide a reference to the type of views that the
@@ -171,9 +171,9 @@ class OptionRecyclerAdapter extends RecyclerView.Adapter<OptionRecyclerAdapter.V
             context = itemView.getContext();
 
             // Find the view members
-            title = itemView.findViewById(R.id.listItem_optionActivity_title);
-            subtitle = itemView.findViewById(R.id.listItem_optionActivity_subTitle);
-            color = itemView.findViewById(R.id.listItem_optionActivity_Icon);
+            title = itemView.findViewById(R.id.card_optionActivity_title);
+            subtitle = itemView.findViewById(R.id.card_optionActivity_subTitle);
+            color = itemView.findViewById(R.id.card_optionActivity_Icon);
 
             // Onclick Listener for card
             itemView.setOnClickListener(this);
@@ -210,13 +210,13 @@ class OptionRecyclerAdapter extends RecyclerView.Adapter<OptionRecyclerAdapter.V
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // Grab the corresponding option object
-        OptionItemObject optionItem = dataset.get(position);
+        OptionItem optionItem = optionItemArrayList.get(position);
         // Set the data in the view holder
         holder.setData(optionItem.getTitle(), optionItem.getSubtitle(), optionItem.getColorResource());
     }
 
     @Override
     public int getItemCount() {
-        return dataset.size();
+        return optionItemArrayList.size();
     }
 }
