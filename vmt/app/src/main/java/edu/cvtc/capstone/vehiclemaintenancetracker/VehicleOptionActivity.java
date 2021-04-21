@@ -22,6 +22,9 @@ public class VehicleOptionActivity extends AppCompatActivity {
     // Intent extras used by the MainActivity's RecyclerView
     public static final String EXTRA_VEHICLE_ID = "edu.cvtc.capstone.vehiclemaintenancetracker.EXTRA_VEHICLE_ID";
 
+    //The vehicle ID so it can passed to the other activities
+    public static int vehicleId;
+
     // The list that contains item objects used in the
     // RecyclerView's menu
     ArrayList<OptionItem> optionItemArrayList;
@@ -35,14 +38,14 @@ public class VehicleOptionActivity extends AppCompatActivity {
         Intent receivedIntent = getIntent();
 
         // Grab the ID with a provided default value
-        int vehicleIdFromRecycler = receivedIntent.getIntExtra(EXTRA_VEHICLE_ID, -1);
+        vehicleId = receivedIntent.getIntExtra(EXTRA_VEHICLE_ID, -1);
 
         // Get the user hint TextView and set it
         // Short-hand because I'm that lazy at the moment... - Alexander
         ((TextView) findViewById(R.id.textView_optionActivity_vehicleHint))
                 .setText(getResources()
                         .getString(R.string.optionActivity_userHint)
-                        .concat(" Vehicle/RecyclerView Item ID Of: " + vehicleIdFromRecycler));
+                        .concat(" Vehicle/RecyclerView Item ID Of: " + vehicleId));
 
 
         // Initialize the option menu list
@@ -192,11 +195,36 @@ class OptionRecyclerAdapter extends RecyclerView.Adapter<OptionRecyclerAdapter.V
         // (Activities are not created yet)
         @Override
         public void onClick(View v) {
-            // Get the layout position
-            int layoutPosition = getLayoutPosition();
+            //Make a null intent so it can escape scope
+            Intent intent = null;
 
-            // Simple toast message
-            Toast.makeText(context, "You tapped an item at position: " + layoutPosition, Toast.LENGTH_SHORT).show();
+            //Switch based on which activity they pressed
+            //No default needed as the default behavior is already set above
+            switch (getLayoutPosition()){
+                case 0: //Logs
+                    intent = new Intent(context, LogActivity.class);
+                    break;
+                case 1: //Issues
+                    intent = new Intent(context, IssueActivity.class);
+                    break;
+                case 2: //Systems
+                    //intent = new Intent(context, LogActivity.class);
+                    Toast.makeText(context, "You selected the Systems option", Toast.LENGTH_SHORT).show();
+                    break;
+                case 3: //Edit vehicle
+                    //intent = new Intent(context, LogActivity.class);
+                    Toast.makeText(context, "You selected the edit vehicle option", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+
+            //Only use the intent if it was set
+            if(intent != null) {
+                // Extras include the ID of the vehicle and the Nickname
+                intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, VehicleOptionActivity.vehicleId);
+                //intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_NICKNAME, 0);
+
+                context.startActivity(intent);
+            }
         }
     }
 
