@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity{
     //Populates the Vehicle array list with some sample data.
     private void populateVehicleList() {
         // Create three vehicle objects to be put into the list
-        Vehicle vehicle1 = new Vehicle(0,
+        Vehicle vehicle1 = new Vehicle(12,
                 "Tunbruh",
                 "Toyota",
                 "Tundra",
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity{
                 new Date(System.currentTimeMillis()),
                 14000);
 
-        Vehicle vehicle2 = new Vehicle(1,
+        Vehicle vehicle2 = new Vehicle(8,
                 "Pontee",
                 "Pontiac",
                 "Grand Prix",
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity{
                 new Date(System.currentTimeMillis()),
                 4000);
 
-        Vehicle vehicle3 = new Vehicle(2,
+        Vehicle vehicle3 = new Vehicle(4,
                 "Redbull",
                 "Ram",
                 "Rebel",
