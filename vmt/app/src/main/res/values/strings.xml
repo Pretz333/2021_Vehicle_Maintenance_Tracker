@@ -18,9 +18,8 @@
     <string name="card_mainActivity_viewDetails">View details</string>
 
     <!-- Strings regarding the vehicle options list in the VehicleOptionActivity page -->
+    <string name="optionActivity_title">Options</string>
     <string name="listItem_optionActivity_iconDescription">A colored circle</string>
-
-    <string name="optionActivity_userHint">Options for</string>
 
     <string name="listItem_optionActivity_Title">ListItem Title</string>
     <string name="listItem_optionActivity_Subtitle">ListItem Subtitle</string>
@@ -33,5 +32,11 @@
     <string name="optionActivity_systemSubtitle">Various systems in your vehicle.</string>
     <string name="optionActivity_vehicleSettingsTitle">Vehicle Settings</string>
     <string name="optionActivity_vehicleSettingsSubtitle">Modify or delete this vehicle profile.</string>
+
+    <!-- Strings regarding MaintenanceLogActivity -->
+    <string name="maintenanceActivity_title">Maintenance Log</string>
+
+    <!-- Strings regarding IssueActivity -->
+    <string name="issueActivity_title">Issues</string>
 
 </resources>

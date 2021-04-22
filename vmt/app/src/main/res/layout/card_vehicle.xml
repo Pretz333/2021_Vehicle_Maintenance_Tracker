@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <!-- Card view -->
     <androidx.cardview.widget.CardView
@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         app:cardCornerRadius="10dp"
         app:cardUseCompatPadding="true"
-        app:cardElevation="12dp">
+        app:cardElevation="4dp">
 
         <!-- Constraint layout within card view -->
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -131,7 +131,7 @@
 
             <!--
                 This is dummy button. Ignore the naming
-                convention.
+                convention
             -->
             <Button
                 android:id="@+id/card_mainActivity_dummyButton"
@@ -140,7 +140,7 @@
                 android:text="@string/card_mainActivity_viewDetails"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/card_mainActivity_issueDescription"
-                android:layout_marginTop="@dimen/minorPadding"/>
+                android:layout_marginTop="@dimen/minorPadding" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

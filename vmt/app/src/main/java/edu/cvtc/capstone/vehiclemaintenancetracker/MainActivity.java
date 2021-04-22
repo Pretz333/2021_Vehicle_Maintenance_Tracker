@@ -2,9 +2,9 @@ package edu.cvtc.capstone.vehiclemaintenancetracker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import android.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,11 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     // An array containing each vehicle object.
     // This is used by the RecyclerView.
@@ -34,6 +33,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Initialize the toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setActionBar(toolbar);
 
         // Initialize the vehicle array list with some sample data.
         // NOTE: This sample data will be replaced with actual database
@@ -73,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
     //Populates the Vehicle array list with some sample data.
     private void populateVehicleList() {
         // Create three vehicle objects to be put into the list
-        Vehicle vehicle1 = new Vehicle(0,
+        Vehicle vehicle1 = new Vehicle(12,
                 "Tunbruh",
                 "Toyota",
                 "Tundra",
@@ -82,10 +85,10 @@ public class MainActivity extends AppCompatActivity {
                 180000,
                 "A8DM6Fl8XK01LA8F",
                 "LDA-9815",
-                new Date(System.currentTimeMillis()),
+                new Date(1619130376711L),
                 14000);
 
-        Vehicle vehicle2 = new Vehicle(1,
+        Vehicle vehicle2 = new Vehicle(8,
                 "Pontee",
                 "Pontiac",
                 "Grand Prix",
@@ -94,10 +97,10 @@ public class MainActivity extends AppCompatActivity {
                 230000,
                 "A8DM6Fl8XK01LA8F",
                 "ACF-3853",
-                new Date(System.currentTimeMillis()),
+                new Date(1619130376711L),
                 4000);
 
-        Vehicle vehicle3 = new Vehicle(2,
+        Vehicle vehicle3 = new Vehicle(4,
                 "Redbull",
                 "Ram",
                 "Rebel",
@@ -106,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 90000,
                 "A8DM6Fl8XK01LA8F",
                 "AFS-1083",
-                new Date(System.currentTimeMillis()),
+                new Date(1619130376711L),
                 27000);
 
         // Add the created vehicle objects to the list
@@ -116,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
-
 
 
 /*
@@ -143,6 +145,9 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
 
         // Context of super class
         Context context;
+
+        // VehicleID
+        private int vehicleID;
 
         // TextView members of the card_vehicle.xml
         // layout file.
@@ -177,31 +182,30 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
             dummyButton.setOnClickListener(this);
         }
 
-        // Click listener for the card. This should take
-        // the user to the VehicleOptionsActivity
+        // Click listener for the card
         @Override
         public void onClick(View v) {
-            // Get the layout position
-            int layoutPosition = getLayoutPosition();
-
             // Create the target intent
             Intent intent = new Intent(context, VehicleOptionActivity.class);
 
             // Extras include the ID of the vehicle and the Nickname
-            intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, layoutPosition);
-            //intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_NICKNAME, 0);
+            intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, vehicleID);
 
+            // Start the activity
             context.startActivity(intent);
         }
 
         // One-hitter method for setting the values for all views
         // which is called by the parent class's onBindViewHolder method.
-        public void setData(String nickname,
+        public void setData(int vehicleID,
+                            String nickname,
                             String makeAndModel,
                             String colorAndYear,
                             String plateNumber,
                             String logDescription,
                             String issueDescription) {
+
+            this.vehicleID = vehicleID;
 
             this.nickname.setText(nickname);
             this.makeAndModel.setText(makeAndModel);
@@ -234,7 +238,8 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
         // This was done to save stress on the RecyclerView when
         // populating, and, because we already have a heck of a lot
         // of views for the vehicle card.
-        holder.setData(v.getName(),
+        holder.setData(v.getId(),
+                v.getName(),
                 v.getMake() + " " + v.getModel(),
                 v.getColor() + ", " + v.getYear(),
                 v.getLicensePlate(), "No maintenance logs.", "No issues created.");
