@@ -121,7 +121,6 @@ public class MainActivity extends AppCompatActivity{
 }
 
 
-
 /*
     A RecyclerView adapter for each vehicle displayed. Although we could use a more simple
     approach such as ArrayAdapter using a ListView, the layout for displaying the vehicles
