@@ -1,8 +1,12 @@
 package edu.cvtc.capstone.vehiclemaintenancetracker;
 
+import android.util.Log;
+
 import java.util.Date;
 
 public class Vehicle {
+    private static final String TAG = "VEHICLE_CLASS";
+
     private int id;
     private String name;
     private String make;
@@ -11,9 +15,9 @@ public class Vehicle {
     private String color;
     private int mileage;
     private String VIN;
-    private String LicensePlate;
+    private String licensePlate;
     private Date purchaseDate;
-    private double Value;
+    private double value;
 
     //Constructors
     //Default, can probably delete later
@@ -35,10 +39,36 @@ public class Vehicle {
         this.year = year;
         this.color = color;
         this.mileage = mileage;
-        this.VIN = VIN;
-        LicensePlate = licensePlate;
+        setVIN(VIN); //Using the set so I can keep DRY
+        setLicensePlate(licensePlate); //Using the set so I can keep DRY
         this.purchaseDate = purchaseDate;
-        Value = value;
+        this.value = value;
+    }
+
+    private boolean isVINValid(String VIN, String year){
+        VIN = VIN.toUpperCase(); //In case the user typed in lowercase letters
+
+        //Vehicles after 1981 have a 17 character VIN
+        if (Integer.parseInt(year) > 1981 && VIN.length() != 17) {
+            return false;
+        }
+
+        //Characters Q, I, and O are not used due to their similarity to 1 and 0
+        //VINs are only letters or digits, so we'll check that as well
+        for(char c : VIN.toCharArray()){
+            if(!Character.isLetterOrDigit(c) || c == 'Q' || c == 'O' || c == 'I'){
+                return false;
+            }
+        }
+
+        //TODO: add more tests
+        return true;
+    }
+
+    private boolean isLPValid(String licensePlate){
+        boolean valid = true;
+        //TODO: test validity
+        return valid;
     }
 
     //Getters and Setters
@@ -80,7 +110,7 @@ public class Vehicle {
     }
 
     public void setYear(String year) {
-        this.year = year;
+        this.year = year; //TODO: ensure it is 4 digits?
     }
 
     public String getColor() {
@@ -104,16 +134,23 @@ public class Vehicle {
     }
 
     public void setVIN(String VIN) {
-        this.VIN = VIN;
+        if(isVINValid(VIN, this.year)){
+            this.VIN = VIN;
+        } else {
+            Log.w(TAG, "Invalid VIN");
+        }
     }
 
     public String getLicensePlate() {
-        return LicensePlate;
+        return licensePlate;
     }
 
     public void setLicensePlate(String licensePlate) {
-        //TODO: Make verification that the licensePlate is valid
-        LicensePlate = licensePlate;
+        if(isLPValid(licensePlate)){
+            this.licensePlate = licensePlate;
+        } else {
+            Log.w(TAG, "Invalid License Plate");
+        }
     }
 
     public Date getPurchaseDate() {
@@ -125,11 +162,11 @@ public class Vehicle {
     }
 
     public double getValue() {
-        return Value;
+        return value;
     }
 
     public void setValue(double value) {
-        Value = value;
+        this.value = value;
     }
 
     @Override
