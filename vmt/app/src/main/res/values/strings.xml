@@ -20,7 +20,7 @@
     <!-- Strings regarding the vehicle options list in the VehicleOptionActivity page -->
     <string name="listItem_optionActivity_iconDescription">A colored circle</string>
 
-    <string name="optionActivity_userHint">Options for</string>
+    <string name="optionActivity_userHint">Options for </string>
 
     <string name="listItem_optionActivity_Title">ListItem Title</string>
     <string name="listItem_optionActivity_Subtitle">ListItem Subtitle</string>
