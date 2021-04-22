@@ -131,7 +131,7 @@
 
             <!--
                 This is dummy button. Ignore the naming
-                convention.
+                convention
             -->
             <Button
                 android:id="@+id/card_mainActivity_dummyButton"
