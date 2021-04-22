@@ -36,11 +36,11 @@ public class Vehicle {
         this.name = name;
         this.make = make;
         this.model = model;
-        this.year = year;
+        setYear(year); //Using some sets so I can keep DRY
         this.color = color;
         this.mileage = mileage;
-        setVIN(VIN); //Using the set so I can keep DRY
-        setLicensePlate(licensePlate); //Using the set so I can keep DRY
+        setVIN(VIN);
+        setLicensePlate(licensePlate);
         this.purchaseDate = purchaseDate;
         this.value = value;
     }
@@ -66,9 +66,8 @@ public class Vehicle {
     }
 
     private boolean isLPValid(String licensePlate){
-        boolean valid = true;
         //TODO: test validity
-        return valid;
+        return true;
     }
 
     //Getters and Setters
@@ -110,7 +109,11 @@ public class Vehicle {
     }
 
     public void setYear(String year) {
-        this.year = year; //TODO: ensure it is 4 digits?
+        if(year.length() == 4 && Integer.parseInt(year) > 1900) {
+            this.year = year;
+        } else {
+            Log.w(TAG, "Year was not 4 digits or was not a number");
+        }
     }
 
     public String getColor() {
