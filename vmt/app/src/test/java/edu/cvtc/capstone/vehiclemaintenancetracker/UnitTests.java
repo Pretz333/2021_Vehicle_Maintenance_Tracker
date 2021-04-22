@@ -33,4 +33,15 @@ public class UnitTests {
         //A 1998 Chrysler Concorde, apparently
         assertTrue(Vehicle.isVINValid("2C3HD46R4WH170262", "1998"));
     }
+
+    @Test
+    public void VehicleYearValidationPasses(){
+        Vehicle v = new Vehicle(0, "Old Brick");
+        v.setYear("a");
+        assertNull(v.getYear());
+        v.setYear("1960");
+        assertEquals("1960", v.getYear());
+        v.setYear("1200");
+        assertEquals("1960", v.getYear());
+    }
 }
