@@ -2,16 +2,25 @@ package edu.cvtc.capstone.vehiclemaintenancetracker;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 public class DBHelper extends SQLiteOpenHelper {
     public static final String TAG = "edu.cvtc.capstone.vehiclemaintenancetracker.DBHelper.SEARCH";
     public static final String DATABASE_NAME = "VehicleMaintenanceTracker.db";
     public static final int DATABASE_VERSION = 1;
+
+    private final List<Vehicle> vehicles = new ArrayList<>();
+    private final List<MaintenanceLog> maintenanceLogs = new ArrayList<>();
+    private final List<Issue> issues = new ArrayList<>();
 
     public DBHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -25,6 +34,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(IssueSQL.SQL_CREATE_TABLE_ISSUE);
         db.execSQL(IssueStatusSQL.SQL_CREATE_TABLE_ISSUE_STATUS);
         db.execSQL(SystemSQL.SQL_CREATE_TABLE_SYSTEM);
+        db.execSQL(IssueLogSQL.SQL_CREATE_TABLE_ISSUE_LOG);
 
     }
 
@@ -71,6 +81,18 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
+    public void insertSystem(System system) {
+
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(SystemSQL._ID, system.getId());
+        values.put(SystemSQL.COLUMN_SYSTEM_DESCRIPTION, system.getDescription());
+
+        long newRowId = db.insert(SystemSQL.TABLE_NAME_SYSTEM, null, values);
+
+    }
+
     public void insertIssue(Issue issue) {
 
         SQLiteDatabase db = getWritableDatabase();
@@ -83,6 +105,63 @@ public class DBHelper extends SQLiteOpenHelper {
 
         long newRowId = db.insert(IssueSQL.TABLE_NAME_ISSUE, null, values);
 
+    }
+
+    public void insertIssueStatus(IssueStatus issueStatus) {
+
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(IssueStatusSQL._ID, issueStatus.getId());
+        values.put(IssueStatusSQL.COLUMN_ISSUE_STATUS_DESCRIPTION, issueStatus.getDescription());
+
+        long newRowId = db.insert(IssueStatusSQL.TABLE_NAME_ISSUE_STATUS, null, values);
+
+    }
+
+    public List<Vehicle> getAllVehicles() {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String[] vehicleColumns = {
+                VehicleSQL._ID,
+                VehicleSQL.COLUMN_VEHICLE_MAKE,
+                VehicleSQL.COLUMN_VEHICLE_MODEL,
+                VehicleSQL.COLUMN_VEHICLE_YEAR,
+                VehicleSQL.COLUMN_VEHICLE_NICKNAME,
+                VehicleSQL.COLUMN_VEHICLE_COLOR,
+                VehicleSQL.COLUMN_VEHICLE_MILEAGE,
+                VehicleSQL.COLUMN_VEHICLE_VIN,
+                VehicleSQL.COLUMN_VEHICLE_LICENSE_PLATE,
+                VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED,
+                VehicleSQL.COLUMN_VEHICLE_VALUE};
+
+        String vehicleOrderBy = VehicleSQL._ID;
+        Cursor cursor = db.query(VehicleSQL.TABLE_NAME_VEHICLE, vehicleColumns, null,
+                null, null, null, vehicleOrderBy);
+
+        int vehicleIdPosition = cursor.getColumnIndex(VehicleSQL._ID);
+        int vehicleMakePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_MAKE);
+        int vehicleModelPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_MODEL);
+        int vehicleYearPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_YEAR);
+        int vehicleNicknamePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_NICKNAME);
+        int vehicleColorPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_COLOR);
+        int vehicleMileagePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_MILEAGE);
+        int vehicleVINPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_VIN);
+        int vehicleLicensePlatePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_LICENSE_PLATE);
+        int vehicleDatePurchasedPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED);
+        int vehicleValuePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_VALUE);
+
+        while (cursor.moveToNext()) {
+            vehicles.add(new Vehicle(cursor.getInt(vehicleIdPosition), cursor.getString(vehicleNicknamePosition),
+                    cursor.getString(vehicleMakePosition), cursor.getString(vehicleModelPosition),
+                    cursor.getString(vehicleYearPosition), cursor.getString(vehicleColorPosition),
+                    cursor.getInt(vehicleMileagePosition), cursor.getString(vehicleVINPosition),
+                    cursor.getString(vehicleLicensePlatePosition), new Date(vehicleDatePurchasedPosition),
+                    cursor.getInt(vehicleValuePosition)));
+        }
+        cursor.close();
+
+        return vehicles;
     }
 
     private static final class VehicleSQL implements BaseColumns {
@@ -127,6 +206,8 @@ public class DBHelper extends SQLiteOpenHelper {
         private static final String COLUMN_MAINTENANCE_LOG_COST = "maintenance_log_cost";
         private static final String COLUMN_MAINTENANCE_LOG_TOTAL_TIME = "maintenance_log_total_time";
         private static final String COLUMN_MAINTENANCE_LOG_MILEAGE = "maintenance_log_mileage";
+        private static final String COLUMN_MAINTENANCE_LOG_VEHICLE_ID = "maintenance_log_vehicle_id";
+        private static final String COLUMN_MAINTENANCE_LOG_SYSTEM_ID = "maintenance_log_system_id";
 
         // Constant to create the maintenance log table
         private static final String SQL_CREATE_TABLE_MAINTENANCE_LOG =
@@ -137,7 +218,13 @@ public class DBHelper extends SQLiteOpenHelper {
                         COLUMN_MAINTENANCE_LOG_DATE + " INTEGER, " +
                         COLUMN_MAINTENANCE_LOG_COST + " INTEGER, " +
                         COLUMN_MAINTENANCE_LOG_TOTAL_TIME + " INTEGER, " +
-                        COLUMN_MAINTENANCE_LOG_MILEAGE + " INTEGER NOT NULL)";
+                        COLUMN_MAINTENANCE_LOG_MILEAGE + " INTEGER NOT NULL, " +
+                        COLUMN_MAINTENANCE_LOG_VEHICLE_ID + " INTEGER NOT NULL, " +
+                        COLUMN_MAINTENANCE_LOG_SYSTEM_ID + " INTEGER NOT NULL, " +
+                        "FOREIGN KEY (" + COLUMN_MAINTENANCE_LOG_VEHICLE_ID + ") REFERENCES " +
+                        VehicleSQL.TABLE_NAME_VEHICLE + " (" + VehicleSQL._ID + "), " +
+                        "FOREIGN KEY (" + COLUMN_MAINTENANCE_LOG_SYSTEM_ID + ") REFERENCES " +
+                        SystemSQL.TABLE_NAME_SYSTEM + " (" + SystemSQL._ID + "))";
 
         // Constant to drop the maintenance log table
         private static final String SQL_DROP_TABLE_MAINTENANCE_LOG = "DROP TABLE IF EXISTS " + TABLE_NAME_MAINTENANCE_LOG;
@@ -149,6 +236,8 @@ public class DBHelper extends SQLiteOpenHelper {
         private static final String COLUMN_ISSUE_TITLE = "issue_title";
         private static final String COLUMN_ISSUE_DESCRIPTION = "issue_description";
         private static final String COLUMN_ISSUE_PRIORITY = "issue_priority";
+        private static final String COLUMN_ISSUE_VEHICLE_ID = "issue_vehicle_id";
+        private static final String COLUMN_ISSUE_STATUS_ID = "issue_status_id";
 
         // Constant to create the issue table
         private static final String SQL_CREATE_TABLE_ISSUE =
@@ -156,7 +245,13 @@ public class DBHelper extends SQLiteOpenHelper {
                         _ID + " INTEGER PRIMARY KEY, " +
                         COLUMN_ISSUE_TITLE + " TEXT NOT NULL, " +
                         COLUMN_ISSUE_DESCRIPTION + " TEXT, " +
-                        COLUMN_ISSUE_PRIORITY + " INTEGER)";
+                        COLUMN_ISSUE_PRIORITY + " INTEGER, " +
+                        COLUMN_ISSUE_VEHICLE_ID + " INTEGER NOT NULL, " +
+                        COLUMN_ISSUE_STATUS_ID + " INTEGER NOT NULL, " +
+                        "FOREIGN KEY (" + COLUMN_ISSUE_VEHICLE_ID + ") REFERENCES " +
+                        VehicleSQL.TABLE_NAME_VEHICLE + " (" + VehicleSQL._ID + "), " +
+                        "FOREIGN KEY (" + COLUMN_ISSUE_STATUS_ID + ") REFERENCES " +
+                        IssueStatusSQL.TABLE_NAME_ISSUE_STATUS + " (" + IssueStatusSQL._ID + "))";
 
         // Constant to drop the issue table
         private static final String SQL_DROP_TABLE_ISSUE = "DROP TABLE IF EXISTS " + TABLE_NAME_ISSUE;
@@ -190,5 +285,26 @@ public class DBHelper extends SQLiteOpenHelper {
 
         // Constant to drop the status table
         private static final String SQL_DROP_TABLE_ISSUE_STATUS = "DROP TABLE IF EXISTS " + TABLE_NAME_ISSUE_STATUS;
+    }
+
+    private static final class IssueLogSQL implements BaseColumns {
+        // Constants for the issue log table and fields
+        private static final String TABLE_NAME_ISSUE_LOG = "issue_log";
+        private static final String COLUMN_ISSUE_LOG_LOG_ID = "issue_log_log_id";
+        private static final String COLUMN_ISSUE_LOG_ISSUE_ID = "issue_log_issue_id";
+
+        // Constant to create the issue log table
+        private static final String SQL_CREATE_TABLE_ISSUE_LOG =
+                "CREATE TABLE " + TABLE_NAME_ISSUE_LOG + " (" +
+                        COLUMN_ISSUE_LOG_LOG_ID + " INTEGER, " +
+                        COLUMN_ISSUE_LOG_ISSUE_ID + " INTEGER, " +
+                        "PRIMARY KEY (" + COLUMN_ISSUE_LOG_LOG_ID + ", " + COLUMN_ISSUE_LOG_ISSUE_ID + "), " +
+                        "FOREIGN KEY (" + COLUMN_ISSUE_LOG_LOG_ID + ") REFERENCES " +
+                        MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG + " (" + MaintenanceLogSQL._ID + "), " +
+                        "FOREIGN KEY (" + COLUMN_ISSUE_LOG_ISSUE_ID + ") REFERENCES " +
+                        IssueSQL.TABLE_NAME_ISSUE + " (" + IssueSQL._ID + "))";
+
+        // Constant to drop the issue log table
+        private static final String SQL_DROP_TABLE_ISSUE_LOG = "DROP TABLE IF EXISTS " + TABLE_NAME_ISSUE_LOG;
     }
 }
