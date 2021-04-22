@@ -134,8 +134,7 @@ class OptionItem {
     public int getColorResource() {
         return colorResource;
     }
-
-
+    
 }
 
 // RecyclerView for this activity. What's sad is we can't copy and paste the code from
