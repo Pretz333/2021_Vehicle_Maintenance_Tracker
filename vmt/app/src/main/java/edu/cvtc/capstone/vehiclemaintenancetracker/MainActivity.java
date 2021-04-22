@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity{
                 180000,
                 "A8DM6Fl8XK01LA8F",
                 "LDA-9815",
-                new Date(System.currentTimeMillis()),
+                new Date(1619130376711L),
                 14000);
 
         Vehicle vehicle2 = new Vehicle(8,
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity{
                 230000,
                 "A8DM6Fl8XK01LA8F",
                 "ACF-3853",
-                new Date(System.currentTimeMillis()),
+                new Date(1619130376711L),
                 4000);
 
         Vehicle vehicle3 = new Vehicle(4,
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity{
                 90000,
                 "A8DM6Fl8XK01LA8F",
                 "AFS-1083",
-                new Date(System.currentTimeMillis()),
+                new Date(1619130376711L),
                 27000);
 
         // Add the created vehicle objects to the list
