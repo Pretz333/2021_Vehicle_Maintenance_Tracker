@@ -17,7 +17,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     // An array containing each vehicle object.
     // This is used by the RecyclerView.
@@ -144,6 +144,11 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
         // Context of super class
         Context context;
 
+        // VehicleID & Nickname to be passed
+        // to next activity when clicked
+        private int vehicleID;
+        private String vehicleNickname;
+
         // TextView members of the card_vehicle.xml
         // layout file.
         private final TextView nickname;
@@ -177,31 +182,43 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
             dummyButton.setOnClickListener(this);
         }
 
-        // Click listener for the card. This should take
-        // the user to the VehicleOptionsActivity
+        // Click listener for the card
         @Override
         public void onClick(View v) {
+            // Don't use this. We want to pass the VehicleID,
+            // and not the index of the Vehicle in the arraylist.
+            //
+            // E.g. A vehicle with a DBID of 12 at index 0 will always
+            // pass 0 to the next activity. We want to pass 12 (DBID)
+            // and not 0 (Index in array list) - Alexander :)
+            // (But keep this here just in case)
+            //
             // Get the layout position
-            int layoutPosition = getLayoutPosition();
+            // int layoutPosition = getLayoutPosition();
 
             // Create the target intent
             Intent intent = new Intent(context, VehicleOptionActivity.class);
 
             // Extras include the ID of the vehicle and the Nickname
-            intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, layoutPosition);
-            //intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_NICKNAME, 0);
+            intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, vehicleID);
+            intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_NICKNAME, vehicleNickname);
 
+            // Start the activity
             context.startActivity(intent);
         }
 
         // One-hitter method for setting the values for all views
         // which is called by the parent class's onBindViewHolder method.
-        public void setData(String nickname,
+        public void setData(int vehicleID,
+                            String nickname,
                             String makeAndModel,
                             String colorAndYear,
                             String plateNumber,
                             String logDescription,
                             String issueDescription) {
+
+            this.vehicleID = vehicleID;
+            this.vehicleNickname = nickname;
 
             this.nickname.setText(nickname);
             this.makeAndModel.setText(makeAndModel);
@@ -234,7 +251,8 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
         // This was done to save stress on the RecyclerView when
         // populating, and, because we already have a heck of a lot
         // of views for the vehicle card.
-        holder.setData(v.getName(),
+        holder.setData(v.getId(),
+                v.getName(),
                 v.getMake() + " " + v.getModel(),
                 v.getColor() + ", " + v.getYear(),
                 v.getLicensePlate(), "No maintenance logs.", "No issues created.");

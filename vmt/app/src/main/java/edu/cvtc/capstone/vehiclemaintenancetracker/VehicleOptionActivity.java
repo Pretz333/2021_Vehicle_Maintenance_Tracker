@@ -21,6 +21,7 @@ public class VehicleOptionActivity extends AppCompatActivity {
 
     // Intent extras used by the MainActivity's RecyclerView
     public static final String EXTRA_VEHICLE_ID = "edu.cvtc.capstone.vehiclemaintenancetracker.EXTRA_VEHICLE_ID";
+    public static final String EXTRA_VEHICLE_NICKNAME = "edu.cvtc.capstone.vehiclemaintenancetracker.EXTRA_VEHICLE_NICKNAME";
 
     //The vehicle ID so it can passed to the other activities
     public static int vehicleId;
