@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import java.util.ArrayList;
 
@@ -21,9 +22,8 @@ public class VehicleOptionActivity extends AppCompatActivity {
 
     // Intent extras used by the MainActivity's RecyclerView
     public static final String EXTRA_VEHICLE_ID = "edu.cvtc.capstone.vehiclemaintenancetracker.EXTRA_VEHICLE_ID";
-    public static final String EXTRA_VEHICLE_NICKNAME = "edu.cvtc.capstone.vehiclemaintenancetracker.EXTRA_VEHICLE_NICKNAME";
 
-    //The vehicle ID so it can passed to the other activities
+    //The vehicle ID & Nickname so it can passed to child activities
     public static int vehicleId;
 
     // The list that contains item objects used in the
@@ -35,18 +35,15 @@ public class VehicleOptionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vehicle_option);
 
+        // Initialize the toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setActionBar(toolbar);
+
         // Grab the intent data
         Intent receivedIntent = getIntent();
 
-        // Grab the ID with a provided default value
+        // Grab the VehicleID & vehicleNickname with a provided default value
         vehicleId = receivedIntent.getIntExtra(EXTRA_VEHICLE_ID, -1);
-
-        // Get the user hint TextView and set it
-        // Short-hand because I'm that lazy at the moment... - Alexander
-        ((TextView) findViewById(R.id.textView_optionActivity_vehicleHint))
-                .setText(getResources()
-                        .getString(R.string.optionActivity_userHint)
-                        .concat(" Vehicle/RecyclerView Item ID Of: " + vehicleId));
 
 
         // Initialize the option menu list
@@ -99,11 +96,6 @@ class OptionItem {
     private String subtitle;
     private int colorResource;
 
-    // No-param constructor
-    public OptionItem() {
-        // ...
-    }
-
     // Overloaded Constructor
     public OptionItem(String title, String subtitle, int colorResource) {
         this.title = title;
@@ -114,10 +106,14 @@ class OptionItem {
     // Getters and setters
     //
     // Setters
+    // This isn't used, but we will keep it just in case
+    @Deprecated
     public void setTitle(String title) {
         this.title = title;
     }
 
+    // This isn't used, but we will keep it just in case
+    @Deprecated
     public void setSubtitle(String subtitle) {
         this.subtitle = subtitle;
     }

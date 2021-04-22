@@ -2,19 +2,17 @@ package edu.cvtc.capstone.vehiclemaintenancetracker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import android.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -35,6 +33,10 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Initialize the toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setActionBar(toolbar);
 
         // Initialize the vehicle array list with some sample data.
         // NOTE: This sample data will be replaced with actual database
@@ -145,10 +147,8 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
         // Context of super class
         Context context;
 
-        // VehicleID & Nickname to be passed
-        // to next activity when clicked
+        // VehicleID
         private int vehicleID;
-        private String vehicleNickname;
 
         // TextView members of the card_vehicle.xml
         // layout file.
@@ -186,23 +186,11 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
         // Click listener for the card
         @Override
         public void onClick(View v) {
-            // Don't use this. We want to pass the VehicleID,
-            // and not the index of the Vehicle in the arraylist.
-            //
-            // E.g. A vehicle with a DBID of 12 at index 0 will always
-            // pass 0 to the next activity. We want to pass 12 (DBID)
-            // and not 0 (Index in array list) - Alexander :)
-            // (But keep this here just in case)
-            //
-            // Get the layout position
-            // int layoutPosition = getLayoutPosition();
-
             // Create the target intent
             Intent intent = new Intent(context, VehicleOptionActivity.class);
 
             // Extras include the ID of the vehicle and the Nickname
             intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, vehicleID);
-            intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_NICKNAME, vehicleNickname);
 
             // Start the activity
             context.startActivity(intent);
@@ -219,7 +207,6 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
                             String issueDescription) {
 
             this.vehicleID = vehicleID;
-            this.vehicleNickname = nickname;
 
             this.nickname.setText(nickname);
             this.makeAndModel.setText(makeAndModel);
