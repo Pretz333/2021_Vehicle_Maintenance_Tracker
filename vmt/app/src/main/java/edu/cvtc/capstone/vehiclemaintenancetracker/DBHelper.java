@@ -70,12 +70,14 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
 
         values.put(MaintenanceLogSQL._ID, maintenanceLog.getId());
-        values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE, maintenanceLog.getId());
+        values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE, maintenanceLog.getTitle());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DESCRIPTION, maintenanceLog.getDescription());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE, maintenanceLog.getDate().getTime());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_COST, maintenanceLog.getCost());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TOTAL_TIME, maintenanceLog.getTime().getTime());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_MILEAGE, maintenanceLog.getMileage());
+        values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID, maintenanceLog.getVehicleId());
+        values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_SYSTEM_ID, maintenanceLog.getSystemId());
 
         long newRowId = db.insert(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, null, values);
 
@@ -102,6 +104,8 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(IssueSQL.COLUMN_ISSUE_TITLE, issue.getTitle());
         values.put(IssueSQL.COLUMN_ISSUE_DESCRIPTION, issue.getDescription());
         values.put(IssueSQL.COLUMN_ISSUE_PRIORITY, issue.getPriority());
+        values.put(IssueSQL.COLUMN_ISSUE_VEHICLE_ID, issue.getVehicleId());
+        values.put(IssueSQL.COLUMN_ISSUE_STATUS_ID, issue.getStatusId());
 
         long newRowId = db.insert(IssueSQL.TABLE_NAME_ISSUE, null, values);
 

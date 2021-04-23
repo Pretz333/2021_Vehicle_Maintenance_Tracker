@@ -12,7 +12,7 @@ public class MaintenanceLog {
     private Time time;
     private int mileage;
     private int vehicleId;
-    private int statusId;
+    private int systemId;
 
     //Constructors
     //Default, can probably delete later
@@ -20,14 +20,14 @@ public class MaintenanceLog {
     }
 
     //Minimum. May want to add Title?
-    public MaintenanceLog(int id, int vehicleId, int statusId) {
+    public MaintenanceLog(int id, int vehicleId, int systemId) {
         this.id = id;
         this.vehicleId = vehicleId;
-        this.statusId = statusId;
+        this.systemId = systemId;
     }
 
     //Everything
-    public MaintenanceLog(int id, String title, String description, Date date, double cost, Time time, int mileage, int vehicleId, int statusId) {
+    public MaintenanceLog(int id, String title, String description, Date date, double cost, Time time, int mileage, int vehicleId, int systemId) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -36,7 +36,7 @@ public class MaintenanceLog {
         this.time = time;
         this.mileage = mileage;
         this.vehicleId = vehicleId;
-        this.statusId = statusId;
+        this.systemId = systemId;
     }
 
     //Getters and Setters
@@ -106,13 +106,13 @@ public class MaintenanceLog {
         this.vehicleId = vehicleId;
     }
 
-    public int getStatusId() {
-        return statusId;
+    public int getSystemId() {
+        return systemId;
     }
 
-    public void setStatusId(int statusId) {
-        //TODO: Make verification that the statusId exists
-        this.statusId = statusId;
+    public void setSystemId(int systemId) {
+        //TODO: Make verification that the systemId exists
+        this.systemId = systemId;
     }
 
     @Override
