@@ -20,23 +20,24 @@ public class MaintenanceLog {
     }
 
     //Minimum. May want to add Title?
-    public MaintenanceLog(int id, int vehicleId, int systemId) {
-        this.id = id;
-        this.vehicleId = vehicleId;
-        this.systemId = systemId;
+    public MaintenanceLog(int id, String title, int vehicleId, int systemId) {
+        setId(id);
+        setTitle(title);
+        setVehicleId(vehicleId);
+        setSystemId(systemId);
     }
 
     //Everything
     public MaintenanceLog(int id, String title, String description, Date date, double cost, Time time, int mileage, int vehicleId, int systemId) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.date = date;
-        this.cost = cost;
-        this.time = time;
-        this.mileage = mileage;
-        this.vehicleId = vehicleId;
-        this.systemId = systemId;
+        setId(id);
+        setTitle(title);
+        setDescription(description);
+        setDate(date);
+        setCost(cost);
+        setTime(time);
+        setMileage(mileage);
+        setVehicleId(vehicleId);
+        setSystemId(systemId);
     }
 
     //Getters and Setters

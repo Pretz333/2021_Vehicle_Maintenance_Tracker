@@ -15,19 +15,19 @@ public class Issue {
 
     //Minimum. May want to add Title?
     public Issue(int id, int vehicleId, int statusId) {
-        this.id = id;
-        this.vehicleId = vehicleId;
-        this.statusId = statusId;
+        setId(id);
+        setVehicleId(vehicleId);
+        setStatusId(statusId);
     }
 
     //Everything
     public Issue(int id, String title, String description, int priority, int vehicleId, int statusId) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.priority = priority;
-        this.vehicleId = vehicleId;
-        this.statusId = statusId;
+        setId(id);
+        setTitle(title);
+        setDescription(description);
+        setPriority(priority);
+        setVehicleId(vehicleId);
+        setStatusId(statusId);
     }
 
     //Getters and Setters

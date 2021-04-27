@@ -21,29 +21,30 @@ public class Vehicle {
     private double value;
 
     //Constructors
+    //Using sets so I can keep DRY
     //Default, can probably delete later
     public Vehicle() {
     }
 
     //Current minimums to be functional. May need to add in make, model, year, color?
     public Vehicle(int id, String name) {
-        this.id = id;
-        this.name = name;
+        setId(id);
+        setName(name);
     }
 
     //Everything, for use when reading from the database
     public Vehicle(int id, String name, String make, String model, String year, String color, int mileage, String VIN, String licensePlate, Date purchaseDate, double value) {
-        this.id = id;
-        this.name = name;
-        this.make = make;
-        this.model = model;
-        setYear(year); //Using some sets so I can keep DRY
-        this.color = color;
-        this.mileage = mileage;
+        setId(id);
+        setName(name);
+        setMake(make);
+        setModel(model);
+        setYear(year);
+        setColor(color);
+        setMileage(mileage);
         setVIN(VIN);
         setLicensePlate(licensePlate);
-        this.purchaseDate = purchaseDate;
-        this.value = value;
+        setPurchaseDate(purchaseDate);
+        setValue(value);
     }
 
     public static boolean isVINValid(String VIN, String year){
