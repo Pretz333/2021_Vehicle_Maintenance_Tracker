@@ -1,10 +1,14 @@
 package edu.cvtc.capstone.vehiclemaintenancetracker;
 
+import android.util.Log;
+
 public class Issue {
+    public static final String TAG = "ISSUE_CLASS";
+
     private int id;
     private String title;
     private String description;
-    private int priority; //Make this a FK?
+    private int priority; //TODO: Make this a FK?
     private int vehicleId;
     private int statusId;
 
@@ -15,19 +19,19 @@ public class Issue {
 
     //Minimum. May want to add Title?
     public Issue(int id, int vehicleId, int statusId) {
-        this.id = id;
-        this.vehicleId = vehicleId;
-        this.statusId = statusId;
+        setId(id);
+        setVehicleId(vehicleId);
+        setStatusId(statusId);
     }
 
     //Everything
     public Issue(int id, String title, String description, int priority, int vehicleId, int statusId) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.priority = priority;
-        this.vehicleId = vehicleId;
-        this.statusId = statusId;
+        setId(id);
+        setTitle(title);
+        setDescription(description);
+        setPriority(priority);
+        setVehicleId(vehicleId);
+        setStatusId(statusId);
     }
 
     //Getters and Setters
@@ -37,6 +41,7 @@ public class Issue {
 
     //May want to delete? Only have the database use this with the constructors above?
     public void setId(int id) {
+        //TODO: Check if record is in database or the call came from the database
         this.id = id;
     }
 
@@ -45,7 +50,11 @@ public class Issue {
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        if(VerifyUtil.isStringSafe(title)) {
+            this.title = title;
+        } else {
+            Log.w(TAG, "Issue title unsafe");
+        }
     }
 
     public String getDescription() {
@@ -53,7 +62,11 @@ public class Issue {
     }
 
     public void setDescription(String description) {
-        description = description;
+        if(VerifyUtil.isStringSafe(description)) {
+            this.description = description;
+        } else {
+            Log.w(TAG, "Issue description unsafe");
+        }
     }
 
     public int getPriority() {
@@ -69,7 +82,7 @@ public class Issue {
     }
 
     public void setVehicleId(int vehicleId) {
-        //TODO: Make verification that the vehicleId exists
+        //TODO: Check if record is in database or the call came from the database
         this.vehicleId = vehicleId;
     }
 
@@ -78,12 +91,12 @@ public class Issue {
     }
 
     public void setStatusId(int statusId) {
-        //TODO: Make verification that the statusId exists
+        //TODO: Check if record is in database or the call came from the database
         this.statusId = statusId;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Issue ID:").append(id)
                 .append("\nTitle:").append(title)
