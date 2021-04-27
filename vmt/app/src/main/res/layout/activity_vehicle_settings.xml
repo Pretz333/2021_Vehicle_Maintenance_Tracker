@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".VehicleSettingsActivity">
+
+    <Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/black"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.MaterialComponents.ActionBar"
+        android:titleTextColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/minorPadding"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <!-- Basic settings card -->
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/vehicleSettings_cardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="4dp"
+            app:cardUseCompatPadding="true">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/minorPadding">
+
+                <TextView
+                    android:id="@+id/vehicleSettings_textViewTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/vehicleSettingsActivity_titleDisplay"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <!-- Vehicle Nickname -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/vehicleSettings_textInputNickname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/minorPadding"
+                    android:hint="@string/vehicleSettingsActivity_editTextHint_nickname"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textViewTitle">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/vehicleSettings_editTextNickname"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:maxLength="128" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Vehicle Make -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/vehicleSettings_textInputMake"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/minorPadding"
+                    android:hint="@string/vehicleSettingsActivity_editTextHint_make"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputNickname">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/vehicleSettings_editTextMake"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Vehicle Model -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/vehicleSettings_textInputModel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/minorPadding"
+                    android:hint="@string/vehicleSettingsActivity_editTextHint_model"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputMake">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/vehicleSettings_editTextModel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Vehicle Year -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/vehicleSettings_textInputYear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/minorPadding"
+                    android:hint="@string/vehicleSettingsActivity_editTextHint_year"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputModel">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/vehicleSettings_editTextYear"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:inputType="number"
+                        android:maxLength="4" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Vehicle Plate -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/vehicleSettings_textInputPlate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/minorPadding"
+                    android:hint="@string/vehicleSettingsActivity_editTextHint_plate"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputYear">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/vehicleSettings_editTextPlate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Vehicle purchase date -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/vehicleSettings_textInputDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/minorPadding"
+                    android:hint="@string/vehicleSettingsActivity_editTextHint_datePurchased"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputPlate">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/vehicleSettings_editTextDatePurchased"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:inputType="date"
+                        android:maxLength="10" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Extra settings -->
+
+                <TextView
+                    android:id="@+id/vehicleSettings_textViewTitleSub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/minorPadding"
+                    android:text="@string/vehicleSettingsActivity_titleDisplayExtra"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputDate" />
+
+                <!-- Vehicle color -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/vehicleSettings_textInputColor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/minorPadding"
+                    android:hint="@string/vehicleSettingsActivity_editTextHint_color"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textViewTitleSub">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/vehicleSettings_editTextColor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Vehicle mileage -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/vehicleSettings_textInputMileage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/minorPadding"
+                    android:hint="@string/vehicleSettingsActivity_editTextHint_mileage"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputColor">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/vehicleSettings_editTextMileage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:inputType="number"
+                        android:maxLength="7" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Vehicle value/worth -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/vehicleSettings_textInputValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/minorPadding"
+                    android:hint="@string/vehicleSettingsActivity_editTextHint_value"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputMileage">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/vehicleSettings_editTextValue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:inputType="numberDecimal"
+                        android:maxLength="6" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Vehicle VIN number -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/vehicleSettings_textInputVin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/minorPadding"
+                    android:hint="@string/vehicleSettingsActivity_editTextHint_vin"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputValue">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/vehicleSettings_editTextVin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <!-- A button to save changes -->
+                <Button
+                    android:id="@+id/vehicleSettings_buttonSave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/minorPadding"
+                    android:text="@string/vehicleSettingsActivity_buttonSave"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputVin" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </ScrollView>
+
+</LinearLayout>

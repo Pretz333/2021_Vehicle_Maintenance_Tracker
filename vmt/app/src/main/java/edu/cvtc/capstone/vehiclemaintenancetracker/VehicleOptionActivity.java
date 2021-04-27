@@ -208,8 +208,7 @@ class OptionRecyclerAdapter extends RecyclerView.Adapter<OptionRecyclerAdapter.V
                     Toast.makeText(context, "You selected the Systems option", Toast.LENGTH_SHORT).show();
                     break;
                 case 3: //Edit vehicle
-                    //intent = new Intent(context, LogActivity.class);
-                    Toast.makeText(context, "You selected the edit vehicle option", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(context, VehicleSettingsActivity.class);
                     break;
             }
 
@@ -217,7 +216,6 @@ class OptionRecyclerAdapter extends RecyclerView.Adapter<OptionRecyclerAdapter.V
             if(intent != null) {
                 // Extras include the ID of the vehicle and the Nickname
                 intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, VehicleOptionActivity.vehicleId);
-                //intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_NICKNAME, 0);
 
                 context.startActivity(intent);
             }
