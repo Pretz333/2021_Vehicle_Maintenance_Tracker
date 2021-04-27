@@ -3,24 +3,32 @@ package edu.cvtc.capstone.vehiclemaintenancetracker;
 import java.util.HashMap;
 
 public final class VerifyUtil {
-    //Strings containing only capital or lowercase a-z return true
+    //TODO: Consider non-english characters
+    //TODO: Character limits
+
+    //Strings only containing capital or lowercase a-z return true
     public static boolean isStringLettersOnly(String str){
         return str.matches("^[a-zA-Z]+$");
     }
 
-    //Strings containing only numbers 0-9 return true
+    //Strings only containing numbers 0-9 return true
     public static boolean isStringANumber(String str){
         return str.matches("^[0-9]*$");
     }
 
-    //Strings containing only capital or lowercase a-z and numbers 0-9 return true
+    //Strings only containing capital or lowercase a-z and numbers 0-9 return true
     public static boolean isStringLettersOrDigitsOnly(String str){
         return str.matches("^[a-zA-Z0-9]+$");
     }
 
-    //Strings containing only capital or lowercase a-z, numbers 0-9, a " ", or a "-" return true
+    //Strings only containing capital or lowercase a-z, numbers 0-9, a " ", or a "-" return true
     public static boolean isStringSafe(String str) {
         return str.matches("^[a-zA-Z0-9 -]*$");
+    }
+
+    //For Years
+    public static boolean isYearValid(String year){
+        return year.length() == 4 && Integer.parseInt(year) > 1900;
     }
 
     //For VINs

@@ -23,8 +23,7 @@ public class Vehicle {
     //Constructors
     //Using sets so I can keep DRY
     //Default, can probably delete later
-    public Vehicle() {
-    }
+    public Vehicle() {}
 
     //Current minimums to be functional. May need to add in make, model, year, color?
     public Vehicle(int id, String name) {
@@ -48,6 +47,7 @@ public class Vehicle {
     }
 
     //Getters and Setters
+    //TODO: Capitalize first letters of makes, models, and colors
     public int getId() {
         return id;
     }
@@ -75,7 +75,11 @@ public class Vehicle {
     }
 
     public void setMake(String make) {
-        this.make = make;
+        if(VerifyUtil.isStringSafe(make)) {
+            this.make = make;
+        } else {
+            Log.w(TAG, "Vehicle make unsafe");
+        }
     }
 
     public String getModel() {
@@ -83,7 +87,11 @@ public class Vehicle {
     }
 
     public void setModel(String model) {
-        this.model = model;
+        if(VerifyUtil.isStringSafe(model)) {
+            this.model = model;
+        } else {
+            Log.w(TAG, "Vehicle model unsafe");
+        }
     }
 
     public String getYear() {
@@ -91,7 +99,7 @@ public class Vehicle {
     }
 
     public void setYear(String year) {
-        if(year.length() == 4 && Integer.parseInt(year) > 1900) {
+        if(VerifyUtil.isYearValid(year)) {
             this.year = year;
         } else {
             Log.w(TAG, "Year was not 4 digits or was not a number");
@@ -103,13 +111,18 @@ public class Vehicle {
     }
 
     public void setColor(String color) {
-        this.color = color;
+        if(VerifyUtil.isStringLettersOnly(color)) {
+            this.color = color;
+        } else {
+            Log.w(TAG, "Color unsafe");
+        }
     }
 
     public int getMileage() {
         return mileage;
     }
 
+    //Type casting from the TextView is all we need for verification
     public void setMileage(int mileage) {
         this.mileage = mileage;
     }
@@ -132,13 +145,18 @@ public class Vehicle {
     }
 
     public void setLicensePlate(String licensePlate) {
-        this.licensePlate = licensePlate;
+        if(VerifyUtil.isStringSafe(licensePlate)) {
+            this.licensePlate = licensePlate;
+        } else {
+            Log.w(TAG, "License plate unsafe");
+        }
     }
 
     public Date getPurchaseDate() {
         return purchaseDate;
     }
 
+    //Type casting from the TextView is all we need for verification
     public void setPurchaseDate(Date purchaseDate) {
         this.purchaseDate = purchaseDate;
     }
@@ -147,6 +165,8 @@ public class Vehicle {
         return value;
     }
 
+    //This is a calculated field, but even if the user types it in,
+    //type casting from the TextView is all we need for verification
     public void setValue(double value) {
         this.value = value;
     }
