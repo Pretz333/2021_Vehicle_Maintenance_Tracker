@@ -40,7 +40,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        //TODO
     }
 
     public void insertVehicle(Vehicle vehicle) {

@@ -83,11 +83,6 @@ public class Vehicle {
         return false;
     }
 
-    private static boolean isLPValid(String licensePlate){
-        //TODO: test validity
-        return true;
-    }
-
     //Getters and Setters
     public int getId() {
         return id;
@@ -95,6 +90,7 @@ public class Vehicle {
 
     //May want to delete? Only have the database use this with the constructors above?
     public void setId(int id) {
+        //TODO: Check if record is in database or the call came from the database
         this.id = id;
     }
 
@@ -103,7 +99,11 @@ public class Vehicle {
     }
 
     public void setName(String name) {
-        this.name = name;
+        if(VerifyUtil.isStringSafe(name)){
+            this.name = name;
+        } else {
+            Log.w(TAG, "Vehicle name unsafe");
+        }
     }
 
     public String getMake() {
@@ -168,11 +168,7 @@ public class Vehicle {
     }
 
     public void setLicensePlate(String licensePlate) {
-        if(isLPValid(licensePlate)){
-            this.licensePlate = licensePlate;
-        } else {
-            Log.w(TAG, "Invalid License Plate");
-        }
+        this.licensePlate = licensePlate;
     }
 
     public Date getPurchaseDate() {
