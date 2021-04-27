@@ -1,11 +1,11 @@
 # 2021_Vehicle-Maintenance-Tracker
 
 ## Preface
-The latest build of the APK will be posted here in the repository located at [vmt/app/release/app-release.apk](https://github.com/Pretz333/2021_Vehicle_Maintenance_Tracker/tree/main/vmt/app/release). Follow the instructions below to install the application on your physical Android device. To install the application on an Android Emulator, check out the Installation section.
+The latest build of the APK will be posted here in the repository located at [vmt/app/release/app-release.apk](https://github.com/Pretz333/2021_Vehicle_Maintenance_Tracker/tree/main/vmt/app/release). Follow the instructions below in the Installation on Device section to install the application on your physical Android device. To install the application on an Android Emulator, check out the Installation on Emulator section.
 
+## Installation on Device
 For starters, download the APK file. If you downloaded it onto your computer, email yourself the APK file to receive it on your Android device. If you downloaded it by visiting this page directly on your device, it should be in your Downloads folder.
 
-## Enabling "Unknown Sources"
 Before you continue to install it, you must allow your device to install apps from unknown sources. This allows unknown apps not downloaded by the Play Store to be installed on your device. Enabling "Unknown Sources" differs greatly depending on which version of Android you are using. Follow the steps below depending on your version. If you don't know which version you have, try both steps! (Only one will work.)
 
 Android 5.0- and lower:
@@ -21,12 +21,14 @@ Android 5.0+ and higher:
 5. From there, you will see a list of applications that have permission to install 3rd party apps not from the Play Store. Depending on if you downloaded the APK file directly from Chrome, or another app, tap on the app in the list.
 6. Toggle the “Allow from this source” switch.
 
-## Installation
 Once you have completed the steps above, browse to the folder where the APK resides in. Tap it and follow along with the install wizard.
 
-Installing the application on an Android Emulator:
+## Installation on Emulator
+Before installing the application, download the APK file onto your computer from the latest release by clicking the link listed in the Preface section.
+
+Installing the Application on an Android Emulator:
 1. Launch the Android emulator and go to the Home Screen.
-2. The APK file you downloaded earlier should be located in your downloads folder on your computer.
+2. The APK file you downloaded should be located in your downloads folder on your computer.
 3. Drag the file and drop it directly into the emulator window.
 
 
