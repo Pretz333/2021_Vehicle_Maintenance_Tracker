@@ -25,10 +25,15 @@ public final class VerifyUtil {
 
     //For VINs
     public static boolean isVINValid(String VIN, String year){
+        //VINs are only letters or digits, so we'll check that as well
+        if(!isStringLettersOrDigitsOnly(VIN)){
+            return false;
+        }
+
         //Vehicles pre-1981 don't follow a set standard that can be easily tested
         if (Integer.parseInt(year) < 1981) {
             //If using an API query, we can test vehicles pre-1981
-            //For now, just assume it's good
+            //For now, we'll just assume it's good
             return true;
         } else if(VIN.length() == 17) { //after 1981, vehicles have a 17 character VIN
             //Vars needed for the test inside of the loop
@@ -41,8 +46,7 @@ public final class VerifyUtil {
                 c = VINArray[i];
 
                 //Characters Q, I, and O are not used due to their similarity to 1 or 0
-                //VINs are only letters or digits, so we'll check that as well
-                if (!Character.isLetterOrDigit(c) || c == 'Q' || c == 'O' || c == 'I') {
+                if (c == 'Q' || c == 'O' || c == 'I') {
                     return false;
                 }
 
