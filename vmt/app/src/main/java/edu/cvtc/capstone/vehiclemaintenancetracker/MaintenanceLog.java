@@ -60,7 +60,7 @@ public class MaintenanceLog {
     }
 
     public void setTitle(String title) {
-        if(VerifyUtil.isStringSafe(title)){
+        if(VerifyUtil.isStringSafe(title)) {
             this.title = title;
         } else {
             Log.w(TAG, "Log title unsafe");
@@ -72,7 +72,7 @@ public class MaintenanceLog {
     }
 
     public void setDescription(String description) {
-        if(VerifyUtil.isStringSafe(description)){
+        if(VerifyUtil.isStringSafe(description)) {
             this.description = description;
         } else {
             Log.w(TAG, "Log description unsafe");
@@ -135,7 +135,7 @@ public class MaintenanceLog {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Log ID:").append(id)
                 .append("\nTitle:").append(title)

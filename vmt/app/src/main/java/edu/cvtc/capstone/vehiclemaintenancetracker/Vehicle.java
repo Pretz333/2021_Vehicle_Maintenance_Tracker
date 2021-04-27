@@ -63,7 +63,7 @@ public class Vehicle {
     }
 
     public void setName(String name) {
-        if(VerifyUtil.isStringSafe(name)){
+        if(VerifyUtil.isStringSafe(name)) {
             this.name = name;
         } else {
             Log.w(TAG, "Vehicle name unsafe");
@@ -133,7 +133,7 @@ public class Vehicle {
 
     public void setVIN(String VIN) {
         VIN = VIN.toUpperCase(); //In case the user typed in lowercase letters
-        if(VerifyUtil.isVINValid(VIN, this.year)){
+        if(VerifyUtil.isVINValid(VIN, this.year)) {
             this.VIN = VIN;
         } else {
             Log.w(TAG, "Invalid VIN");
@@ -172,7 +172,7 @@ public class Vehicle {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Vehicle ID:").append(id)
                 .append(", Name:").append(name);

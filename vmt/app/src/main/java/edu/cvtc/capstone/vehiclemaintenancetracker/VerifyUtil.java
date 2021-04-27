@@ -7,17 +7,17 @@ public final class VerifyUtil {
     //TODO: Character limits
 
     //Strings only containing capital or lowercase a-z return true
-    public static boolean isStringLettersOnly(String str){
+    public static boolean isStringLettersOnly(String str) {
         return str.matches("^[a-zA-Z]+$");
     }
 
     //Strings only containing numbers 0-9 return true
-    public static boolean isStringANumber(String str){
+    public static boolean isStringANumber(String str) {
         return str.matches("^[0-9]*$");
     }
 
     //Strings only containing capital or lowercase a-z and numbers 0-9 return true
-    public static boolean isStringLettersOrDigitsOnly(String str){
+    public static boolean isStringLettersOrDigitsOnly(String str) {
         return str.matches("^[a-zA-Z0-9]+$");
     }
 
@@ -27,14 +27,14 @@ public final class VerifyUtil {
     }
 
     //For Years
-    public static boolean isYearValid(String year){
+    public static boolean isYearValid(String year) {
         return year.length() == 4 && Integer.parseInt(year) > 1900;
     }
 
     //For VINs
-    public static boolean isVINValid(String VIN, String year){
+    public static boolean isVINValid(String VIN, String year) {
         //VINs are only letters or digits, so we'll check that as well
-        if(!isStringLettersOrDigitsOnly(VIN)){
+        if(!isStringLettersOrDigitsOnly(VIN)) {
             return false;
         }
 

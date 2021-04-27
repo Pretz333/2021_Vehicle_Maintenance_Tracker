@@ -4,7 +4,7 @@ import android.util.Log;
 
 public class Issue {
     public static final String TAG = "ISSUE_CLASS";
-    
+
     private int id;
     private String title;
     private String description;
@@ -50,7 +50,7 @@ public class Issue {
     }
 
     public void setTitle(String title) {
-        if(VerifyUtil.isStringSafe(title)){
+        if(VerifyUtil.isStringSafe(title)) {
             this.title = title;
         } else {
             Log.w(TAG, "Issue title unsafe");
@@ -62,7 +62,7 @@ public class Issue {
     }
 
     public void setDescription(String description) {
-        if(VerifyUtil.isStringSafe(description)){
+        if(VerifyUtil.isStringSafe(description)) {
             this.description = description;
         } else {
             Log.w(TAG, "Issue description unsafe");
@@ -96,7 +96,7 @@ public class Issue {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Issue ID:").append(id)
                 .append("\nTitle:").append(title)
