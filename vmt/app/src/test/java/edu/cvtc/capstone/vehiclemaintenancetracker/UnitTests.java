@@ -2,6 +2,8 @@ package edu.cvtc.capstone.vehiclemaintenancetracker;
 
 import org.junit.Test;
 
+import java.util.Date;
+
 import static org.junit.Assert.*;
 
 /**
@@ -97,5 +99,20 @@ public class UnitTests {
 
         //Try to get a real issue status. TODO: need to insert a issue status first
         //assertTrue(dbHelper.checkIfIssueStatusIdExists(0));
+    }
+
+    @Test
+    public void EnsureVehicleIdIsSetWhenNoneProvided(){
+        DBHelper dbHelper = new DBHelper(null);
+        Vehicle v = new Vehicle(-1, "Bruh", "Ford", "T", "1980", "B", 100000, "111111111111111111", "ABC-123", new Date(0), 0);
+        v = dbHelper.insertVehicleWithNoId(v);
+        assertTrue(dbHelper.checkIfVehicleIdExists(v.getId()));
+    }
+
+    @Test
+    public void EnsureVehicleIdEqualsVehicleRowId(){
+        DBHelper dbHelper = new DBHelper(null);
+        Vehicle v = new Vehicle(1, "Bruh", "Ford", "T", "1980", "B", 100000, "111111111111111111", "ABC-123", new Date(0), 0);
+        assertEquals(v.getId(), (int)dbHelper.insertVehicle(v));
     }
 }

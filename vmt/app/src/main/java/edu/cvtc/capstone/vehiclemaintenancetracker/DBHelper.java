@@ -20,10 +20,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "VehicleMaintenanceTracker.db";
     public static final int DATABASE_VERSION = 1;
 
-    private final List<Vehicle> vehicles = new ArrayList<>();
-    private final List<MaintenanceLog> maintenanceLogs = new ArrayList<>();
-    private final List<Issue> issues = new ArrayList<>();
-
     public DBHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -156,6 +152,8 @@ public class DBHelper extends SQLiteOpenHelper {
         int vehicleLicensePlatePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_LICENSE_PLATE);
         int vehicleDatePurchasedPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED);
         int vehicleValuePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_VALUE);
+
+        List<Vehicle> vehicles = new ArrayList<>();
 
         while (cursor.moveToNext()) {
             vehicles.add(new Vehicle(cursor.getInt(vehicleIdPosition), cursor.getString(vehicleNicknamePosition),
