@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
-    public static final String TAG = "edu.cvtc.capstone.vehiclemaintenancetracker.DBHelper.SEARCH";
+    public static final String TAG = "DBHELPER_CLASS";
     public static final String DATABASE_NAME = "VehicleMaintenanceTracker.db";
     public static final int DATABASE_VERSION = 1;
 

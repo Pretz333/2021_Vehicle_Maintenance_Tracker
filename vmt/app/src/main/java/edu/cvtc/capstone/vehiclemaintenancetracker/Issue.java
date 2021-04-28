@@ -82,8 +82,12 @@ public class Issue {
     }
 
     public void setVehicleId(int vehicleId) {
-        //TODO: Check if record is in database or the call came from the database
-        this.vehicleId = vehicleId;
+        DBHelper dbHelper = new DBHelper(null);
+        if(dbHelper.checkIfVehicleIdExists(vehicleId)) {
+            this.vehicleId = vehicleId;
+        } else {
+            Log.w(TAG, "VehicleId did not exist");
+        }
     }
 
     public int getStatusId() {
@@ -91,8 +95,12 @@ public class Issue {
     }
 
     public void setStatusId(int statusId) {
-        //TODO: Check if record is in database or the call came from the database
-        this.statusId = statusId;
+        DBHelper dbHelper = new DBHelper(null);
+        if(dbHelper.checkIfIssueStatusIdExists(statusId)) {
+            this.statusId = statusId;
+        } else {
+            Log.w(TAG, "StatusId did not exist");
+        }
     }
 
     @Override

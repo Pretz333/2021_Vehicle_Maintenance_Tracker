@@ -32,6 +32,7 @@ public final class VerifyUtil {
     }
 
     //For VINs
+    //TODO: Check year matches VIN year
     public static boolean isVINValid(String VIN, String year) {
         //VINs are only letters or digits, so we'll check that as well
         if(!isStringLettersOrDigitsOnly(VIN)) {
@@ -108,5 +109,11 @@ public final class VerifyUtil {
         put('8', 8);
         put('9', 9);
         put('0', 0);
+    }};
+
+    //The HashMap for the VIN year digit, also at the class level so
+    //it isn't destroyed and recreated any more than necessary
+    private static final HashMap<String, Character> yearChar = new HashMap<String, Character>() {{
+        put("", ' ');
     }};
 }

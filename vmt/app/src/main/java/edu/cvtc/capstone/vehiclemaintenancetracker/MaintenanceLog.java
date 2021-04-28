@@ -121,8 +121,12 @@ public class MaintenanceLog {
     }
 
     public void setVehicleId(int vehicleId) {
-        //TODO: Check if record is in database or the call came from the database
-        this.vehicleId = vehicleId;
+        DBHelper dbHelper = new DBHelper(null);
+        if(dbHelper.checkIfVehicleIdExists(vehicleId)) {
+            this.vehicleId = vehicleId;
+        } else {
+            Log.w(TAG, "VehicleID did not exist");
+        }
     }
 
     public int getSystemId() {
@@ -130,8 +134,12 @@ public class MaintenanceLog {
     }
 
     public void setSystemId(int systemId) {
-        //TODO: Check if record is in database or the call came from the database
-        this.systemId = systemId;
+        DBHelper dbHelper = new DBHelper(null);
+        if(dbHelper.checkIfSystemIdExists(systemId)) {
+            this.systemId = systemId;
+        } else {
+            Log.w(TAG, "SystemId did not exist");
+        }
     }
 
     @Override
