@@ -7,14 +7,11 @@
     android:orientation="vertical"
     tools:context=".VehicleSettingsActivity">
 
-    <Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/black"
         android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.MaterialComponents.ActionBar"
-        android:titleTextColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -65,7 +62,7 @@
                         android:id="@+id/vehicleSettings_editTextNickname"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="false"
+                        android:inputType="textCapWords"
                         android:maxLength="128" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -84,7 +81,7 @@
                         android:id="@+id/vehicleSettings_editTextMake"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="false" />
+                        android:inputType="textCapWords" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -102,7 +99,7 @@
                         android:id="@+id/vehicleSettings_editTextModel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="false" />
+                        android:inputType="textCapWords" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -120,7 +117,6 @@
                         android:id="@+id/vehicleSettings_editTextYear"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="false"
                         android:inputType="number"
                         android:maxLength="4" />
 
@@ -140,7 +136,7 @@
                         android:id="@+id/vehicleSettings_editTextPlate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="false" />
+                        android:inputType="textCapCharacters" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -158,7 +154,6 @@
                         android:id="@+id/vehicleSettings_editTextDatePurchased"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="false"
                         android:inputType="date"
                         android:maxLength="10" />
 
@@ -190,7 +185,7 @@
                         android:id="@+id/vehicleSettings_editTextColor"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="false" />
+                        android:inputType="textCapWords" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -208,7 +203,6 @@
                         android:id="@+id/vehicleSettings_editTextMileage"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="false"
                         android:inputType="number"
                         android:maxLength="7" />
 
@@ -228,7 +222,6 @@
                         android:id="@+id/vehicleSettings_editTextValue"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="false"
                         android:inputType="numberDecimal"
                         android:maxLength="6" />
 
@@ -248,7 +241,7 @@
                         android:id="@+id/vehicleSettings_editTextVin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="false" />
+                        android:inputType="textCapCharacters" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 

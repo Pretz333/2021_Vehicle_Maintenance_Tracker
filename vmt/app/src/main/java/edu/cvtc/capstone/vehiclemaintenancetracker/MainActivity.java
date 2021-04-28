@@ -2,7 +2,7 @@ package edu.cvtc.capstone.vehiclemaintenancetracker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import android.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity{
 
         // Initialize the toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setActionBar(toolbar);
+        setSupportActionBar(toolbar);
 
         // Initialize the vehicle array list with some sample data.
         // NOTE: This sample data will be replaced with actual database
