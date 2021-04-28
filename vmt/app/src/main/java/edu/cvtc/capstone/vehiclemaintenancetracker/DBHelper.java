@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
+import android.provider.Settings;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -258,6 +259,84 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         return id;
+    }
+
+    public boolean checkIfVehicleIdExists(int id) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String[] categoryColumns = {
+                VehicleSQL._ID
+        };
+
+        String filter = VehicleSQL._ID + " = ?";
+        String[] filterArgs = {String.valueOf(id)};
+
+        //No cursor.close() in the catch (or a finally) as it's wrapped in a block
+        try {
+            Cursor cursor = db.query(VehicleSQL.TABLE_NAME_VEHICLE, categoryColumns, filter,
+                    filterArgs, null, null, null);
+
+            int idPosition = cursor.getColumnIndex(VehicleSQL._ID);
+
+            cursor.moveToNext();
+            cursor.getInt(idPosition);
+            cursor.close();
+            return true;
+        } catch (NullPointerException ex){
+            return false;
+        }
+    }
+
+    public boolean checkIfSystemIdExists(int id) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String[] categoryColumns = {
+                SystemSQL._ID
+        };
+
+        String filter = SystemSQL._ID + " = ?";
+        String[] filterArgs = {String.valueOf(id)};
+
+        //No cursor.close() in the catch (or a finally) as it's wrapped in a block
+        try {
+            Cursor cursor = db.query(SystemSQL.TABLE_NAME_SYSTEM, categoryColumns, filter,
+                    filterArgs, null, null, null);
+
+            int idPosition = cursor.getColumnIndex(SystemSQL._ID);
+
+            cursor.moveToNext();
+            cursor.getInt(idPosition);
+            cursor.close();
+            return true;
+        } catch (NullPointerException ex){
+            return false;
+        }
+    }
+
+    public boolean checkIfIssueStatusIdExists(int id) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String[] categoryColumns = {
+                IssueStatusSQL._ID
+        };
+
+        String filter = IssueStatusSQL._ID + " = ?";
+        String[] filterArgs = {String.valueOf(id)};
+
+        //No cursor.close() in the catch (or a finally) as it's wrapped in a block
+        try {
+            Cursor cursor = db.query(IssueStatusSQL.TABLE_NAME_ISSUE_STATUS, categoryColumns, filter,
+                    filterArgs, null, null, null);
+
+            int idPosition = cursor.getColumnIndex(IssueStatusSQL._ID);
+
+            cursor.moveToNext();
+            cursor.getInt(idPosition);
+            cursor.close();
+            return true;
+        } catch (NullPointerException ex){
+            return false;
+        }
     }
 
     private static final class VehicleSQL implements BaseColumns {

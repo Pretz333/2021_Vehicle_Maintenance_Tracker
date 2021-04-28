@@ -65,4 +65,37 @@ public class UnitTests {
         //Try to get a non-existent vehicle.
         assertNull(dbHelper.getVehicleByNickname("AReallyLongAndPointlessNameThatIsNotInTheDatabase"));
     }
+
+    @Test
+    public void CheckVehicleIdDBChecks(){ //and doesn't error
+        DBHelper dbHelper = new DBHelper(null);
+
+        //Try to get a non-existent vehicle.
+        assertFalse(dbHelper.checkIfVehicleIdExists(999999));
+
+        //Try to get a real vehicle. TODO: need to insert a vehicle first
+        //assertTrue(dbHelper.checkIfVehicleIdExists(0));
+    }
+
+    @Test
+    public void CheckSystemIdDBChecks(){ //and doesn't error
+        DBHelper dbHelper = new DBHelper(null);
+
+        //Try to get a non-existent vehicle.
+        assertFalse(dbHelper.checkIfSystemIdExists(999999));
+
+        //Try to get a real system. TODO: need to insert a system first
+        //assertTrue(dbHelper.checkIfSystemIdExists(0));
+    }
+
+    @Test
+    public void CheckIssueStatusIdDBChecks(){ //and doesn't error
+        DBHelper dbHelper = new DBHelper(null);
+
+        //Try to get a non-existent vehicle.
+        assertFalse(dbHelper.checkIfIssueStatusIdExists(999999));
+
+        //Try to get a real issue status. TODO: need to insert a issue status first
+        //assertTrue(dbHelper.checkIfIssueStatusIdExists(0));
+    }
 }
