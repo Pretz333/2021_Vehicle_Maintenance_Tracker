@@ -105,14 +105,23 @@ public class UnitTests {
     public void EnsureVehicleIdIsSetWhenNoneProvided(){
         DBHelper dbHelper = new DBHelper(null);
         Vehicle v = new Vehicle(-1, "Bruh", "Ford", "T", "1980", "B", 100000, "111111111111111111", "ABC-123", new Date(0), 0);
-        v = dbHelper.insertVehicleWithNoId(v);
+        dbHelper.insertVehicle(v);
         assertTrue(dbHelper.checkIfVehicleIdExists(v.getId()));
     }
 
     @Test
     public void EnsureVehicleIdEqualsVehicleRowId(){
         DBHelper dbHelper = new DBHelper(null);
-        Vehicle v = new Vehicle(1, "Bruh", "Ford", "T", "1980", "B", 100000, "111111111111111111", "ABC-123", new Date(0), 0);
-        assertEquals(v.getId(), (int)dbHelper.insertVehicle(v));
+
+        int id = 28;
+        Vehicle v = new Vehicle(id, "Bruh", "Ford", "T", "1980", "B", 100000, "111111111111111111", "ABC-123", new Date(0), 0);
+        assertEquals(id, v.getId());
+    }
+
+    @Test
+    public void EnsureVehicleSavesWithNullValues(){
+        DBHelper dbHelper = new DBHelper(null);
+        Vehicle v = new Vehicle(29, "Bruh");
+        assertTrue(dbHelper.checkIfVehicleIdExists(v.getId()));
     }
 }

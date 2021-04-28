@@ -46,7 +46,9 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(VehicleSQL._ID, vehicle.getId());
+        if(vehicle.getId() != -1) {
+            values.put(VehicleSQL._ID, vehicle.getId());
+        }
         values.put(VehicleSQL.COLUMN_VEHICLE_MAKE, vehicle.getMake());
         values.put(VehicleSQL.COLUMN_VEHICLE_MODEL, vehicle.getModel());
         values.put(VehicleSQL.COLUMN_VEHICLE_YEAR, vehicle.getYear());
@@ -60,6 +62,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
         long newRowId = db.insert(VehicleSQL.TABLE_NAME_VEHICLE, null, values);
 
+        if(newRowId != vehicle.getId()){
+            vehicle.setId((int) newRowId);
+        }
+
     }
 
     public void insertMaintenanceLog(MaintenanceLog maintenanceLog) {
@@ -67,7 +73,9 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(MaintenanceLogSQL._ID, maintenanceLog.getId());
+        if(maintenanceLog.getId() != -1) {
+            values.put(MaintenanceLogSQL._ID, maintenanceLog.getId());
+        }
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE, maintenanceLog.getTitle());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DESCRIPTION, maintenanceLog.getDescription());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE, maintenanceLog.getDate().getTime());
@@ -79,6 +87,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
         long newRowId = db.insert(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, null, values);
 
+        if(newRowId != maintenanceLog.getId()){
+            maintenanceLog.setId((int) newRowId);
+        }
+
     }
 
     public void insertSystem(System system) {
@@ -86,10 +98,16 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(SystemSQL._ID, system.getId());
+        if(system.getId() != -1) {
+            values.put(SystemSQL._ID, system.getId());
+        }
         values.put(SystemSQL.COLUMN_SYSTEM_DESCRIPTION, system.getDescription());
 
         long newRowId = db.insert(SystemSQL.TABLE_NAME_SYSTEM, null, values);
+
+        if(newRowId != system.getId()){
+            system.setId((int) newRowId);
+        }
 
     }
 
@@ -98,7 +116,9 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(IssueSQL._ID, issue.getId());
+        if(issue.getId() != -1) {
+            values.put(IssueSQL._ID, issue.getId());
+        }
         values.put(IssueSQL.COLUMN_ISSUE_TITLE, issue.getTitle());
         values.put(IssueSQL.COLUMN_ISSUE_DESCRIPTION, issue.getDescription());
         values.put(IssueSQL.COLUMN_ISSUE_PRIORITY, issue.getPriority());
@@ -107,6 +127,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
         long newRowId = db.insert(IssueSQL.TABLE_NAME_ISSUE, null, values);
 
+        if(newRowId != issue.getId()){
+            issue.setId((int) newRowId);
+        }
+
     }
 
     public void insertIssueStatus(IssueStatus issueStatus) {
@@ -114,10 +138,16 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(IssueStatusSQL._ID, issueStatus.getId());
+        if(issueStatus.getId() != -1) {
+            values.put(IssueStatusSQL._ID, issueStatus.getId());
+        }
         values.put(IssueStatusSQL.COLUMN_ISSUE_STATUS_DESCRIPTION, issueStatus.getDescription());
 
         long newRowId = db.insert(IssueStatusSQL.TABLE_NAME_ISSUE_STATUS, null, values);
+
+        if(newRowId != issueStatus.getId()){
+            issueStatus.setId((int) newRowId);
+        }
 
     }
 
