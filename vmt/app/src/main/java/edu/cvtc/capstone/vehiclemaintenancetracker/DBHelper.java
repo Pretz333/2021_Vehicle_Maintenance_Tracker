@@ -20,8 +20,12 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "VehicleMaintenanceTracker.db";
     public static final int DATABASE_VERSION = 1;
 
+    private final Context context;
+
     public DBHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+
+        this.context = context;
     }
 
     @Override
@@ -64,6 +68,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if(newRowId == -1){
             Log.w(TAG, "DB Insert Failed!");
+            VerifyUtil.alertUser(context, "Database Insert Failed", "Your data did not save, please try again");
         }
 
         if(newRowId != vehicle.getId()){
@@ -93,6 +98,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if(newRowId == -1){
             Log.w(TAG, "DB Insert Failed!");
+            VerifyUtil.alertUser(context, "Database Insert Failed", "Your data did not save, please try again");
         }
 
         if(newRowId != maintenanceLog.getId()){
@@ -115,6 +121,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if(newRowId == -1){
             Log.w(TAG, "DB Insert Failed!");
+            VerifyUtil.alertUser(context, "Database Insert Failed", "Your data did not save, please try again");
         }
 
         if(newRowId != system.getId()){
@@ -141,6 +148,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if(newRowId == -1){
             Log.w(TAG, "DB Insert Failed!");
+            VerifyUtil.alertUser(context, "Database Insert Failed", "Your data did not save, please try again");
         }
 
         if(newRowId != issue.getId()){
@@ -163,6 +171,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if(newRowId == -1){
             Log.w(TAG, "DB Insert Failed!");
+            VerifyUtil.alertUser(context, "Database Insert Failed", "Your data did not save, please try again");
         }
 
         if(newRowId != issueStatus.getId()){
@@ -276,6 +285,7 @@ public class DBHelper extends SQLiteOpenHelper {
             cursor.close();
         } catch (Exception ex) {
             Log.e(TAG, ex.toString());
+            VerifyUtil.alertUser(context, "Database Retrieval Failed", "Unable to fetch vehicle information, please try again");
         }
 
         return v;
@@ -304,6 +314,8 @@ public class DBHelper extends SQLiteOpenHelper {
             cursor.close();
         } catch (NullPointerException ex){
             id = -1;
+            Log.e(TAG, ex.toString());
+            VerifyUtil.alertUser(context, "Database Retrieval Failed", "Unable to fetch vehicle information, please try again");
         }
 
         return id;
