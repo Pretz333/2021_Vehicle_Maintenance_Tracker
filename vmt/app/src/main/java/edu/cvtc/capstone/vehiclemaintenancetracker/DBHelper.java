@@ -62,6 +62,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
         long newRowId = db.insert(VehicleSQL.TABLE_NAME_VEHICLE, null, values);
 
+        if(newRowId == -1){
+            Log.w(TAG, "DB Insert Failed!");
+        }
+
         if(newRowId != vehicle.getId()){
             vehicle.setId((int) newRowId);
         }
@@ -87,6 +91,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
         long newRowId = db.insert(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, null, values);
 
+        if(newRowId == -1){
+            Log.w(TAG, "DB Insert Failed!");
+        }
+
         if(newRowId != maintenanceLog.getId()){
             maintenanceLog.setId((int) newRowId);
         }
@@ -104,6 +112,10 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(SystemSQL.COLUMN_SYSTEM_DESCRIPTION, system.getDescription());
 
         long newRowId = db.insert(SystemSQL.TABLE_NAME_SYSTEM, null, values);
+
+        if(newRowId == -1){
+            Log.w(TAG, "DB Insert Failed!");
+        }
 
         if(newRowId != system.getId()){
             system.setId((int) newRowId);
@@ -127,6 +139,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
         long newRowId = db.insert(IssueSQL.TABLE_NAME_ISSUE, null, values);
 
+        if(newRowId == -1){
+            Log.w(TAG, "DB Insert Failed!");
+        }
+
         if(newRowId != issue.getId()){
             issue.setId((int) newRowId);
         }
@@ -144,6 +160,10 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(IssueStatusSQL.COLUMN_ISSUE_STATUS_DESCRIPTION, issueStatus.getDescription());
 
         long newRowId = db.insert(IssueStatusSQL.TABLE_NAME_ISSUE_STATUS, null, values);
+
+        if(newRowId == -1){
+            Log.w(TAG, "DB Insert Failed!");
+        }
 
         if(newRowId != issueStatus.getId()){
             issueStatus.setId((int) newRowId);
