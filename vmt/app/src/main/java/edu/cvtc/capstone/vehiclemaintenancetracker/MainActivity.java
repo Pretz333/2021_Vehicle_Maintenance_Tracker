@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity{
     private void prepRecyclerView() {
 
         // Find the RecyclerView view
-        RecyclerView recyclerView = findViewById(R.id.recyclerview);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView_mainActivity);
 
         // Create a LayoutManager for the RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
