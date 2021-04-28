@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
+import android.provider.Settings;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -14,13 +16,9 @@ import java.util.Date;
 import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
-    public static final String TAG = "edu.cvtc.capstone.vehiclemaintenancetracker.DBHelper.SEARCH";
+    public static final String TAG = "DBHELPER_CLASS";
     public static final String DATABASE_NAME = "VehicleMaintenanceTracker.db";
     public static final int DATABASE_VERSION = 1;
-
-    private final List<Vehicle> vehicles = new ArrayList<>();
-    private final List<MaintenanceLog> maintenanceLogs = new ArrayList<>();
-    private final List<Issue> issues = new ArrayList<>();
 
     public DBHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -48,7 +46,9 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(VehicleSQL._ID, vehicle.getId());
+        if(vehicle.getId() != -1) {
+            values.put(VehicleSQL._ID, vehicle.getId());
+        }
         values.put(VehicleSQL.COLUMN_VEHICLE_MAKE, vehicle.getMake());
         values.put(VehicleSQL.COLUMN_VEHICLE_MODEL, vehicle.getModel());
         values.put(VehicleSQL.COLUMN_VEHICLE_YEAR, vehicle.getYear());
@@ -62,6 +62,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
         long newRowId = db.insert(VehicleSQL.TABLE_NAME_VEHICLE, null, values);
 
+        if(newRowId != vehicle.getId()){
+            vehicle.setId((int) newRowId);
+        }
+
     }
 
     public void insertMaintenanceLog(MaintenanceLog maintenanceLog) {
@@ -69,7 +73,9 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(MaintenanceLogSQL._ID, maintenanceLog.getId());
+        if(maintenanceLog.getId() != -1) {
+            values.put(MaintenanceLogSQL._ID, maintenanceLog.getId());
+        }
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE, maintenanceLog.getTitle());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DESCRIPTION, maintenanceLog.getDescription());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE, maintenanceLog.getDate().getTime());
@@ -81,6 +87,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
         long newRowId = db.insert(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, null, values);
 
+        if(newRowId != maintenanceLog.getId()){
+            maintenanceLog.setId((int) newRowId);
+        }
+
     }
 
     public void insertSystem(System system) {
@@ -88,10 +98,16 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(SystemSQL._ID, system.getId());
+        if(system.getId() != -1) {
+            values.put(SystemSQL._ID, system.getId());
+        }
         values.put(SystemSQL.COLUMN_SYSTEM_DESCRIPTION, system.getDescription());
 
         long newRowId = db.insert(SystemSQL.TABLE_NAME_SYSTEM, null, values);
+
+        if(newRowId != system.getId()){
+            system.setId((int) newRowId);
+        }
 
     }
 
@@ -100,7 +116,9 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(IssueSQL._ID, issue.getId());
+        if(issue.getId() != -1) {
+            values.put(IssueSQL._ID, issue.getId());
+        }
         values.put(IssueSQL.COLUMN_ISSUE_TITLE, issue.getTitle());
         values.put(IssueSQL.COLUMN_ISSUE_DESCRIPTION, issue.getDescription());
         values.put(IssueSQL.COLUMN_ISSUE_PRIORITY, issue.getPriority());
@@ -109,6 +127,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
         long newRowId = db.insert(IssueSQL.TABLE_NAME_ISSUE, null, values);
 
+        if(newRowId != issue.getId()){
+            issue.setId((int) newRowId);
+        }
+
     }
 
     public void insertIssueStatus(IssueStatus issueStatus) {
@@ -116,10 +138,16 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(IssueStatusSQL._ID, issueStatus.getId());
+        if(issueStatus.getId() != -1) {
+            values.put(IssueStatusSQL._ID, issueStatus.getId());
+        }
         values.put(IssueStatusSQL.COLUMN_ISSUE_STATUS_DESCRIPTION, issueStatus.getDescription());
 
         long newRowId = db.insert(IssueStatusSQL.TABLE_NAME_ISSUE_STATUS, null, values);
+
+        if(newRowId != issueStatus.getId()){
+            issueStatus.setId((int) newRowId);
+        }
 
     }
 
@@ -155,6 +183,8 @@ public class DBHelper extends SQLiteOpenHelper {
         int vehicleDatePurchasedPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED);
         int vehicleValuePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_VALUE);
 
+        List<Vehicle> vehicles = new ArrayList<>();
+
         while (cursor.moveToNext()) {
             vehicles.add(new Vehicle(cursor.getInt(vehicleIdPosition), cursor.getString(vehicleNicknamePosition),
                     cursor.getString(vehicleMakePosition), cursor.getString(vehicleModelPosition),
@@ -166,6 +196,175 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.close();
 
         return vehicles;
+    }
+
+    public Vehicle getVehicleByNickname(String name) {
+        SQLiteDatabase db = getReadableDatabase();
+        Vehicle v = null;
+
+        //Get all of the fields
+        String[] categoryColumns = {
+            VehicleSQL._ID,
+            VehicleSQL.COLUMN_VEHICLE_MAKE,
+            VehicleSQL.COLUMN_VEHICLE_MODEL,
+            VehicleSQL.COLUMN_VEHICLE_YEAR,
+            VehicleSQL.COLUMN_VEHICLE_NICKNAME,
+            VehicleSQL.COLUMN_VEHICLE_COLOR,
+            VehicleSQL.COLUMN_VEHICLE_MILEAGE,
+            VehicleSQL.COLUMN_VEHICLE_VIN,
+            VehicleSQL.COLUMN_VEHICLE_LICENSE_PLATE,
+            VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED,
+            VehicleSQL.COLUMN_VEHICLE_VALUE
+        };
+
+        //Write the query in a SQL injection-proof way
+        String filter = VehicleSQL.COLUMN_VEHICLE_NICKNAME + " = ?";
+        String[] filterArgs = {name};
+
+        try {
+            Cursor cursor = db.query(VehicleSQL.TABLE_NAME_VEHICLE, categoryColumns, filter,
+                    filterArgs, null, null, null);
+
+            //Get the places where all of the information is stored
+            int idPosition = cursor.getColumnIndex(VehicleSQL._ID);
+            int makePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_MAKE);
+            int modelPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_MODEL);
+            int yearPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_YEAR);
+            int namePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_NICKNAME);
+            int colorPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_COLOR);
+            int mileagePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_MILEAGE);
+            int VINPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_VIN);
+            int licensePlatePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_LICENSE_PLATE);
+            int datePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED);
+            int valuePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_VALUE);
+
+            //Get the information of the first matching vehicle (so be as specific as possible!)
+            cursor.moveToNext();
+            v = new Vehicle(
+                    cursor.getInt(idPosition),
+                    cursor.getString(namePosition),
+                    cursor.getString(makePosition),
+                    cursor.getString(modelPosition),
+                    cursor.getString(yearPosition),
+                    cursor.getString(colorPosition),
+                    cursor.getInt(mileagePosition),
+                    cursor.getString(VINPosition),
+                    cursor.getString(licensePlatePosition),
+                    new Date(cursor.getInt(datePosition)),
+                    cursor.getInt(valuePosition)
+            );
+            cursor.close();
+        } catch (Exception ex) {
+            Log.e(TAG, ex.toString());
+        }
+
+        return v;
+    }
+
+    public int getVehicleIdByNickname(String name) {
+        SQLiteDatabase db = getReadableDatabase();
+        int id;
+
+        String[] categoryColumns = {
+                VehicleSQL._ID
+        };
+
+        String filter = VehicleSQL.COLUMN_VEHICLE_NICKNAME + " = ?";
+        String[] filterArgs = {name};
+
+        //No cursor.close() in the catch (or a finally) as it's wrapped in a block
+        try {
+            Cursor cursor = db.query(VehicleSQL.TABLE_NAME_VEHICLE, categoryColumns, filter,
+                    filterArgs, null, null, null);
+
+            int idPosition = cursor.getColumnIndex(VehicleSQL._ID);
+
+            cursor.moveToNext();
+            id = cursor.getInt(idPosition);
+            cursor.close();
+        } catch (NullPointerException ex){
+            id = -1;
+        }
+
+        return id;
+    }
+
+    public boolean checkIfVehicleIdExists(int id) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String[] categoryColumns = {
+                VehicleSQL._ID
+        };
+
+        String filter = VehicleSQL._ID + " = ?";
+        String[] filterArgs = {String.valueOf(id)};
+
+        //No cursor.close() in the catch (or a finally) as it's wrapped in a block
+        try {
+            Cursor cursor = db.query(VehicleSQL.TABLE_NAME_VEHICLE, categoryColumns, filter,
+                    filterArgs, null, null, null);
+
+            int idPosition = cursor.getColumnIndex(VehicleSQL._ID);
+
+            cursor.moveToNext();
+            cursor.getInt(idPosition);
+            cursor.close();
+            return true;
+        } catch (NullPointerException ex){
+            return false;
+        }
+    }
+
+    public boolean checkIfSystemIdExists(int id) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String[] categoryColumns = {
+                SystemSQL._ID
+        };
+
+        String filter = SystemSQL._ID + " = ?";
+        String[] filterArgs = {String.valueOf(id)};
+
+        //No cursor.close() in the catch (or a finally) as it's wrapped in a block
+        try {
+            Cursor cursor = db.query(SystemSQL.TABLE_NAME_SYSTEM, categoryColumns, filter,
+                    filterArgs, null, null, null);
+
+            int idPosition = cursor.getColumnIndex(SystemSQL._ID);
+
+            cursor.moveToNext();
+            cursor.getInt(idPosition);
+            cursor.close();
+            return true;
+        } catch (NullPointerException ex){
+            return false;
+        }
+    }
+
+    public boolean checkIfIssueStatusIdExists(int id) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String[] categoryColumns = {
+                IssueStatusSQL._ID
+        };
+
+        String filter = IssueStatusSQL._ID + " = ?";
+        String[] filterArgs = {String.valueOf(id)};
+
+        //No cursor.close() in the catch (or a finally) as it's wrapped in a block
+        try {
+            Cursor cursor = db.query(IssueStatusSQL.TABLE_NAME_ISSUE_STATUS, categoryColumns, filter,
+                    filterArgs, null, null, null);
+
+            int idPosition = cursor.getColumnIndex(IssueStatusSQL._ID);
+
+            cursor.moveToNext();
+            cursor.getInt(idPosition);
+            cursor.close();
+            return true;
+        } catch (NullPointerException ex){
+            return false;
+        }
     }
 
     private static final class VehicleSQL implements BaseColumns {
