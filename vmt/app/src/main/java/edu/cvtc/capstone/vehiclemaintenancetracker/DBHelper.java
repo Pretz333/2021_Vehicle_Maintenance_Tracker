@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -170,6 +171,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Vehicle getVehicleByNickname(String name) {
         SQLiteDatabase db = getReadableDatabase();
+        Vehicle v = null;
 
         //Get all of the fields
         String[] categoryColumns = {
@@ -189,38 +191,43 @@ public class DBHelper extends SQLiteOpenHelper {
         //Write the query in a SQL injection-proof way
         String filter = VehicleSQL.COLUMN_VEHICLE_NICKNAME + " = ?";
         String[] filterArgs = {name};
-        Cursor cursor = db.query(VehicleSQL.TABLE_NAME_VEHICLE, categoryColumns, filter,
-                filterArgs, null, null, null);
 
-        //Get the places where all of the information is stored
-        int idPosition = cursor.getColumnIndex(VehicleSQL._ID);
-        int makePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_MAKE);
-        int modelPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_MODEL);
-        int yearPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_YEAR);
-        int namePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_NICKNAME);
-        int colorPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_COLOR);
-        int mileagePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_MILEAGE);
-        int VINPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_VIN);
-        int licensePlatePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_LICENSE_PLATE);
-        int datePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED);
-        int valuePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_VALUE);
+        try {
+            Cursor cursor = db.query(VehicleSQL.TABLE_NAME_VEHICLE, categoryColumns, filter,
+                    filterArgs, null, null, null);
 
-        //Get the information of the first matching vehicle (so be as specific as possible!)
-        cursor.moveToNext();
-        Vehicle v = new Vehicle(
-                cursor.getInt(idPosition),
-                cursor.getString(namePosition),
-                cursor.getString(makePosition),
-                cursor.getString(modelPosition),
-                cursor.getString(yearPosition),
-                cursor.getString(colorPosition),
-                cursor.getInt(mileagePosition),
-                cursor.getString(VINPosition),
-                cursor.getString(licensePlatePosition),
-                new Date(cursor.getInt(datePosition)),
-                cursor.getInt(valuePosition)
-        );
-        cursor.close();
+            //Get the places where all of the information is stored
+            int idPosition = cursor.getColumnIndex(VehicleSQL._ID);
+            int makePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_MAKE);
+            int modelPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_MODEL);
+            int yearPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_YEAR);
+            int namePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_NICKNAME);
+            int colorPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_COLOR);
+            int mileagePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_MILEAGE);
+            int VINPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_VIN);
+            int licensePlatePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_LICENSE_PLATE);
+            int datePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED);
+            int valuePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_VALUE);
+
+            //Get the information of the first matching vehicle (so be as specific as possible!)
+            cursor.moveToNext();
+            v = new Vehicle(
+                    cursor.getInt(idPosition),
+                    cursor.getString(namePosition),
+                    cursor.getString(makePosition),
+                    cursor.getString(modelPosition),
+                    cursor.getString(yearPosition),
+                    cursor.getString(colorPosition),
+                    cursor.getInt(mileagePosition),
+                    cursor.getString(VINPosition),
+                    cursor.getString(licensePlatePosition),
+                    new Date(cursor.getInt(datePosition)),
+                    cursor.getInt(valuePosition)
+            );
+            cursor.close();
+        } catch (Exception ex) {
+            Log.e(TAG, ex.toString());
+        }
 
         return v;
     }
