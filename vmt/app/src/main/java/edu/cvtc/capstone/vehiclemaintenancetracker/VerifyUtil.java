@@ -1,10 +1,30 @@
 package edu.cvtc.capstone.vehiclemaintenancetracker;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+
 import java.util.HashMap;
 
 public final class VerifyUtil {
     //TODO: Consider non-english characters
     //TODO: Character limits
+
+    public static void alertUser(Context context, String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setCancelable(false);
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
 
     //Strings only containing capital or lowercase a-z return true
     public static boolean isStringLettersOnly(String str) {

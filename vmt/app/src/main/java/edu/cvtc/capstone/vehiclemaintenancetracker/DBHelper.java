@@ -20,8 +20,12 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "VehicleMaintenanceTracker.db";
     public static final int DATABASE_VERSION = 1;
 
+    private final Context context;
+
     public DBHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+
+        this.context = context;
     }
 
     @Override
@@ -62,6 +66,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
         long newRowId = db.insert(VehicleSQL.TABLE_NAME_VEHICLE, null, values);
 
+        if(newRowId == -1){
+            Log.w(TAG, "DB Insert Failed!");
+            VerifyUtil.alertUser(context, "Database Insert Failed", "Your data did not save, please try again");
+        }
+
         if(newRowId != vehicle.getId()){
             vehicle.setId((int) newRowId);
         }
@@ -87,6 +96,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
         long newRowId = db.insert(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, null, values);
 
+        if(newRowId == -1){
+            Log.w(TAG, "DB Insert Failed!");
+            VerifyUtil.alertUser(context, "Database Insert Failed", "Your data did not save, please try again");
+        }
+
         if(newRowId != maintenanceLog.getId()){
             maintenanceLog.setId((int) newRowId);
         }
@@ -104,6 +118,11 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(SystemSQL.COLUMN_SYSTEM_DESCRIPTION, system.getDescription());
 
         long newRowId = db.insert(SystemSQL.TABLE_NAME_SYSTEM, null, values);
+
+        if(newRowId == -1){
+            Log.w(TAG, "DB Insert Failed!");
+            VerifyUtil.alertUser(context, "Database Insert Failed", "Your data did not save, please try again");
+        }
 
         if(newRowId != system.getId()){
             system.setId((int) newRowId);
@@ -127,6 +146,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
         long newRowId = db.insert(IssueSQL.TABLE_NAME_ISSUE, null, values);
 
+        if(newRowId == -1){
+            Log.w(TAG, "DB Insert Failed!");
+            VerifyUtil.alertUser(context, "Database Insert Failed", "Your data did not save, please try again");
+        }
+
         if(newRowId != issue.getId()){
             issue.setId((int) newRowId);
         }
@@ -144,6 +168,11 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(IssueStatusSQL.COLUMN_ISSUE_STATUS_DESCRIPTION, issueStatus.getDescription());
 
         long newRowId = db.insert(IssueStatusSQL.TABLE_NAME_ISSUE_STATUS, null, values);
+
+        if(newRowId == -1){
+            Log.w(TAG, "DB Insert Failed!");
+            VerifyUtil.alertUser(context, "Database Insert Failed", "Your data did not save, please try again");
+        }
 
         if(newRowId != issueStatus.getId()){
             issueStatus.setId((int) newRowId);
@@ -256,6 +285,7 @@ public class DBHelper extends SQLiteOpenHelper {
             cursor.close();
         } catch (Exception ex) {
             Log.e(TAG, ex.toString());
+            VerifyUtil.alertUser(context, "Database Retrieval Failed", "Unable to fetch vehicle information, please try again");
         }
 
         return v;
@@ -284,6 +314,8 @@ public class DBHelper extends SQLiteOpenHelper {
             cursor.close();
         } catch (NullPointerException ex){
             id = -1;
+            Log.e(TAG, ex.toString());
+            VerifyUtil.alertUser(context, "Database Retrieval Failed", "Unable to fetch vehicle information, please try again");
         }
 
         return id;
