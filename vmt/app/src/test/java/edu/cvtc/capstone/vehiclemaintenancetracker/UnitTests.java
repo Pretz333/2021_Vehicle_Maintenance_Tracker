@@ -44,4 +44,14 @@ public class UnitTests {
         v.setYear("1200");
         assertEquals("1960", v.getYear());
     }
+
+    @Test
+    public void CheckNullIdReturnsNegOne(){
+        DBHelper dbHelper = new DBHelper(null);
+        
+        //Try to get a non-existent vehicle.
+        //The program should change the id to -1 when it realizes it does not exist
+        int id = dbHelper.getVehicleIdByNickname("AReallyLongAndPointlessNameThatIsNotInTheDatabase");
+        assertEquals(-1, id);
+    }
 }

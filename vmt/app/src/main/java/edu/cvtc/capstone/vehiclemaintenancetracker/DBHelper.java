@@ -168,6 +168,91 @@ public class DBHelper extends SQLiteOpenHelper {
         return vehicles;
     }
 
+    public Vehicle getVehicleByNickname(String name) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        //Get all of the fields
+        String[] categoryColumns = {
+            VehicleSQL._ID,
+            VehicleSQL.COLUMN_VEHICLE_MAKE,
+            VehicleSQL.COLUMN_VEHICLE_MODEL,
+            VehicleSQL.COLUMN_VEHICLE_YEAR,
+            VehicleSQL.COLUMN_VEHICLE_NICKNAME,
+            VehicleSQL.COLUMN_VEHICLE_COLOR,
+            VehicleSQL.COLUMN_VEHICLE_MILEAGE,
+            VehicleSQL.COLUMN_VEHICLE_VIN,
+            VehicleSQL.COLUMN_VEHICLE_LICENSE_PLATE,
+            VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED,
+            VehicleSQL.COLUMN_VEHICLE_VALUE
+        };
+
+        //Write the query in a SQL injection-proof way
+        String filter = VehicleSQL.COLUMN_VEHICLE_NICKNAME + " = ?";
+        String[] filterArgs = {name};
+        Cursor cursor = db.query(VehicleSQL.TABLE_NAME_VEHICLE, categoryColumns, filter,
+                filterArgs, null, null, null);
+
+        //Get the places where all of the information is stored
+        int idPosition = cursor.getColumnIndex(VehicleSQL._ID);
+        int makePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_MAKE);
+        int modelPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_MODEL);
+        int yearPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_YEAR);
+        int namePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_NICKNAME);
+        int colorPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_COLOR);
+        int mileagePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_MILEAGE);
+        int VINPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_VIN);
+        int licensePlatePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_LICENSE_PLATE);
+        int datePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED);
+        int valuePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_VALUE);
+
+        //Get the information of the first matching vehicle (so be as specific as possible!)
+        cursor.moveToNext();
+        Vehicle v = new Vehicle(
+                cursor.getInt(idPosition),
+                cursor.getString(namePosition),
+                cursor.getString(makePosition),
+                cursor.getString(modelPosition),
+                cursor.getString(yearPosition),
+                cursor.getString(colorPosition),
+                cursor.getInt(mileagePosition),
+                cursor.getString(VINPosition),
+                cursor.getString(licensePlatePosition),
+                new Date(cursor.getInt(datePosition)),
+                cursor.getInt(valuePosition)
+        );
+        cursor.close();
+
+        return v;
+    }
+
+    public int getVehicleIdByNickname(String name) {
+        SQLiteDatabase db = getReadableDatabase();
+        int id;
+
+        String[] categoryColumns = {
+                VehicleSQL._ID
+        };
+
+        String filter = VehicleSQL.COLUMN_VEHICLE_NICKNAME + " = ?";
+        String[] filterArgs = {name};
+
+        //No cursor.close() in the catch (or a finally) as it's wrapped in a block
+        try {
+            Cursor cursor = db.query(VehicleSQL.TABLE_NAME_VEHICLE, categoryColumns, filter,
+                    filterArgs, null, null, null);
+
+            int idPosition = cursor.getColumnIndex(VehicleSQL._ID);
+
+            cursor.moveToNext();
+            id = cursor.getInt(idPosition);
+            cursor.close();
+        } catch (NullPointerException ex){
+            id = -1;
+        }
+
+        return id;
+    }
+
     private static final class VehicleSQL implements BaseColumns {
         // Constants for vehicle table and fields
         private static final String TABLE_NAME_VEHICLE = "vehicle";
