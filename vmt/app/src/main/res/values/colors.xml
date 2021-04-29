@@ -26,4 +26,8 @@
     <color name="colorLogDark">#218080</color>
     <color name="colorLogLight">#F7FFFF</color>
 
+    <!-- Colors for the IssueActivity -->
+    <color name="colorIssueDark">#B55D5D</color>
+    <color name="colorIssueLight">#FFFAFA</color>
+
 </resources>

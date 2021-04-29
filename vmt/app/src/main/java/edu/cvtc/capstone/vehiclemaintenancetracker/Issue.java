@@ -12,6 +12,11 @@ public class Issue {
     private int vehicleId;
     private int statusId;
 
+    // No-construct constructor
+    public Issue() {
+        // ...
+    }
+
     //Constructors
     //Minimum
     public Issue(String title, int vehicleId, int statusId) {
@@ -97,6 +102,15 @@ public class Issue {
         }
     }
 
+    public void setVehicleIdNoCheck(int vehicleId) {
+        //DBHelper dbHelper = new DBHelper(null);
+        //if(dbHelper.checkIfVehicleIdExists(vehicleId)) {
+            this.vehicleId = vehicleId;
+        //} else {
+        //   Log.w(TAG, "VehicleId did not exist");
+        //}
+    }
+
     public int getStatusId() {
         return statusId;
     }
@@ -108,6 +122,15 @@ public class Issue {
         } else {
             Log.w(TAG, "StatusId did not exist");
         }
+    }
+
+    public void setStatusIdNoCheck(int statusId) {
+        //DBHelper dbHelper = new DBHelper(null);
+        //if(dbHelper.checkIfIssueStatusIdExists(statusId)) {
+            this.statusId = statusId;
+        //} else {
+        //    Log.w(TAG, "StatusId did not exist");
+        //}
     }
 
     @Override

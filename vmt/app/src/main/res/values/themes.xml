@@ -24,5 +24,9 @@
         <item name="android:textColor">@color/colorLogDark</item>
     </style>
 
+    <style name="Style.Custom.Button.IssueLog" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/colorIssueDark</item>
+    </style>
+
 
 </resources>
