@@ -58,5 +58,19 @@
 
     <string name="vehicleSettingsActivity_buttonSave">Save Changes</string>
 
+    <!-- Strings regarding MaintenanceLogSettingsActivity -->
+    <string name="maintenanceLogSettings_titleDisplay">Edit Maintenance Log</string>
+
+    <string name="maintenanceLogSettings_editTextHint_title">Title</string>
+    <string name="maintenanceLogSettings_editTextHint_description">Description</string>
+    <string name="maintenanceLogSettings_editTextHint_maintenanceDate">Maintenance Date</string>
+    <string name="maintenanceLogSettings_editTextHint_cost">Cost of Maintenance</string>
+    <string name="maintenanceLogSettings_editTextHint_time">Total Time of Maintenance</string>
+    <string name="maintenanceLogSettings_editTextHint_mileage">Mileage</string>
+
+    <string name="maintenanceLogSettings_systemLabel">System:</string>
+
+    <string name="maintenanceLogSettings_buttonText">Save Changes</string>
+
 
 </resources>

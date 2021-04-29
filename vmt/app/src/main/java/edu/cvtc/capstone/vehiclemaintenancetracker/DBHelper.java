@@ -21,6 +21,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private final List<Vehicle> vehicles = new ArrayList<>();
     private final List<MaintenanceLog> maintenanceLogs = new ArrayList<>();
     private final List<Issue> issues = new ArrayList<>();
+    private final List<System> systems = new ArrayList<>();
 
     public DBHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -166,6 +167,28 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.close();
 
         return vehicles;
+    }
+
+    public List<System> getAllSystems() {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String[] systemColumns = {
+                SystemSQL._ID,
+                SystemSQL.COLUMN_SYSTEM_DESCRIPTION};
+
+        String systemOrderBy = SystemSQL._ID;
+        Cursor cursor = db.query(SystemSQL.TABLE_NAME_SYSTEM, systemColumns, null,
+                null, null, null, systemOrderBy);
+
+        int systemIdPosition = cursor.getColumnIndex(SystemSQL._ID);
+        int systemDescriptionPosition = cursor.getColumnIndex(SystemSQL.COLUMN_SYSTEM_DESCRIPTION);
+
+        while (cursor.moveToNext()) {
+            systems.add(new System(cursor.getInt(systemIdPosition), cursor.getString(systemDescriptionPosition)));
+        }
+        cursor.close();
+
+        return systems;
     }
 
     private static final class VehicleSQL implements BaseColumns {

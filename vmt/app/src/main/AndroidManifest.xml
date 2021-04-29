@@ -9,8 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.VehicleMaintenanceTracker">
-        <activity android:name=".VehicleSettingsActivity"
-                  android:label="@string/vehicleSettingsActivity_title"/>
+        <activity android:name=".MaintenanceLogSettingsActivity"></activity>
+        <activity
+            android:name=".VehicleSettingsActivity"
+            android:label="@string/vehicleSettingsActivity_title" />
         <activity
             android:name=".LogActivity"
             android:label="@string/maintenanceActivity_title" />
