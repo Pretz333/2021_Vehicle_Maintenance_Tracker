@@ -67,9 +67,19 @@
     <string name="card_log_mileage">Mileage Mark: </string>
     <string name="card_log_buttonEdit">Edit</string>
 
-    <!-- Strings regarding LogActivity's toolbar items -->
-    <string name="menu_log_filter">Filter</string>
-    <string name="menu_log_search">Search</string>
+    <!-- Strings regarding IssueActivity -->
+    <string name="card_issue_title">Issue Title</string>
+    <string name="card_issue_description">Issue description</string>
+    <string name="card_issue_date">12/12/2012</string>
+    <string name="card_issue_priority_low">Low Priority</string>
+    <string name="card_issue_priority_medium">Moderate Priority</string>
+    <string name="card_issue_priority_high">High Priority</string>
+    <string name="card_issue_buttonEdit">Edit</string>
+    <string name="card_issue_buttonComplete">Complete</string>
+
+    <!-- Strings regarding LogActivity's & IssueActivity's toolbar items -->
+    <string name="menuItem_filter">Filter</string>
+    <string name="menuItem_search">Search</string>
 
 
 </resources>
