@@ -13,18 +13,25 @@ public class Issue {
     private int statusId;
 
     //Constructors
-    //Default, can probably delete later
-    public Issue() {
-    }
-
-    //Minimum. May want to add Title?
-    public Issue(int id, int vehicleId, int statusId) {
-        setId(id);
+    //Minimum
+    public Issue(String title, int vehicleId, int statusId) {
+        this.id = -1;
+        setTitle(title);
         setVehicleId(vehicleId);
         setStatusId(statusId);
     }
 
-    //Everything
+    //Everything but the id
+    public Issue(String title, String description, int priority, int vehicleId, int statusId) {
+        this.id = -1;
+        setTitle(title);
+        setDescription(description);
+        setPriority(priority);
+        setVehicleId(vehicleId);
+        setStatusId(statusId);
+    }
+
+    //Everything, for use when reading from the database
     public Issue(int id, String title, String description, int priority, int vehicleId, int statusId) {
         setId(id);
         setTitle(title);

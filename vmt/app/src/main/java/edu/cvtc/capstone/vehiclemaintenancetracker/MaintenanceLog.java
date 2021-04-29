@@ -19,19 +19,28 @@ public class MaintenanceLog {
     private int systemId;
 
     //Constructors
-    //Default, can probably delete later
-    public MaintenanceLog() {
-    }
-
-    //Minimum. May want to add Title?
-    public MaintenanceLog(int id, String title, int vehicleId, int systemId) {
-        setId(id);
+    //Minimum
+    public MaintenanceLog(String title, int vehicleId, int systemId) {
+        this.id = -1;
         setTitle(title);
         setVehicleId(vehicleId);
         setSystemId(systemId);
     }
 
-    //Everything
+    //Everything but the id
+    public MaintenanceLog(String title, String description, Date date, double cost, Time time, int mileage, int vehicleId, int systemId) {
+        this.id = -1;
+        setTitle(title);
+        setDescription(description);
+        setDate(date);
+        setCost(cost);
+        setTime(time);
+        setMileage(mileage);
+        setVehicleId(vehicleId);
+        setSystemId(systemId);
+    }
+
+    //Everything, for use when reading from the database
     public MaintenanceLog(int id, String title, String description, Date date, double cost, Time time, int mileage, int vehicleId, int systemId) {
         setId(id);
         setTitle(title);

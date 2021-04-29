@@ -18,7 +18,7 @@ import java.util.List;
 public class DBHelper extends SQLiteOpenHelper {
     public static final String TAG = "DBHELPER_CLASS";
     public static final String DATABASE_NAME = "VehicleMaintenanceTracker.db";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     private final Context context;
 
@@ -42,7 +42,22 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //TODO
+        //TODO: not lose user data
+        //drop it all
+        db.execSQL(VehicleSQL.SQL_DROP_TABLE_VEHICLE);
+        db.execSQL(MaintenanceLogSQL.SQL_DROP_TABLE_MAINTENANCE_LOG);
+        db.execSQL(IssueSQL.SQL_DROP_TABLE_ISSUE);
+        db.execSQL(IssueStatusSQL.SQL_DROP_TABLE_ISSUE_STATUS);
+        db.execSQL(SystemSQL.SQL_DROP_TABLE_SYSTEM);
+        db.execSQL(IssueLogSQL.SQL_DROP_TABLE_ISSUE_LOG);
+
+        //make it again
+        db.execSQL(VehicleSQL.SQL_CREATE_TABLE_VEHICLE);
+        db.execSQL(MaintenanceLogSQL.SQL_CREATE_TABLE_MAINTENANCE_LOG);
+        db.execSQL(IssueSQL.SQL_CREATE_TABLE_ISSUE);
+        db.execSQL(IssueStatusSQL.SQL_CREATE_TABLE_ISSUE_STATUS);
+        db.execSQL(SystemSQL.SQL_CREATE_TABLE_SYSTEM);
+        db.execSQL(IssueLogSQL.SQL_CREATE_TABLE_ISSUE_LOG);
     }
 
     public void insertVehicle(Vehicle vehicle) {
@@ -417,14 +432,14 @@ public class DBHelper extends SQLiteOpenHelper {
         private static final String SQL_CREATE_TABLE_VEHICLE =
                 "CREATE TABLE " + TABLE_NAME_VEHICLE + " (" +
                     _ID + " INTEGER PRIMARY KEY, " +
-                    COLUMN_VEHICLE_MAKE + " TEXT NOT NULL, " +
-                    COLUMN_VEHICLE_MODEL + " TEXT NOT NULL, " +
-                    COLUMN_VEHICLE_YEAR + " INTEGER NOT NULL, " +
-                    COLUMN_VEHICLE_NICKNAME + " TEXT, " +
+                    COLUMN_VEHICLE_MAKE + " TEXT, " +
+                    COLUMN_VEHICLE_MODEL + " TEXT, " +
+                    COLUMN_VEHICLE_YEAR + " INTEGER, " +
+                    COLUMN_VEHICLE_NICKNAME + " TEXT NOT NULL, " +
                     COLUMN_VEHICLE_COLOR + " TEXT, " +
-                    COLUMN_VEHICLE_MILEAGE + " INTEGER NOT NULL, " +
-                    COLUMN_VEHICLE_VIN + " INTEGER NOT NULL, " +
-                    COLUMN_VEHICLE_LICENSE_PLATE + " TEXT NOT NULL, " +
+                    COLUMN_VEHICLE_MILEAGE + " INTEGER, " +
+                    COLUMN_VEHICLE_VIN + " INTEGER, " +
+                    COLUMN_VEHICLE_LICENSE_PLATE + " TEXT, " +
                     COLUMN_VEHICLE_DATE_PURCHASED + " INTEGER, " +
                     COLUMN_VEHICLE_VALUE + " INTEGER)";
 
@@ -453,7 +468,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         COLUMN_MAINTENANCE_LOG_DATE + " INTEGER, " +
                         COLUMN_MAINTENANCE_LOG_COST + " INTEGER, " +
                         COLUMN_MAINTENANCE_LOG_TOTAL_TIME + " INTEGER, " +
-                        COLUMN_MAINTENANCE_LOG_MILEAGE + " INTEGER NOT NULL, " +
+                        COLUMN_MAINTENANCE_LOG_MILEAGE + " INTEGER, " +
                         COLUMN_MAINTENANCE_LOG_VEHICLE_ID + " INTEGER NOT NULL, " +
                         COLUMN_MAINTENANCE_LOG_SYSTEM_ID + " INTEGER NOT NULL, " +
                         "FOREIGN KEY (" + COLUMN_MAINTENANCE_LOG_VEHICLE_ID + ") REFERENCES " +
