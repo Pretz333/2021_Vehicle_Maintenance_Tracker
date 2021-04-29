@@ -81,5 +81,11 @@
     <string name="menuItem_filter">Filter</string>
     <string name="menuItem_search">Search</string>
 
+    <!-- Main Activity's menu and other strings -->
+    <string name="add_vehicle">Add A New Vehicle</string>
+    <string name="no_vehicles">You have no vehicles, add one to get started</string>
+    <string name="night_mode">Night Mode</string>
+    <string name="day_mode">Day Mode</string>
+
 
 </resources>

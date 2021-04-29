@@ -76,7 +76,9 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(VehicleSQL.COLUMN_VEHICLE_MILEAGE, vehicle.getMileage());
         values.put(VehicleSQL.COLUMN_VEHICLE_VIN, vehicle.getVIN());
         values.put(VehicleSQL.COLUMN_VEHICLE_LICENSE_PLATE, vehicle.getLicensePlate());
-        values.put(VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED, vehicle.getPurchaseDate().getTime());
+        if(vehicle.getPurchaseDate() != null) {
+            values.put(VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED, vehicle.getPurchaseDate().getTime());
+        }
         values.put(VehicleSQL.COLUMN_VEHICLE_VALUE, vehicle.getValue());
 
         long newRowId = db.insert(VehicleSQL.TABLE_NAME_VEHICLE, null, values);
@@ -195,7 +197,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    public List<Vehicle> getAllVehicles() {
+    public ArrayList<Vehicle> getAllVehicles() {
         SQLiteDatabase db = getReadableDatabase();
 
         String[] vehicleColumns = {
@@ -227,14 +229,14 @@ public class DBHelper extends SQLiteOpenHelper {
         int vehicleDatePurchasedPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED);
         int vehicleValuePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_VALUE);
 
-        List<Vehicle> vehicles = new ArrayList<>();
+        ArrayList<Vehicle> vehicles = new ArrayList<>();
 
         while (cursor.moveToNext()) {
             vehicles.add(new Vehicle(cursor.getInt(vehicleIdPosition), cursor.getString(vehicleNicknamePosition),
                     cursor.getString(vehicleMakePosition), cursor.getString(vehicleModelPosition),
                     cursor.getString(vehicleYearPosition), cursor.getString(vehicleColorPosition),
                     cursor.getInt(vehicleMileagePosition), cursor.getString(vehicleVINPosition),
-                    cursor.getString(vehicleLicensePlatePosition), new Date(vehicleDatePurchasedPosition),
+                    cursor.getString(vehicleLicensePlatePosition), new Date(cursor.getInt(vehicleDatePurchasedPosition)),
                     cursor.getInt(vehicleValuePosition)));
         }
         cursor.close();
@@ -242,7 +244,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return vehicles;
     }
 
-    public Vehicle getVehicleByNickname(String name) {
+    public Vehicle getVehicleById(int id) {
         SQLiteDatabase db = getReadableDatabase();
         Vehicle v = null;
 
@@ -262,8 +264,8 @@ public class DBHelper extends SQLiteOpenHelper {
         };
 
         //Write the query in a SQL injection-proof way
-        String filter = VehicleSQL.COLUMN_VEHICLE_NICKNAME + " = ?";
-        String[] filterArgs = {name};
+        String filter = VehicleSQL._ID + " = ?";
+        String[] filterArgs = {String.valueOf(id)};
 
         try {
             Cursor cursor = db.query(VehicleSQL.TABLE_NAME_VEHICLE, categoryColumns, filter,

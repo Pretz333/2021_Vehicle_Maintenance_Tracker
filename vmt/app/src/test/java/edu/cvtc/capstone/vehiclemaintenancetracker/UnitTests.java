@@ -40,7 +40,7 @@ public class UnitTests {
 
     @Test
     public void VehicleYearValidationPasses(){
-        Vehicle v = new Vehicle(0, "Old Brick");
+        Vehicle v = new Vehicle("Old Brick");
         v.setYear("a");
         assertNull(v.getYear());
         v.setYear("1960");
@@ -65,7 +65,7 @@ public class UnitTests {
         DBHelper dbHelper = new DBHelper(null);
 
         //Try to get a non-existent vehicle.
-        assertNull(dbHelper.getVehicleByNickname("AReallyLongAndPointlessNameThatIsNotInTheDatabase"));
+        assertNull(dbHelper.getVehicleById(999999));
     }
 
     @Test
@@ -104,7 +104,7 @@ public class UnitTests {
     @Test
     public void EnsureVehicleIdIsSetWhenNoneProvided(){
         DBHelper dbHelper = new DBHelper(null);
-        Vehicle v = new Vehicle(-1, "Bruh", "Ford", "T", "1980", "B", 100000, "111111111111111111", "ABC-123", new Date(0), 0);
+        Vehicle v = new Vehicle("Bruh", "Ford", "T", "1980", "B", 100000, "111111111111111111", "ABC-123", new Date(0), 0);
         dbHelper.insertVehicle(v);
         assertTrue(dbHelper.checkIfVehicleIdExists(v.getId()));
     }
@@ -115,13 +115,15 @@ public class UnitTests {
 
         int id = 28;
         Vehicle v = new Vehicle(id, "Bruh", "Ford", "T", "1980", "B", 100000, "111111111111111111", "ABC-123", new Date(0), 0);
+        dbHelper.insertVehicle(v);
         assertEquals(id, v.getId());
     }
 
     @Test
     public void EnsureVehicleSavesWithNullValues(){
         DBHelper dbHelper = new DBHelper(null);
-        Vehicle v = new Vehicle(29, "Bruh");
+        Vehicle v = new Vehicle("VehicleName");
+        dbHelper.insertVehicle(v);
         assertTrue(dbHelper.checkIfVehicleIdExists(v.getId()));
     }
 }

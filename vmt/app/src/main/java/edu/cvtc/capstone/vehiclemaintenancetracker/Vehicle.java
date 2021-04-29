@@ -143,11 +143,13 @@ public class Vehicle {
     }
 
     public void setVIN(String VIN) {
-        VIN = VIN.toUpperCase(); //In case the user typed in lowercase letters
-        if(VerifyUtil.isVINValid(VIN, this.year)) {
-            this.VIN = VIN;
-        } else {
-            Log.w(TAG, "Invalid VIN");
+        if(VIN != null && !VIN.equals("")) {
+            VIN = VIN.toUpperCase(); //In case the user typed in lowercase letters
+            if (VerifyUtil.isVINValid(VIN, this.year)) {
+                this.VIN = VIN;
+            } else {
+                Log.w(TAG, "Invalid VIN");
+            }
         }
     }
 
