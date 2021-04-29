@@ -19,19 +19,28 @@ public class MaintenanceLog {
     private int systemId;
 
     //Constructors
-    //Default, can probably delete later
-    public MaintenanceLog() {
-    }
-
-    //Minimum. May want to add Title?
-    public MaintenanceLog(int id, String title, int vehicleId, int systemId) {
-        setId(id);
+    //Minimum
+    public MaintenanceLog(String title, int vehicleId, int systemId) {
+        this.id = -1;
         setTitle(title);
         setVehicleId(vehicleId);
         setSystemId(systemId);
     }
 
-    //Everything
+    //Everything but the id
+    public MaintenanceLog(String title, String description, Date date, double cost, Time time, int mileage, int vehicleId, int systemId) {
+        this.id = -1;
+        setTitle(title);
+        setDescription(description);
+        setDate(date);
+        setCost(cost);
+        setTime(time);
+        setMileage(mileage);
+        setVehicleId(vehicleId);
+        setSystemId(systemId);
+    }
+
+    //Everything, for use when reading from the database
     public MaintenanceLog(int id, String title, String description, Date date, double cost, Time time, int mileage, int vehicleId, int systemId) {
         setId(id);
         setTitle(title);
@@ -72,7 +81,7 @@ public class MaintenanceLog {
     }
 
     public void setDescription(String description) {
-        if(VerifyUtil.isStringSafe(description)) {
+        if(VerifyUtil.isTextSafe(description)) {
             this.description = description;
         } else {
             Log.w(TAG, "Log description unsafe");
@@ -121,8 +130,12 @@ public class MaintenanceLog {
     }
 
     public void setVehicleId(int vehicleId) {
-        //TODO: Check if record is in database or the call came from the database
-        this.vehicleId = vehicleId;
+        DBHelper dbHelper = new DBHelper(null);
+        if(dbHelper.checkIfVehicleIdExists(vehicleId)) {
+            this.vehicleId = vehicleId;
+        } else {
+            Log.w(TAG, "VehicleID did not exist");
+        }
     }
 
     public int getSystemId() {
@@ -130,8 +143,12 @@ public class MaintenanceLog {
     }
 
     public void setSystemId(int systemId) {
-        //TODO: Check if record is in database or the call came from the database
-        this.systemId = systemId;
+        DBHelper dbHelper = new DBHelper(null);
+        if(dbHelper.checkIfSystemIdExists(systemId)) {
+            this.systemId = systemId;
+        } else {
+            Log.w(TAG, "SystemId did not exist");
+        }
     }
 
     @Override
