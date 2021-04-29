@@ -1,10 +1,43 @@
 package edu.cvtc.capstone.vehiclemaintenancetracker;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
 import java.util.HashMap;
 
 public final class VerifyUtil {
+    public static final String TAG = "VERIFYUTIL_CLASS";
     //TODO: Consider non-english characters
     //TODO: Character limits
+
+    public static void alertUser(@NonNull Context context, String title, String message) {
+        //This will crash if we use null or getApplicationContext() as the context
+        //getApplicationContext().toString() looks something like "android.app.Application@5ccffd7"
+        //whereas MainActivity.this (a context that will work) looks like edu.cvtc.capstone.vehiclemaintenancetracker.MainActivity@8588ee7
+        //So, we filter out contexts with Application in them and null contexts. The @NonNull
+        //annotation does not actually filter them out, just warns if we try to type in a null.
+        if(context == null || context.toString().contains("Application")) {
+            Log.w(TAG, "Invalid context in alertUser");
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle(title);
+            builder.setMessage(message);
+            builder.setCancelable(false);
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+    }
 
     //Strings only containing capital or lowercase a-z return true
     public static boolean isStringLettersOnly(String str) {
@@ -32,6 +65,7 @@ public final class VerifyUtil {
     }
 
     //For VINs
+    //TODO: Check year matches VIN year
     public static boolean isVINValid(String VIN, String year) {
         //VINs are only letters or digits, so we'll check that as well
         if(!isStringLettersOrDigitsOnly(VIN)) {
@@ -108,5 +142,11 @@ public final class VerifyUtil {
         put('8', 8);
         put('9', 9);
         put('0', 0);
+    }};
+
+    //The HashMap for the VIN year digit, also at the class level so
+    //it isn't destroyed and recreated any more than necessary
+    private static final HashMap<String, Character> yearChar = new HashMap<String, Character>() {{
+        put("", ' ');
     }};
 }
