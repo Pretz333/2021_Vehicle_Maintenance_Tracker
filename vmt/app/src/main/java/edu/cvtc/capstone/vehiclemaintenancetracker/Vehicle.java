@@ -20,15 +20,26 @@ public class Vehicle {
     private Date purchaseDate;
     private double value;
 
-    //Constructors
-    //Using sets so I can keep DRY
-    //Default, can probably delete later
-    public Vehicle() {}
-
-    //Current minimums to be functional. May need to add in make, model, year, color?
-    public Vehicle(int id, String name) {
-        setId(id);
+    //Constructors, using sets so I can keep DRY
+    //Current minimums to be functional
+    public Vehicle(String name) {
+        this.id = -1;
         setName(name);
+    }
+
+    //Everything but the id
+    public Vehicle(String name, String make, String model, String year, String color, int mileage, String VIN, String licensePlate, Date purchaseDate, double value) {
+        this.id = -1;
+        setName(name);
+        setMake(make);
+        setModel(model);
+        setYear(year);
+        setColor(color);
+        setMileage(mileage);
+        setVIN(VIN);
+        setLicensePlate(licensePlate);
+        setPurchaseDate(purchaseDate);
+        setValue(value);
     }
 
     //Everything, for use when reading from the database

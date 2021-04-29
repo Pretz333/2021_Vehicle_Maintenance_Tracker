@@ -4,10 +4,13 @@ public class System {
     private int id;
     private String description;
 
-    public System () {
-
+    //Pre-database insert
+    public System(String description) {
+        this.id = -1;
+        this.description = description;
     }
 
+    //For use when reading from the database
     public System(int id, String description) {
         this.id = id;
         this.description = description;
