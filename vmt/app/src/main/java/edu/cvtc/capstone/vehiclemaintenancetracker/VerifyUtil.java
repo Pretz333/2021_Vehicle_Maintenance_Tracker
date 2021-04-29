@@ -51,7 +51,12 @@ public final class VerifyUtil {
 
     //Strings only containing capital or lowercase a-z and numbers 0-9 return true
     public static boolean isStringLettersOrDigitsOnly(String str) {
-        return str.matches("^[a-zA-Z0-9]+$");
+        return str.matches("^[-a-zA-Z0-9 ]*$"); //don't move the first -
+    }
+
+    //Strings containing most special characters, capital or lowercase a-z, and/or numbers 0-9 return true
+    public static boolean isTextSafe(String str) {
+        return str.matches("^[-a-zA-Z0-9 .\"'!,]*$"); //don't move the first -
     }
 
     //Strings only containing capital or lowercase a-z, numbers 0-9, a " ", or a "-" return true

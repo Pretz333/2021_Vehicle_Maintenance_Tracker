@@ -72,7 +72,7 @@ public class MaintenanceLog {
     }
 
     public void setDescription(String description) {
-        if(VerifyUtil.isStringSafe(description)) {
+        if(VerifyUtil.isTextSafe(description)) {
             this.description = description;
         } else {
             Log.w(TAG, "Log description unsafe");
