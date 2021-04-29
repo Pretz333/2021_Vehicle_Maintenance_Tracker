@@ -40,23 +40,17 @@ public class MainActivity extends AppCompatActivity{
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Initialize the vehicle array list with some sample data.
-        // NOTE: This sample data will be replaced with actual database
-        // data in a future release. For now, we just need to know that
-        // it displays correctly and works as intended.
-        //
-        //
-        // Initialize the vehicle list
-        vehicleArrayList = new ArrayList<>();
+        //Get all saved vehicles
+        DBHelper dbHelper = new DBHelper(MainActivity.this);
+        vehicleArrayList = dbHelper.getAllVehicles();
 
-        // TODO: This function will be overwritten for
-        //  receiving the database objects.
-        // Populate the vehicle list using the function below
-        populateVehicleList();
-
-        // Prepare the RecyclerView and its Adapter
-        // with some data.
-        prepRecyclerView();
+        if(vehicleArrayList.isEmpty()){
+            //Display the "You have no vehicles" message
+            findViewById(R.id.noVehiclesTextView).setVisibility(View.VISIBLE);
+        } else {
+            // Fill the RecyclerView and its Adapter with some data.
+            prepRecyclerView();
+        }
     }
 
     // Initializes the RecyclerView and its Adapter using
@@ -77,6 +71,8 @@ public class MainActivity extends AppCompatActivity{
 
     //Populates the Vehicle array list with some sample data.
     private void populateVehicleList() {
+        vehicleArrayList = new ArrayList<>();
+
         // Create three vehicle objects to be put into the list
         Vehicle vehicle1 = new Vehicle(12,
                 "Tunbruh",

@@ -195,7 +195,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    public List<Vehicle> getAllVehicles() {
+    public ArrayList<Vehicle> getAllVehicles() {
         SQLiteDatabase db = getReadableDatabase();
 
         String[] vehicleColumns = {
@@ -227,14 +227,14 @@ public class DBHelper extends SQLiteOpenHelper {
         int vehicleDatePurchasedPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED);
         int vehicleValuePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_VALUE);
 
-        List<Vehicle> vehicles = new ArrayList<>();
+        ArrayList<Vehicle> vehicles = new ArrayList<>();
 
         while (cursor.moveToNext()) {
             vehicles.add(new Vehicle(cursor.getInt(vehicleIdPosition), cursor.getString(vehicleNicknamePosition),
                     cursor.getString(vehicleMakePosition), cursor.getString(vehicleModelPosition),
                     cursor.getString(vehicleYearPosition), cursor.getString(vehicleColorPosition),
                     cursor.getInt(vehicleMileagePosition), cursor.getString(vehicleVINPosition),
-                    cursor.getString(vehicleLicensePlatePosition), new Date(vehicleDatePurchasedPosition),
+                    cursor.getString(vehicleLicensePlatePosition), new Date(cursor.getInt(vehicleDatePurchasedPosition)),
                     cursor.getInt(vehicleValuePosition)));
         }
         cursor.close();
