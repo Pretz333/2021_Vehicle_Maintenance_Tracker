@@ -357,7 +357,7 @@ public class DBHelper extends SQLiteOpenHelper {
             cursor.getInt(idPosition);
             cursor.close();
             return true;
-        } catch (NullPointerException ex){
+        } catch (Exception ex){
             return false;
         }
     }
@@ -383,7 +383,7 @@ public class DBHelper extends SQLiteOpenHelper {
             cursor.getInt(idPosition);
             cursor.close();
             return true;
-        } catch (NullPointerException ex){
+        } catch (Exception ex){
             return false;
         }
     }
@@ -409,7 +409,7 @@ public class DBHelper extends SQLiteOpenHelper {
             cursor.getInt(idPosition);
             cursor.close();
             return true;
-        } catch (NullPointerException ex){
+        } catch (Exception ex){
             return false;
         }
     }
