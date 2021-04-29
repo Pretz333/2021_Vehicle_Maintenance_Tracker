@@ -7,4 +7,8 @@
         android:title="@string/night_mode"
         android:visible="false"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/addAVehicle"
+        android:title="@string/add_vehicle"
+        app:showAsAction="never" />
 </menu>

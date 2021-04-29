@@ -143,6 +143,12 @@ public class MainActivity extends AppCompatActivity{
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             }
             recreate();
+        } else if (item.getItemId() == R.id.addAVehicle){
+            // Go to the vehicle settings activity and send an id
+            // of -1 so it knows we're creating a new vehicle
+            Intent intent = new Intent(MainActivity.this, VehicleSettingsActivity.class);
+            intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, -1);
+            startActivity(intent);
         }
         return true;
     }
