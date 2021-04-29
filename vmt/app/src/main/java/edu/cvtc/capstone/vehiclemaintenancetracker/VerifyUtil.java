@@ -41,37 +41,65 @@ public final class VerifyUtil {
 
     //Strings only containing capital or lowercase a-z return true
     public static boolean isStringLettersOnly(String str) {
+        if(str == null || str.equals("")) {
+            return true;
+        }
+
         return str.matches("^[a-zA-Z]+$");
     }
 
     //Strings only containing numbers 0-9 return true
     public static boolean isStringANumber(String str) {
+        if(str == null || str.equals("")) {
+            return true;
+        }
+
         return str.matches("^[0-9]*$");
     }
 
     //Strings only containing capital or lowercase a-z and numbers 0-9 return true
     public static boolean isStringLettersOrDigitsOnly(String str) {
+        if(str == null || str.equals("")) {
+            return true;
+        }
+
         return str.matches("^[-a-zA-Z0-9 ]*$"); //don't move the first -
     }
 
     //Strings containing most special characters, capital or lowercase a-z, and/or numbers 0-9 return true
     public static boolean isTextSafe(String str) {
+        if(str == null || str.equals("")) {
+            return true;
+        }
+
         return str.matches("^[-a-zA-Z0-9 .\"'!,]*$"); //don't move the first -
     }
 
     //Strings only containing capital or lowercase a-z, numbers 0-9, a " ", or a "-" return true
     public static boolean isStringSafe(String str) {
+        if(str == null || str.equals("")) {
+            return true;
+        }
+
         return str.matches("^[a-zA-Z0-9 -]*$");
     }
 
     //For Years
     public static boolean isYearValid(String year) {
+        if(year == null || year.equals("")) {
+            return true;
+        }
+
         return year.length() == 4 && Integer.parseInt(year) > 1900;
     }
 
     //For VINs
     //TODO: Check year matches VIN year
     public static boolean isVINValid(String VIN, String year) {
+        if(VIN == null || VIN.equals("")) {
+            return true;
+        }
+
         //VINs are only letters or digits, so we'll check that as well
         if(!isStringLettersOrDigitsOnly(VIN)) {
             return false;
