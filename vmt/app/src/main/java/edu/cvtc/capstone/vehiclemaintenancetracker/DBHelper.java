@@ -19,7 +19,10 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TAG = "DBHELPER_CLASS";
     public static final String DATABASE_NAME = "VehicleMaintenanceTracker.db";
     public static final int DATABASE_VERSION = 2;
-
+    private final List<Vehicle> vehicles = new ArrayList<>();
+    private final List<MaintenanceLog> maintenanceLogs = new ArrayList<>();
+    private final List<Issue> issues = new ArrayList<>();
+    private final List<System> systems = new ArrayList<>();
     private final Context context;
 
     public DBHelper(@Nullable Context context) {
@@ -244,6 +247,28 @@ public class DBHelper extends SQLiteOpenHelper {
         return vehicles;
     }
 
+    public List<System> getAllSystems() {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String[] systemColumns = {
+                SystemSQL._ID,
+                SystemSQL.COLUMN_SYSTEM_DESCRIPTION};
+
+        String systemOrderBy = SystemSQL._ID;
+        Cursor cursor = db.query(SystemSQL.TABLE_NAME_SYSTEM, systemColumns, null,
+                null, null, null, systemOrderBy);
+
+        int systemIdPosition = cursor.getColumnIndex(SystemSQL._ID);
+        int systemDescriptionPosition = cursor.getColumnIndex(SystemSQL.COLUMN_SYSTEM_DESCRIPTION);
+
+        while (cursor.moveToNext()) {
+            systems.add(new System(cursor.getInt(systemIdPosition), cursor.getString(systemDescriptionPosition)));
+        }
+        cursor.close();
+
+        return systems;
+    }
+
     public Vehicle getVehicleById(int id) {
         SQLiteDatabase db = getReadableDatabase();
         Vehicle v = null;
@@ -414,6 +439,7 @@ public class DBHelper extends SQLiteOpenHelper {
         } catch (Exception ex){
             return false;
         }
+
     }
 
     private static final class VehicleSQL implements BaseColumns {
