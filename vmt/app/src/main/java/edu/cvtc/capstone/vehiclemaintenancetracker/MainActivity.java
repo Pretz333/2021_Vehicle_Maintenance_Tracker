@@ -2,6 +2,7 @@ package edu.cvtc.capstone.vehiclemaintenancetracker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,6 +11,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -114,6 +117,34 @@ public class MainActivity extends AppCompatActivity{
         vehicleArrayList.add(vehicle1);
         vehicleArrayList.add(vehicle2);
         vehicleArrayList.add(vehicle3);
+    }
+
+    //Add in night mode toggle
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.vehicle_menu, menu);
+        int nightMode = AppCompatDelegate.getDefaultNightMode();
+        if (nightMode == AppCompatDelegate.MODE_NIGHT_YES) {
+            menu.findItem(R.id.night_mode).setTitle(R.string.day_mode);
+        } else {
+            menu.findItem(R.id.night_mode).setTitle(R.string.night_mode);
+        }
+        return true;
+    }
+
+    //Has the night mode/day mode toggle and will have the add a vehicle button
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.night_mode) {
+            int nightMode = AppCompatDelegate.getDefaultNightMode();
+            if (nightMode == AppCompatDelegate.MODE_NIGHT_YES) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }
+            recreate();
+        }
+        return true;
     }
 
 }
