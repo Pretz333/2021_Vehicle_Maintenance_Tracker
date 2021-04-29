@@ -2,7 +2,7 @@ package edu.cvtc.capstone.vehiclemaintenancetracker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity{
 
         // Initialize the toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setActionBar(toolbar);
+        setSupportActionBar(toolbar);
 
         // Initialize the vehicle array list with some sample data.
         // NOTE: This sample data will be replaced with actual database
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity{
     private void prepRecyclerView() {
 
         // Find the RecyclerView view
-        RecyclerView recyclerView = findViewById(R.id.recyclerview);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView_mainActivity);
 
         // Create a LayoutManager for the RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

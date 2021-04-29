@@ -13,8 +13,16 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
 
+        <item name="toolbarStyle">@style/Style.Custom.Toolbar</item>
     </style>
 
+    <style name="Style.Custom.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="titleTextColor">@color/white</item>
+    </style>
+
+    <style name="Style.Custom.Button.MaintenanceLog" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/colorLogDark</item>
+    </style>
 
 
 </resources>

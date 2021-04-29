@@ -2,6 +2,7 @@ package edu.cvtc.capstone.vehiclemaintenancetracker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import java.util.ArrayList;
 
@@ -37,7 +37,17 @@ public class VehicleOptionActivity extends AppCompatActivity {
 
         // Initialize the toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setActionBar(toolbar);
+        setSupportActionBar(toolbar);
+
+        // Back button, better than the Manifest way for
+        // reasons... - Alexander
+        toolbar.setNavigationIcon(R.drawable.ic_back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                VehicleOptionActivity.super.finish();
+            }
+        });
 
         // Grab the intent data
         Intent receivedIntent = getIntent();

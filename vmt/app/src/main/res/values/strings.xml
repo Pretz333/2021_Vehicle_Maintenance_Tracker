@@ -58,5 +58,18 @@
 
     <string name="vehicleSettingsActivity_buttonSave">Save Changes</string>
 
+    <!-- Strings regarding LogActivity -->
+    <string name="card_log_title">Log Title</string>
+    <string name="card_log_description">Log description</string>
+    <string name="card_log_date">12/12/2012</string>
+    <string name="card_log_cost">Cost: $</string>
+    <string name="card_log_time">Time: </string>
+    <string name="card_log_mileage">Mileage Mark: </string>
+    <string name="card_log_buttonEdit">Edit</string>
+
+    <!-- Strings regarding LogActivity's toolbar items -->
+    <string name="menu_log_filter">Filter</string>
+    <string name="menu_log_search">Search</string>
+
 
 </resources>
