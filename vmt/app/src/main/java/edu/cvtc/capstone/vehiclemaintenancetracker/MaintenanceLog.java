@@ -130,8 +130,8 @@ public class MaintenanceLog {
     }
 
     public void setVehicleId(int vehicleId) {
-        DBHelper dbHelper = new DBHelper(null);
-        if(dbHelper.checkIfVehicleIdExists(vehicleId)) {
+        //DBHelper dbHelper = new DBHelper(null);
+        if(true){//dbHelper.checkIfVehicleIdExists(vehicleId)) {
             this.vehicleId = vehicleId;
         } else {
             Log.w(TAG, "VehicleID did not exist");

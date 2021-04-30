@@ -14,6 +14,7 @@ import android.widget.Spinner;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class MaintenanceLogSettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -57,13 +58,11 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity implements
 
         // Create a reference to the save button
         Button saveButton = findViewById(R.id.maintenanceLogSettings_buttonSave);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
+        saveButton.setOnClickListener(v -> {
+            //SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
+            //db.close();
 
-                // TODO: Validate maintenance log and update the record in the database
-            }
+            // TODO: Validate maintenance log and update the record in the database
         });
     }
 
@@ -102,7 +101,7 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity implements
         mMileage.setText(String.valueOf(maintenanceLog.getMileage()));
 
         // Change the format for the date
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/DD/YYYY");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
         mMaintenanceDate.setText(simpleDateFormat.format(maintenanceLog.getDate()));
 
         // Set the spinner to the id of the selected system

@@ -31,8 +31,7 @@ public class LogActivity extends AppCompatActivity {
     private int vehicleId;
     Toolbar toolbar;
 
-    // An array of logs used to populate the
-    // RecyclerView
+    // An array of logs used to populate the RecyclerView
     ArrayList<MaintenanceLog> logArrayList;
 
     @Override
@@ -57,9 +56,8 @@ public class LogActivity extends AppCompatActivity {
         // Grab the vehicleId from the received intent
         vehicleId = getIntent().getIntExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, -1);
 
-        // Only pull logs of the vehicleId is valid.
-        // In other words, we can't get logs from a
-        // vehicle that doesn't exist
+        // Only pull logs if the vehicleId is valid.
+        // In other words, we can't get logs from a vehicle that doesn't exist
         if (vehicleId != -1) {
             // Initialize the log list
             logArrayList = new ArrayList<>();
@@ -76,8 +74,7 @@ public class LogActivity extends AppCompatActivity {
         }
     }
 
-    // Add a few fake maintenance logs to the logArrayList
-    // to be used in the RecyclerView for demo
+    // Add a few fake maintenance logs to the logArrayList to be used in the RecyclerView for demo
     private void prepDemoData() {
 
         // Create objects
@@ -86,7 +83,7 @@ public class LogActivity extends AppCompatActivity {
 
         MaintenanceLog log1 = new MaintenanceLog(0,
                 "Replaced Something",
-                "Im keeping this log here to remind myself that I replaced something but I dont know what it is",
+                "I'm keeping this log here to remind myself that I replaced something but I don't know what it is",
                 new Date(1619130376711L),
                 48.00,
                 time,
@@ -97,7 +94,7 @@ public class LogActivity extends AppCompatActivity {
 
         MaintenanceLog log2 = new MaintenanceLog(1,
                 "Updated Lights",
-                "Ive updated the headlight bulbs for whatever reason",
+                "I've updated the headlight bulbs for whatever reason",
                 new Date(1619130376711L),
                 24.99,
                 time,
@@ -108,7 +105,7 @@ public class LogActivity extends AppCompatActivity {
 
         MaintenanceLog log3 = new MaintenanceLog(2,
                 "Tires Rotated",
-                "All of the tires were rotated and it drives smoother now",
+                "All of the tires were rotated, it drives smoother now",
                 new Date(1619130376711L),
                 00.00,
                 time,

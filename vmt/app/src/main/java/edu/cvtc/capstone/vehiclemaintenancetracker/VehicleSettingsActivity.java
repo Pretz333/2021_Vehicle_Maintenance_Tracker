@@ -20,10 +20,7 @@ import java.util.Locale;
 public class VehicleSettingsActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String TAG = "VEHICLESETTINGS_CLASS";
 
-    // The ID of the vehicle received via intent
-    private int vehicleId;
-
-    //The DBHelper
+    //Class variables
     DBHelper dbHelper = new DBHelper(VehicleSettingsActivity.this);
     Vehicle vehicle = null;
 
@@ -73,7 +70,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
 
         // Get the vehicleID from the intent
         Intent receivedIntent = getIntent();
-        vehicleId = receivedIntent.getIntExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, -1);
+        int vehicleId = receivedIntent.getIntExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, -1);
 
         // Check if this activity should be in create mode or edit mode.
         // If a VehicleID was passed to this activity, we will initiate edit mode.

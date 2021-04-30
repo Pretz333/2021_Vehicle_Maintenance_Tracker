@@ -104,7 +104,7 @@ public class UnitTests {
     @Test
     public void EnsureVehicleIdIsSetWhenNoneProvided(){
         DBHelper dbHelper = new DBHelper(null);
-        Vehicle v = new Vehicle("Bruh", "Ford", "T", "1980", "B", 100000, "111111111111111111", "ABC-123", new Date(0), 0);
+        Vehicle v = new Vehicle("Bruh", "Ford", "T", "1980", "B", 100000, "111111111111111111", "ABC-123", new Date(0), 0.0);
         dbHelper.insertVehicle(v);
         assertTrue(dbHelper.checkIfVehicleIdExists(v.getId()));
     }

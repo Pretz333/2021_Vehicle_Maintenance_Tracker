@@ -19,10 +19,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TAG = "DBHELPER_CLASS";
     public static final String DATABASE_NAME = "VehicleMaintenanceTracker.db";
     public static final int DATABASE_VERSION = 2;
-    private final List<Vehicle> vehicles = new ArrayList<>();
-    private final List<MaintenanceLog> maintenanceLogs = new ArrayList<>();
-    private final List<Issue> issues = new ArrayList<>();
-    private final List<System> systems = new ArrayList<>();
     private final Context context;
 
     public DBHelper(@Nullable Context context) {
@@ -85,6 +81,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(VehicleSQL.COLUMN_VEHICLE_VALUE, vehicle.getValue());
 
         long newRowId = db.insert(VehicleSQL.TABLE_NAME_VEHICLE, null, values);
+        db.close();
 
         if(newRowId == -1){
             Log.w(TAG, "DB Insert Failed!");
@@ -115,6 +112,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_SYSTEM_ID, maintenanceLog.getSystemId());
 
         long newRowId = db.insert(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, null, values);
+        db.close();
 
         if(newRowId == -1){
             Log.w(TAG, "DB Insert Failed!");
@@ -138,6 +136,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(SystemSQL.COLUMN_SYSTEM_DESCRIPTION, system.getDescription());
 
         long newRowId = db.insert(SystemSQL.TABLE_NAME_SYSTEM, null, values);
+        db.close();
 
         if(newRowId == -1){
             Log.w(TAG, "DB Insert Failed!");
@@ -165,6 +164,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(IssueSQL.COLUMN_ISSUE_STATUS_ID, issue.getStatusId());
 
         long newRowId = db.insert(IssueSQL.TABLE_NAME_ISSUE, null, values);
+        db.close();
 
         if(newRowId == -1){
             Log.w(TAG, "DB Insert Failed!");
@@ -188,6 +188,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(IssueStatusSQL.COLUMN_ISSUE_STATUS_DESCRIPTION, issueStatus.getDescription());
 
         long newRowId = db.insert(IssueStatusSQL.TABLE_NAME_ISSUE_STATUS, null, values);
+        db.close();
 
         if(newRowId == -1){
             Log.w(TAG, "DB Insert Failed!");
@@ -243,6 +244,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     cursor.getInt(vehicleValuePosition)));
         }
         cursor.close();
+        db.close();
 
         return vehicles;
     }
@@ -261,10 +263,13 @@ public class DBHelper extends SQLiteOpenHelper {
         int systemIdPosition = cursor.getColumnIndex(SystemSQL._ID);
         int systemDescriptionPosition = cursor.getColumnIndex(SystemSQL.COLUMN_SYSTEM_DESCRIPTION);
 
+        List<System> systems = new ArrayList<>();
+
         while (cursor.moveToNext()) {
             systems.add(new System(cursor.getInt(systemIdPosition), cursor.getString(systemDescriptionPosition)));
         }
         cursor.close();
+        db.close();
 
         return systems;
     }
@@ -330,6 +335,8 @@ public class DBHelper extends SQLiteOpenHelper {
             VerifyUtil.alertUser(context, "Database Retrieval Failed", "Unable to fetch vehicle information, please try again");
         }
 
+        db.close();
+
         return v;
     }
 
@@ -360,6 +367,8 @@ public class DBHelper extends SQLiteOpenHelper {
             VerifyUtil.alertUser(context, "Database Retrieval Failed", "Unable to fetch vehicle information, please try again");
         }
 
+        db.close();
+
         return id;
     }
 
@@ -383,8 +392,10 @@ public class DBHelper extends SQLiteOpenHelper {
             cursor.moveToNext();
             cursor.getInt(idPosition);
             cursor.close();
+            db.close();
             return true;
         } catch (Exception ex){
+            db.close();
             return false;
         }
     }
@@ -409,8 +420,10 @@ public class DBHelper extends SQLiteOpenHelper {
             cursor.moveToNext();
             cursor.getInt(idPosition);
             cursor.close();
+            db.close();
             return true;
         } catch (Exception ex){
+            db.close();
             return false;
         }
     }
@@ -435,8 +448,10 @@ public class DBHelper extends SQLiteOpenHelper {
             cursor.moveToNext();
             cursor.getInt(idPosition);
             cursor.close();
+            db.close();
             return true;
         } catch (Exception ex){
+            db.close();
             return false;
         }
 
