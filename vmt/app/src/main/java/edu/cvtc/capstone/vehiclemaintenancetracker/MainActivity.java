@@ -43,11 +43,22 @@ public class MainActivity extends AppCompatActivity{
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        populateRecyclerView();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        populateRecyclerView();
+    }
+
+    private void populateRecyclerView() {
         //Get all saved vehicles
         DBHelper dbHelper = new DBHelper(MainActivity.this);
         vehicleArrayList = dbHelper.getAllVehicles();
 
-        if(vehicleArrayList.isEmpty()){
+        if (vehicleArrayList.isEmpty()) {
             //Display the "You have no vehicles" message
             findViewById(R.id.noVehiclesTextView).setVisibility(View.VISIBLE);
         } else {
