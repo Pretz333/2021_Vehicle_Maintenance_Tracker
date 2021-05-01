@@ -42,19 +42,19 @@ public class Vehicle {
         setValue(value);
     }
 
-    //Everything, for use when reading from the database
+    //Everything, for use when reading from the database. Since it's in the database, it's already passed verification
     public Vehicle(int id, String name, String make, String model, String year, String color, int mileage, String VIN, String licensePlate, Date purchaseDate, double value) {
-        setId(id);
-        setName(name);
-        setMake(make);
-        setModel(model);
-        setYear(year);
-        setColor(color);
-        setMileage(mileage);
-        setVIN(VIN);
-        setLicensePlate(licensePlate);
-        setPurchaseDate(purchaseDate);
-        setValue(value);
+        this.id = id;
+        this.name = name;
+        this.make = make;
+        this.model = model;
+        this.year = year;
+        this.color = color;
+        this.mileage = mileage;
+        this.VIN = VIN;
+        this.licensePlate = licensePlate;
+        this.purchaseDate = purchaseDate;
+        this.value = value;
     }
 
     //Getters and Setters
@@ -63,9 +63,7 @@ public class Vehicle {
         return id;
     }
 
-    //May want to delete? Only have the database use this with the constructors above?
     public void setId(int id) {
-        //TODO: Check if record is in database or the call came from the database
         this.id = id;
     }
 

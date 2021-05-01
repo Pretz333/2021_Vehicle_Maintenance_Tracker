@@ -44,12 +44,12 @@ public class Issue {
 
     //Everything, for use when reading from the database. Since it's in the database, it's already passed verification
     public Issue(int id, String title, String description, int priority, int vehicleId, int statusId) {
-        setId(id);
-        setTitle(title);
-        setDescription(description);
-        setPriority(priority);
-        setVehicleId(vehicleId);
-        setStatusId(statusId);
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.priority = priority;
+        this.vehicleId = vehicleId;
+        this.statusId = statusId;
     }
 
     //Getters and Setters
@@ -57,9 +57,7 @@ public class Issue {
         return id;
     }
 
-    //May want to delete? Only have the database use this with the constructors above?
     public void setId(int id) {
-        //TODO: Check if record is in database or the call came from the database
         this.id = id;
     }
 

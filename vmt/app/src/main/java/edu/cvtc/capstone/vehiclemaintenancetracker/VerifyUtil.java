@@ -81,7 +81,7 @@ public final class VerifyUtil {
             return true;
         }
 
-        return str.matches("^[a-zA-Z0-9 -]*$");
+        return str.matches("^[-a-zA-Z0-9]*$"); //don't move the first -
     }
 
     //For Years

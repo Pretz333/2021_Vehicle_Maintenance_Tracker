@@ -40,17 +40,17 @@ public class MaintenanceLog {
         setSystemId(systemId);
     }
 
-    //Everything, for use when reading from the database
+    //Everything, for use when reading from the database. Since it's in the database, it's already passed verification
     public MaintenanceLog(int id, String title, String description, Date date, double cost, Time time, int mileage, int vehicleId, int systemId) {
-        setId(id);
-        setTitle(title);
-        setDescription(description);
-        setDate(date);
-        setCost(cost);
-        setTime(time);
-        setMileage(mileage);
-        setVehicleId(vehicleId);
-        setSystemId(systemId);
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.date = date;
+        this.cost = cost;
+        this.time = time;
+        this.mileage = mileage;
+        this.vehicleId = vehicleId;
+        this.systemId = systemId;
     }
 
     //Getters and Setters
