@@ -12,16 +12,22 @@ public class Issue {
     private int vehicleId;
     private int statusId;
 
-    // No-construct constructor
-    public Issue() {
-        // ...
-    }
-
     //Constructors
     //Minimum
     public Issue(String title, int vehicleId, int statusId) {
         this.id = -1;
         setTitle(title);
+        this.priority = 0;
+        setVehicleId(vehicleId);
+        setStatusId(statusId);
+    }
+
+    //Everything but the id and priority
+    public Issue(String title, String description, int vehicleId, int statusId) {
+        this.id = -1;
+        setTitle(title);
+        setDescription(description);
+        this.priority = 0;
         setVehicleId(vehicleId);
         setStatusId(statusId);
     }
@@ -36,7 +42,7 @@ public class Issue {
         setStatusId(statusId);
     }
 
-    //Everything, for use when reading from the database
+    //Everything, for use when reading from the database. Since it's in the database, it's already passed verification
     public Issue(int id, String title, String description, int priority, int vehicleId, int statusId) {
         setId(id);
         setTitle(title);
@@ -94,15 +100,6 @@ public class Issue {
     }
 
     public void setVehicleId(int vehicleId) {
-        DBHelper dbHelper = new DBHelper(null);
-        if(dbHelper.checkIfVehicleIdExists(vehicleId)) {
-            this.vehicleId = vehicleId;
-        } else {
-            Log.w(TAG, "VehicleId did not exist");
-        }
-    }
-
-    public void setVehicleIdNoCheck(int vehicleId) {
         //DBHelper dbHelper = new DBHelper(null);
         //if(dbHelper.checkIfVehicleIdExists(vehicleId)) {
             this.vehicleId = vehicleId;
@@ -116,15 +113,6 @@ public class Issue {
     }
 
     public void setStatusId(int statusId) {
-        DBHelper dbHelper = new DBHelper(null);
-        if(dbHelper.checkIfIssueStatusIdExists(statusId)) {
-            this.statusId = statusId;
-        } else {
-            Log.w(TAG, "StatusId did not exist");
-        }
-    }
-
-    public void setStatusIdNoCheck(int statusId) {
         //DBHelper dbHelper = new DBHelper(null);
         //if(dbHelper.checkIfIssueStatusIdExists(statusId)) {
             this.statusId = statusId;
@@ -139,8 +127,6 @@ public class Issue {
         builder.append("Issue ID:").append(id)
                 .append("\nTitle:").append(title)
                 .append("\nDescription:").append(description);
-                //Append vehicle.name based where vehicle.id = vehicleId
-                //Append status.name based where status.id = statusId
         return builder.toString();
     }
 }

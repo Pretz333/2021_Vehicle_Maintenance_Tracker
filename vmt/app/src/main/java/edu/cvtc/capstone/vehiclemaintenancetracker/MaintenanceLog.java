@@ -58,9 +58,7 @@ public class MaintenanceLog {
         return id;
     }
 
-    //May want to delete? Only have the database use this with the constructors above?
     public void setId(int id) {
-        //TODO: Check if record is in database or the call came from the database
         this.id = id;
     }
 
@@ -131,11 +129,11 @@ public class MaintenanceLog {
 
     public void setVehicleId(int vehicleId) {
         //DBHelper dbHelper = new DBHelper(null);
-        if(true){//dbHelper.checkIfVehicleIdExists(vehicleId)) {
-            this.vehicleId = vehicleId;
-        } else {
-            Log.w(TAG, "VehicleID did not exist");
-        }
+        //if(dbHelper.checkIfVehicleIdExists(vehicleId)) {
+        this.vehicleId = vehicleId;
+        //} else {
+        //Log.w(TAG, "VehicleID did not exist");
+        //}
     }
 
     public int getSystemId() {
@@ -143,12 +141,12 @@ public class MaintenanceLog {
     }
 
     public void setSystemId(int systemId) {
-        DBHelper dbHelper = new DBHelper(null);
-        if(dbHelper.checkIfSystemIdExists(systemId)) {
-            this.systemId = systemId;
-        } else {
-            Log.w(TAG, "SystemId did not exist");
-        }
+        //DBHelper dbHelper = new DBHelper(null);
+        //if(dbHelper.checkIfSystemIdExists(systemId)) {
+        this.systemId = systemId;
+        //} else {
+        //Log.w(TAG, "SystemId did not exist");
+        //}
     }
 
     @Override
@@ -157,8 +155,6 @@ public class MaintenanceLog {
         builder.append("Log ID:").append(id)
                 .append("\nTitle:").append(title)
                 .append("\nDescription:").append(description);
-                //Append vehicle.name based where vehicle.id = vehicleId
-                //Append status.name based where status.id = statusId
         return builder.toString();
     }
 }

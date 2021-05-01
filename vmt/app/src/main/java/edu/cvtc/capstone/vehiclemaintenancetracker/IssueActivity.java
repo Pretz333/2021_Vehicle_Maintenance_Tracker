@@ -86,26 +86,17 @@ public class IssueActivity extends AppCompatActivity {
         // TODO: Replace with actual Database objects
         //Time time = new Time(Calendar.getInstance().getTimeInMillis());
 
-        Issue issue1 = new Issue();
-        issue1.setTitle("No Oil");
-        issue1.setDescription("All the oil leaked out Currently driving it without oil Probably should add some in the future");
-        issue1.setPriority(0);
-        issue1.setVehicleIdNoCheck(vehicleId);
-        //issue1.setStatusId(-1);
+        Issue issue1 = new Issue("No Oil",
+                "All the oil leaked out. Currently driving it without oil. Probably should add some in the future",
+                0, vehicleId, 0);
 
-        Issue issue2 = new Issue();
-        issue2.setTitle("Buy New Tires");
-        issue2.setDescription("The rear left tire is missing Although driving with three wheels is fine by me others are very judgemental");
-        issue2.setPriority(0);
-        issue2.setVehicleIdNoCheck(vehicleId);
-        //issue2.setStatusId(-1);
+        Issue issue2 = new Issue("Buy New Tires",
+                "The rear left tire is missing. Although driving with three wheels is fine by me, others are very judgemental",
+                0, vehicleId, 0);
 
-        Issue issue3 = new Issue();
-        issue3.setTitle("Air Vents");
-        issue3.setDescription("Exhaust fumes are leaking into the vehicle cabin Getting terrible headaches before work every day Should look into that later on Not a priority");
-        issue3.setPriority(0);
-        issue3.setVehicleIdNoCheck(vehicleId);
-        //issue3.setStatusId(-1);
+        Issue issue3 = new Issue("Air Vents",
+                "Exhaust fumes are leaking into the vehicle cabin. Getting terrible headaches before work every day. Should look into that later on. Not a priority",
+                0, vehicleId, 0);
 
         // Add the objects to the list
         issueArrayList.add(issue1);
@@ -148,8 +139,6 @@ public class IssueActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
-
-
 
 
 // The adapter for this activity's RecyclerView
