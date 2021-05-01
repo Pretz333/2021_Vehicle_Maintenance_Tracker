@@ -1,16 +1,20 @@
 package edu.cvtc.capstone.vehiclemaintenancetracker;
 
+import android.util.Log;
+
 public class IssueStatus {
+    public static final String TAG = "ISSUESTATUS_CLASS";
+
     private int id;
     private String description;
 
     //Pre-database insert
     public IssueStatus(String description) {
         this.id = -1;
-        this.description = description;
+        setDescription(description);
     }
 
-    //For use when reading from the database
+    //For use when reading from the database. Since it's in the database, it's already passed verification
     public IssueStatus(int id, String description) {
         this.id = id;
         this.description = description;
@@ -29,6 +33,10 @@ public class IssueStatus {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        if(VerifyUtil.isStringLettersOnly(description)) {
+            this.description = description;
+        } else {
+            Log.w(TAG, "Description unsafe");
+        }
     }
 }
