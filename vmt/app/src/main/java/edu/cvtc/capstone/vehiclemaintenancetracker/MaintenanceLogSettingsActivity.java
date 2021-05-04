@@ -175,7 +175,11 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
 
             //TODO
             if(!mMaintenanceDate.getText().toString().equals("")){
-                //log.setDate(new Date(mMaintenanceDate.getText().toString()));
+                //date will be null if it fails any of the validity checks (there are several)
+                Date date = VerifyUtil.parseStringToDate(mMaintenanceDate.getText().toString());
+                if(date != null) {
+                    log.setDate(date);
+                }
                 Log.d(TAG, "DATE: " + mMaintenanceDate.getText().toString());
             }
 

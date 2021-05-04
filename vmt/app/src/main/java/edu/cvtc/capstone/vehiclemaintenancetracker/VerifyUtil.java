@@ -7,7 +7,11 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 public final class VerifyUtil {
     public static final String TAG = "VERIFYUTIL_CLASS";
@@ -91,6 +95,63 @@ public final class VerifyUtil {
         }
 
         return year.length() == 4 && Integer.parseInt(year) > 1900;
+    }
+
+    public static Date parseStringToDate(String str){
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+
+        if(!str.matches("^[0-9/]*$")){ //they have invalid chars
+            return null;
+        }
+
+        if(str.length() != 10) { //They didn't follow MM/dd/yyyy
+            //Split on the "/"
+            String[] chunks = str.split("/", 3);
+
+            if(chunks.length != 3){
+                //they don't have two "/", meaning they didn't submit something in the proper format
+                return null;
+            }
+
+            //Add a leading zero to the month if it's only 1 character
+            if(chunks[0].length() == 1) {
+                chunks[0] = "0" + chunks[0];
+            }
+
+            //Add a leading zero to the day if it's only 1 character
+            if(chunks[1].length() == 1) {
+                chunks[1] = "0" + chunks[1];
+            }
+
+            //Fix the year
+            if(chunks[2].length() != 4) {
+                if (chunks[2].length() == 1) { //assume it's 2004 if they put in a 4
+                    chunks[2] = "200" + chunks[2];
+                } else if (chunks[2].length() == 2) {
+                    if(chunks[2].toCharArray()[0] == '0'){ //assume it's 200X if they put in a 0X
+                        chunks[2] = "20" + chunks[2];
+                    } else { //assume it's 19XX if they put in a XX (ex: 1984 if 84)
+                        chunks[2] = "19" + chunks[2];
+                    }
+                } else { //assume it's a typo, what kind of monster submits a "02/04/999" or "02/03/"
+                    return null;
+                }
+            }
+
+            //Reassemble
+            str = chunks[0] + "/" + chunks[1] + "/" + chunks[2];
+        }
+
+        if(str.length() != 10) { //then they forgot something, like a / or a section of the date,
+            //otherwise it would have been fixed by the above check
+            return null;
+        }
+
+        try {
+            return formatter.parse(str);
+        } catch (ParseException ex) {
+            return null;
+        }
     }
 
     //For VINs
