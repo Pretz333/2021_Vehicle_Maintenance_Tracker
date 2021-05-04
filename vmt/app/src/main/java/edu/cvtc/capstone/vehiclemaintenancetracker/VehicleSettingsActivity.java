@@ -76,22 +76,14 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
         Intent receivedIntent = getIntent();
         int vehicleId = receivedIntent.getIntExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, -1);
 
-        // Check if this activity should be in create mode or edit mode.
-        // If a VehicleID was passed to this activity, we will initiate edit mode.
-        // If no ID was passed to this activity, we will initiate create mode.
+        // If a valid VehicleID was passed to this activity, we want to pre-populate the fields
         if (vehicleId != -1) {
-
-            // Friendly snackbar for us developers
-            Snackbar.make(toolbar, "This activity is in edit mode", Snackbar.LENGTH_LONG).show();
-
-            // Since we are in edit mode (a vehicle id was passed to this activity),
-            // we now need to populate the fields with the data from that vehicle
+            //Since a vehicleID was passed, we also want to grab the vehicle from the db for later modification
             vehicle = dbHelper.getVehicleById(vehicleId);
             populateFieldsByObject(vehicle);
-
+          
             // This vehicle is already in the database, so the delete button should be visible.
             buttonDelete.setVisibility(View.VISIBLE);
-
         }
 
     }
@@ -165,11 +157,11 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
             if (vehicle == null || vehicle.getId() == -1) {
                 updateVehicleWithValues();
                 dbHelper.insertVehicle(vehicle);
-                Toast.makeText(this, "Successfully added " + vehicle.getName() + "!", Toast.LENGTH_SHORT).show();
+                Snackbar.make(v, "Successfully added " + vehicle.getName() + "!", Snackbar.LENGTH_SHORT).show();
             } else {
                 updateVehicleWithValues();
-                //TODO: Create an update statement in the DBHelper
-                Snackbar.make(v, "UPDATE vehicle", Snackbar.LENGTH_SHORT).show();
+                dbHelper.updateVehicle(vehicle);
+                Snackbar.make(v, "Successfully updated " + vehicle.getName() + "!", Snackbar.LENGTH_SHORT).show();
             }
         } else if (v.getId() == R.id.vehicleSettings_buttonDelete) {
             // Display the alert dialog to confirm the vehicle delete.
