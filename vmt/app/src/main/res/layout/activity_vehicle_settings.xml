@@ -63,7 +63,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textCapWords"
-                        android:maxLength="128" />
+                        android:maxLength="14" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -81,7 +81,8 @@
                         android:id="@+id/vehicleSettings_editTextMake"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textCapWords" />
+                        android:inputType="textCapWords"
+                        android:maxLength="16"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -99,7 +100,8 @@
                         android:id="@+id/vehicleSettings_editTextModel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textCapWords" />
+                        android:inputType="textCapWords"
+                        android:maxLength="16"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -132,11 +134,14 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputYear">
 
+                    <!-- Most license plates are 5-7 characters, 8 in some
+                     states according to Google-->
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/vehicleSettings_editTextPlate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textCapCharacters" />
+                        android:inputType="textCapCharacters"
+                        android:maxLength="8" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -185,7 +190,8 @@
                         android:id="@+id/vehicleSettings_editTextColor"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textCapWords" />
+                        android:inputType="textCapWords"
+                        android:maxLength="16"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -241,7 +247,8 @@
                         android:id="@+id/vehicleSettings_editTextVin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textCapCharacters" />
+                        android:inputType="textCapCharacters"
+                        android:maxLength="18"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 

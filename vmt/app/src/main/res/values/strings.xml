@@ -48,7 +48,7 @@
     <string name="vehicleSettingsActivity_editTextHint_model">Model</string>
     <string name="vehicleSettingsActivity_editTextHint_year">Year</string>
     <string name="vehicleSettingsActivity_editTextHint_plate">Plate Number</string>
-    <string name="vehicleSettingsActivity_editTextHint_datePurchased">Date of purchase</string>
+    <string name="vehicleSettingsActivity_editTextHint_datePurchased">Date of purchase (mm/dd/yyyy)</string>
 
     <string name="vehicleSettingsActivity_titleDisplayExtra">Other settings</string>
     <string name="vehicleSettingsActivity_editTextHint_color">Color</string>
@@ -64,9 +64,9 @@
 
     <string name="maintenanceLogSettings_editTextHint_title">Title</string>
     <string name="maintenanceLogSettings_editTextHint_description">Description</string>
-    <string name="maintenanceLogSettings_editTextHint_maintenanceDate">Maintenance Date</string>
+    <string name="maintenanceLogSettings_editTextHint_maintenanceDate">Maintenance Date (mm/dd/yyyy)</string>
     <string name="maintenanceLogSettings_editTextHint_cost">Cost of Maintenance</string>
-    <string name="maintenanceLogSettings_editTextHint_time">Total Time of Maintenance</string>
+    <string name="maintenanceLogSettings_editTextHint_time">Total Time of Maintenance (hh:mm)</string>
     <string name="maintenanceLogSettings_editTextHint_mileage">Mileage</string>
 
     <string name="maintenanceLogSettings_systemLabel">System:</string>

@@ -153,6 +153,8 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
                 updateVehicleWithValues();
                 dbHelper.insertVehicle(vehicle);
                 Snackbar.make(v, "Successfully added " + vehicle.getName() + "!", Snackbar.LENGTH_SHORT).show();
+                // Close this activity and return to the main activity
+                VehicleSettingsActivity.super.finish();
             } else {
                 updateVehicleWithValues();
                 dbHelper.updateVehicle(vehicle);
