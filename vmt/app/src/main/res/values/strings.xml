@@ -71,7 +71,8 @@
 
     <string name="maintenanceLogSettings_systemLabel">System:</string>
 
-    <string name="maintenanceLogSettings_buttonText">Save Changes</string>
+    <string name="maintenanceLogSettings_buttonSave">Save Changes</string>
+    <string name="maintenanceLogSettings_buttonDelete">Delete Log</string>
 
     <!-- Strings regarding LogActivity -->
     <string name="card_log_title">Log Title</string>
@@ -105,10 +106,11 @@
     <string name="night_mode">Night Mode</string>
     <string name="day_mode">Day Mode</string>
 
-    <!-- Delete Alert Dialog strings -->
-    <string name="deleteAlertDialog_message">Do you want to delete this vehicle?</string>
-    <string name="deleteAlertDialog_buttonYes">Yes</string>
-    <string name="deleteAlertDialog_buttonNo">No</string>
+    <!-- Alert Dialog strings -->
+    <string name="alertDialog_messageDeleteVehicle">Do you want to delete this vehicle?</string>
+    <string name="alertDialog_messageDeleteMaintenanceLog">Do you want to delete this maintenance log?</string>
+    <string name="alertDialog_buttonYes">Yes</string>
+    <string name="alertDialog_buttonNo">No</string>
 
 
 </resources>

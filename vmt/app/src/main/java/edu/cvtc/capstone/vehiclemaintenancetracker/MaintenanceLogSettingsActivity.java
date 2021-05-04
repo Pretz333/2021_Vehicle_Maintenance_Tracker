@@ -2,17 +2,21 @@ package edu.cvtc.capstone.vehiclemaintenancetracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -57,6 +61,59 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
                 }
         );
 
+        // Set the delete button's onClickListener
+        findViewById(R.id.maintenanceLogSettings_buttonDelete).setOnClickListener(
+                v -> {
+                    Log.d(TAG, String.valueOf(v.getId()));
+                    if (v.getId() == R.id.maintenanceLogSettings_buttonDelete) {
+                        // Display the alert dialog to confirm the log delete.
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MaintenanceLogSettingsActivity.this);
+
+                        // Create the LayoutInflater to use the custom layout.
+                        LayoutInflater inflater = getLayoutInflater();
+                        View view = MaintenanceLogSettingsActivity.this.getLayoutInflater().inflate(R.layout.alert_dialog, null);
+
+                        // Get a reference to the buttons in the alert dialog
+                        Button yesButton = view.findViewById(R.id.alertDialog_buttonYes);
+                        Button noButton = view.findViewById(R.id.alertDialog_buttonNo);
+
+                        builder.setView(view);
+                        AlertDialog alert = builder.create();
+
+                        // Set the text for the message in the alert dialog
+                        TextView alertDialogText = view.findViewById(R.id.alertDialog_message);
+                        alertDialogText.setText(R.string.alertDialog_messageDeleteMaintenanceLog);
+
+                        // The yes button was clicked.
+                        yesButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // Delete maintenance log from the database
+                                dbHelper.deleteMaintenanceLog(log);
+
+                                // Close the alert dialog box
+                                alert.cancel();
+
+                                // Display a toast that the maintenance log was deleted
+                                Toast.makeText(getApplicationContext(), "The maintenance log was deleted.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                        // The no button was clicked.
+                        noButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // Close the alert dialog
+                                alert.cancel();
+                            }
+                        });
+
+                        // Display the alert dialog
+                        alert.show();
+                    }
+                }
+        );
+
         // Get a reference to the member objects
         mTitle = findViewById(R.id.maintenanceLogSettings_editTextTitle);
         mDescription = findViewById(R.id.maintenanceLogSettings_editTextDescription);
@@ -65,6 +122,7 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
         mTime = findViewById(R.id.maintenanceLogSettings_editTextTime);
         mMileage = findViewById(R.id.maintenanceLogSettings_editTextMileage);
         mSystem = findViewById(R.id.maintenanceLogSettings_spinnerSystems);
+        Button buttonDelete = findViewById(R.id.maintenanceLogSettings_buttonDelete);
 
         // Set up the systems spinner if there are systems in the db
         List<System> systems = dbHelper.getAllSystems();
@@ -87,6 +145,9 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
             //Since a logId was passed, we also want to grab the log from the db for later modification
             log = dbHelper.getLogByLogId(logId);
             populateFieldsByObject(log);
+
+            // Since the log was already in the database, the delete button should be visible.
+            buttonDelete.setVisibility(View.VISIBLE);
         }
     }
 

@@ -8,12 +8,11 @@
     android:padding="@dimen/adultPadding">
 
     <TextView
-        android:id="@+id/deleteAlertDialog_message"
+        android:id="@+id/alertDialog_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/minorPadding"
         android:fontFamily="sans-serif"
-        android:text="@string/deleteAlertDialog_message"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,22 +20,22 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/deleteAlertDialog_buttonYes"
+        android:id="@+id/alertDialog_buttonYes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/adultPadding"
-        android:text="@string/deleteAlertDialog_buttonYes"
-        app:layout_constraintEnd_toStartOf="@+id/deleteAlertDialog_buttonNo"
+        android:text="@string/alertDialog_buttonYes"
+        app:layout_constraintEnd_toStartOf="@+id/alertDialog_buttonNo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/deleteAlertDialog_message" />
+        app:layout_constraintTop_toBottomOf="@id/alertDialog_message" />
 
     <Button
-        android:id="@+id/deleteAlertDialog_buttonNo"
+        android:id="@+id/alertDialog_buttonNo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/adultPadding"
-        android:text="@string/deleteAlertDialog_buttonNo"
+        android:text="@string/alertDialog_buttonNo"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/deleteAlertDialog_buttonYes"
-        app:layout_constraintTop_toBottomOf="@id/deleteAlertDialog_message" />
+        app:layout_constraintStart_toEndOf="@+id/alertDialog_buttonYes"
+        app:layout_constraintTop_toBottomOf="@id/alertDialog_message" />
 </androidx.constraintlayout.widget.ConstraintLayout>

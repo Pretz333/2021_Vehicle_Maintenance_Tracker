@@ -164,11 +164,21 @@
                     app:layout_constraintTop_toBottomOf="@id/maintenanceLogSettings_textViewSystemLabel" />
 
                 <Button
+                    android:id="@+id/maintenanceLogSettings_buttonDelete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/minorPadding"
+                    android:text="@string/maintenanceLogSettings_buttonDelete"
+                    android:visibility="invisible"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/maintenanceLogSettings_spinnerSystems" />
+
+                <Button
                     android:id="@+id/maintenanceLogSettings_buttonSave"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/minorPadding"
-                    android:text="@string/maintenanceLogSettings_buttonText"
+                    android:text="@string/maintenanceLogSettings_buttonSave"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/maintenanceLogSettings_spinnerSystems" />
 

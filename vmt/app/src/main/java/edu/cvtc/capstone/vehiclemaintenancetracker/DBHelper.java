@@ -620,6 +620,18 @@ public class DBHelper extends SQLiteOpenHelper {
         db.delete(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID + "=?", selectionArgs);
     }
 
+    public void deleteMaintenanceLog (MaintenanceLog maintenanceLog) {
+        // Create the selection criteria
+        final String selection = MaintenanceLogSQL._ID + " =?";
+        final String[] selectionArgs = {Integer.toString(maintenanceLog.getId())};
+
+        // Get a writable database connection
+        SQLiteDatabase db = getWritableDatabase();
+
+        // Call the delete method.
+        db.delete(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, selection, selectionArgs);
+    }
+
     private static final class VehicleSQL implements BaseColumns {
         // Constants for vehicle table and fields
         private static final String TABLE_NAME_VEHICLE = "vehicle";
