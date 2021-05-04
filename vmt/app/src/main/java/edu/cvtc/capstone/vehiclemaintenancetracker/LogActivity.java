@@ -3,6 +3,7 @@ package edu.cvtc.capstone.vehiclemaintenancetracker;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -143,17 +145,19 @@ public class LogActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menuItem_log_filter:
-                Snackbar.make(toolbar, "Filter button tapped", Snackbar.LENGTH_SHORT).show();
-                break;
-            case R.id.menuItem_log_search:
-                Snackbar.make(toolbar, "Search button tapped", Snackbar.LENGTH_SHORT).show();
-                break;
+        int selectedItemId = item.getItemId();
 
-            default:
-                // ...
+        if (selectedItemId == R.id.menuItem_log_filter) {
+            Snackbar.make(toolbar, "Filter button tapped", Snackbar.LENGTH_SHORT).show();
+        } else if (selectedItemId == R.id.menuItem_log_search) {
+            Snackbar.make(toolbar, "Search button tapped", Snackbar.LENGTH_SHORT).show();
+        } else if (selectedItemId == R.id.menuItem_addALog) {
+            // Go to the log settings activity and send an id of -1 so it knows we're creating a new log
+            Intent intent = new Intent(LogActivity.this, MaintenanceLogSettingsActivity.class);
+            intent.putExtra(LogActivity.EXTRA_LOG_ID, -1);
+            startActivity(intent);
         }
+
         return super.onOptionsItemSelected(item);
     }
 }

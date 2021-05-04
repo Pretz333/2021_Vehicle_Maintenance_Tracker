@@ -100,6 +100,7 @@
     <string name="no_vehicles">You have no vehicles, add one to get started</string>
     <string name="night_mode">Night Mode</string>
     <string name="day_mode">Day Mode</string>
+    <string name="add_new_log">Add A New Log</string>
 
 
 </resources>
