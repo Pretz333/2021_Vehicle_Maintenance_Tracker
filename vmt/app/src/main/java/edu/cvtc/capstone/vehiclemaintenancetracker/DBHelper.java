@@ -11,6 +11,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -307,17 +308,17 @@ public class DBHelper extends SQLiteOpenHelper {
 
         //Get all of the fields
         String[] categoryColumns = {
-            VehicleSQL._ID,
-            VehicleSQL.COLUMN_VEHICLE_MAKE,
-            VehicleSQL.COLUMN_VEHICLE_MODEL,
-            VehicleSQL.COLUMN_VEHICLE_YEAR,
-            VehicleSQL.COLUMN_VEHICLE_NICKNAME,
-            VehicleSQL.COLUMN_VEHICLE_COLOR,
-            VehicleSQL.COLUMN_VEHICLE_MILEAGE,
-            VehicleSQL.COLUMN_VEHICLE_VIN,
-            VehicleSQL.COLUMN_VEHICLE_LICENSE_PLATE,
-            VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED,
-            VehicleSQL.COLUMN_VEHICLE_VALUE
+                VehicleSQL._ID,
+                VehicleSQL.COLUMN_VEHICLE_MAKE,
+                VehicleSQL.COLUMN_VEHICLE_MODEL,
+                VehicleSQL.COLUMN_VEHICLE_YEAR,
+                VehicleSQL.COLUMN_VEHICLE_NICKNAME,
+                VehicleSQL.COLUMN_VEHICLE_COLOR,
+                VehicleSQL.COLUMN_VEHICLE_MILEAGE,
+                VehicleSQL.COLUMN_VEHICLE_VIN,
+                VehicleSQL.COLUMN_VEHICLE_LICENSE_PLATE,
+                VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED,
+                VehicleSQL.COLUMN_VEHICLE_VALUE
         };
 
         //Write the query in a SQL injection-proof way
@@ -365,6 +366,65 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
 
         return v;
+    }
+
+    public MaintenanceLog getLogByLogId(int id) {
+        SQLiteDatabase db = getReadableDatabase();
+        MaintenanceLog log = null;
+
+        //Get all of the fields
+        String[] categoryColumns = {
+                MaintenanceLogSQL._ID,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DESCRIPTION,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_COST,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TOTAL_TIME,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_MILEAGE,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_SYSTEM_ID
+        };
+
+        String filter = MaintenanceLogSQL._ID + " = ?";
+        String[] filterArgs = {String.valueOf(id)};
+
+        try {
+            Cursor cursor = db.query(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, categoryColumns, filter,
+                    filterArgs, null, null, null);
+
+
+            int idPosition = cursor.getColumnIndex(MaintenanceLogSQL._ID);
+            int titlePosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE);
+            int descriptionPosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DESCRIPTION);
+            int datePosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE);
+            int costPosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_COST);
+            int timePosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TOTAL_TIME);
+            int mileagePosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_MILEAGE);
+            int vehicleIdPosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID);
+            int systemIdPosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_SYSTEM_ID);
+
+            //Get the information of the first matching vehicle (so be as specific as possible!)
+            cursor.moveToNext();
+            log = new MaintenanceLog(
+                    cursor.getInt(idPosition),
+                    cursor.getString(titlePosition),
+                    cursor.getString(descriptionPosition),
+                    new Date(cursor.getInt(datePosition)),
+                    cursor.getInt(costPosition),
+                    new Time(cursor.getInt(timePosition)),
+                    cursor.getInt(mileagePosition),
+                    cursor.getInt(vehicleIdPosition),
+                    cursor.getInt(systemIdPosition)
+            );
+            cursor.close();
+        } catch (Exception ex) {
+            Log.e(TAG, ex.toString());
+            VerifyUtil.alertUser(context, "Database Retrieval Failed", "Unable to fetch log information, please try again");
+        }
+
+        db.close();
+
+        return log;
     }
 
     public int getVehicleIdByNickname(String name) {

@@ -1,6 +1,7 @@
 package edu.cvtc.capstone.vehiclemaintenancetracker;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,6 +27,8 @@ import java.util.Date;
 import java.util.Locale;
 
 public class LogActivity extends AppCompatActivity {
+    public static final String TAG = "LogActivity_CLASS";
+    public static final String EXTRA_LOG_ID = "edu.cvtc.capstone.vehiclemaintenancetracker.EXTRA_LOG_ID";
 
     // Member variables
     private int vehicleId;
@@ -43,8 +46,7 @@ public class LogActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Back button, better than the Manifest way for
-        // reasons... - Alexander
+        // Back button, better than the Manifest way for reasons... - Alexander
         toolbar.setNavigationIcon(R.drawable.ic_back);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +64,7 @@ public class LogActivity extends AppCompatActivity {
             // Initialize the log list
             logArrayList = new ArrayList<>();
 
-            // Generate logs as demo-data
+            // Generate logs as demo-data. TODO: Don't
             prepDemoData();
 
             // Prepare the RecyclerView
@@ -78,7 +80,6 @@ public class LogActivity extends AppCompatActivity {
     private void prepDemoData() {
 
         // Create objects
-        // TODO: Replace with actual Database objects
         Time time = new Time(Calendar.getInstance().getTimeInMillis());
 
         MaintenanceLog log1 = new MaintenanceLog(0,
@@ -180,6 +181,8 @@ class LogRecyclerAdapter extends RecyclerView.Adapter<LogRecyclerAdapter.ViewHol
         // Member variables
         Context context;
 
+        private int logID;
+
         final TextView title;
         final TextView description;
         final TextView date;
@@ -206,12 +209,20 @@ class LogRecyclerAdapter extends RecyclerView.Adapter<LogRecyclerAdapter.ViewHol
         // Event handler for the edit button
         @Override
         public void onClick(View v) {
-            Snackbar.make(title, "Edit button tapped on RecyclerView element: " + getLayoutPosition(), Snackbar.LENGTH_SHORT).show();
+            // Create the target intent
+            Intent intent = new Intent(context, MaintenanceLogSettingsActivity.class);
+
+            // Extras include the ID of the vehicle and the Nickname
+            intent.putExtra(LogActivity.EXTRA_LOG_ID, logID);
+
+            // Start the activity
+            context.startActivity(intent);
         }
 
         // One-hitter method for setting the data for all
         // the TextViews
         public void setDataByObject(MaintenanceLog log) {
+            this.logID = log.getId();
             title.setText(log.getTitle());
             description.setText(log.getDescription());
             date.setText(simpleDateFormat.format(log.getDate()));
