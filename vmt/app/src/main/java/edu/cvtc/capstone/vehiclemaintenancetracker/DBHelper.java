@@ -201,6 +201,33 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
+    //Takes in the vehicle, grabs its id and updated the record based on the id
+    public void updateVehicle(Vehicle vehicle) {
+        //Get a writable db
+        SQLiteDatabase db = getWritableDatabase();
+
+        //Get set all columns
+        ContentValues values = new ContentValues();
+        values.put(VehicleSQL._ID, vehicle.getId());
+        values.put(VehicleSQL.COLUMN_VEHICLE_MAKE, vehicle.getMake());
+        values.put(VehicleSQL.COLUMN_VEHICLE_MODEL, vehicle.getModel());
+        values.put(VehicleSQL.COLUMN_VEHICLE_YEAR, vehicle.getYear());
+        values.put(VehicleSQL.COLUMN_VEHICLE_NICKNAME, vehicle.getName());
+        values.put(VehicleSQL.COLUMN_VEHICLE_COLOR, vehicle.getColor());
+        values.put(VehicleSQL.COLUMN_VEHICLE_MILEAGE, vehicle.getMileage());
+        values.put(VehicleSQL.COLUMN_VEHICLE_VIN, vehicle.getVIN());
+        values.put(VehicleSQL.COLUMN_VEHICLE_LICENSE_PLATE, vehicle.getLicensePlate());
+        if(vehicle.getPurchaseDate() != null) {
+            values.put(VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED, vehicle.getPurchaseDate().getTime());
+        }
+        values.put(VehicleSQL.COLUMN_VEHICLE_VALUE, vehicle.getValue());
+
+        //Grab the vehicle ID and put it into a String[] for the where clause
+        String[] args = {String.valueOf(vehicle.getId())};
+
+        db.update(VehicleSQL.TABLE_NAME_VEHICLE, values, VehicleSQL._ID + "=?", args);
+    }
+
     public ArrayList<Vehicle> getAllVehicles() {
         SQLiteDatabase db = getReadableDatabase();
 
