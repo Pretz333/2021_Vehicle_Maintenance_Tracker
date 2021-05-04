@@ -617,6 +617,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         // Call the delete method.
         db.delete(VehicleSQL.TABLE_NAME_VEHICLE, selection, selectionArgs);
+        db.delete(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID + "=?", selectionArgs);
     }
 
     private static final class VehicleSQL implements BaseColumns {

@@ -80,11 +80,14 @@ public class LogActivity extends AppCompatActivity {
             //Display the demo-data.
             //prepDemoData();
 
+            //Refresh the RecyclerView
+            prepRecyclerView();
+
             //Only display the logs if there are logs, otherwise we'll display the "you have none" text
             if(logArrayList.isEmpty()){
                 findViewById(R.id.noLogsTextView).setVisibility(View.VISIBLE);
             } else {
-                prepRecyclerView();
+                findViewById(R.id.noLogsTextView).setVisibility(View.INVISIBLE);
             }
         } else {
             // Not a valid id

@@ -58,12 +58,14 @@ public class MainActivity extends AppCompatActivity{
         DBHelper dbHelper = new DBHelper(MainActivity.this);
         vehicleArrayList = dbHelper.getAllVehicles();
 
+        // Fill the RecyclerView and its Adapter with some data.
+        prepRecyclerView();
+
         if (vehicleArrayList.isEmpty()) {
             //Display the "You have no vehicles" message
             findViewById(R.id.noVehiclesTextView).setVisibility(View.VISIBLE);
         } else {
-            // Fill the RecyclerView and its Adapter with some data.
-            prepRecyclerView();
+            findViewById(R.id.noVehiclesTextView).setVisibility(View.INVISIBLE);
         }
     }
 
