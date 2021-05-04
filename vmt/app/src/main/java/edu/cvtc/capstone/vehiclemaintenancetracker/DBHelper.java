@@ -62,6 +62,8 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(IssueLogSQL.SQL_CREATE_TABLE_ISSUE_LOG);
     }
 
+    // Inserts
+
     public void insertVehicle(Vehicle vehicle) {
 
         SQLiteDatabase db = getWritableDatabase();
@@ -209,12 +211,13 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    //Takes in the vehicle, grabs its id and updated the record based on the id
+    // Updates
+
     public void updateVehicle(Vehicle vehicle) {
         //Get a writable db
         SQLiteDatabase db = getWritableDatabase();
 
-        //Get set all columns
+        //Set all columns
         ContentValues values = new ContentValues();
         values.put(VehicleSQL._ID, vehicle.getId());
         values.put(VehicleSQL.COLUMN_VEHICLE_MAKE, vehicle.getMake());
@@ -235,6 +238,34 @@ public class DBHelper extends SQLiteOpenHelper {
 
         db.update(VehicleSQL.TABLE_NAME_VEHICLE, values, VehicleSQL._ID + "=?", args);
     }
+
+    public void updateLog(MaintenanceLog maintenanceLog) {
+        //Get a writable db
+        SQLiteDatabase db = getWritableDatabase();
+
+        Log.d(TAG, String.valueOf(maintenanceLog.getId()));
+
+        //Set all values
+        ContentValues values = new ContentValues();
+        values.put(MaintenanceLogSQL._ID, maintenanceLog.getId());
+        values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE, maintenanceLog.getTitle());
+        values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DESCRIPTION, maintenanceLog.getDescription());
+        values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE, maintenanceLog.getDate().getTime());
+        values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_COST, maintenanceLog.getCost());
+        if(maintenanceLog.getTime() != null) {
+            values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TOTAL_TIME, maintenanceLog.getTime().getTime());
+        }
+        values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_MILEAGE, maintenanceLog.getMileage());
+        values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID, maintenanceLog.getVehicleId());
+        values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_SYSTEM_ID, maintenanceLog.getSystemId());
+
+        //Grab the ID and put it into a String[] for the where clause
+        String[] args = {String.valueOf(maintenanceLog.getId())};
+
+        db.update(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, values, MaintenanceLogSQL._ID + "=?", args);
+    }
+
+    // Retrievals
 
     public ArrayList<Vehicle> getAllVehicles() {
         SQLiteDatabase db = getReadableDatabase();
@@ -522,6 +553,8 @@ public class DBHelper extends SQLiteOpenHelper {
         return id;
     }
 
+    // Checks
+
     public boolean checkIfVehicleIdExists(int id) {
         SQLiteDatabase db = getReadableDatabase();
 
@@ -607,6 +640,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
+    // Deletions
+
     public void deleteVehicle (Vehicle vehicle) {
         // Create the selection criteria
         final String selection = VehicleSQL._ID + " =?";
@@ -632,6 +667,8 @@ public class DBHelper extends SQLiteOpenHelper {
         db.delete(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, selection, selectionArgs);
     }
 
+    // Base SQL
+
     private static final class VehicleSQL implements BaseColumns {
         // Constants for vehicle table and fields
         private static final String TABLE_NAME_VEHICLE = "vehicle";
@@ -649,17 +686,17 @@ public class DBHelper extends SQLiteOpenHelper {
         // Constant to create the vehicle table
         private static final String SQL_CREATE_TABLE_VEHICLE =
                 "CREATE TABLE " + TABLE_NAME_VEHICLE + " (" +
-                    _ID + " INTEGER PRIMARY KEY, " +
-                    COLUMN_VEHICLE_MAKE + " TEXT, " +
-                    COLUMN_VEHICLE_MODEL + " TEXT, " +
-                    COLUMN_VEHICLE_YEAR + " INTEGER, " +
-                    COLUMN_VEHICLE_NICKNAME + " TEXT NOT NULL, " +
-                    COLUMN_VEHICLE_COLOR + " TEXT, " +
-                    COLUMN_VEHICLE_MILEAGE + " INTEGER, " +
-                    COLUMN_VEHICLE_VIN + " INTEGER, " +
-                    COLUMN_VEHICLE_LICENSE_PLATE + " TEXT, " +
-                    COLUMN_VEHICLE_DATE_PURCHASED + " INTEGER, " +
-                    COLUMN_VEHICLE_VALUE + " INTEGER)";
+                        _ID + " INTEGER PRIMARY KEY, " +
+                        COLUMN_VEHICLE_MAKE + " TEXT, " +
+                        COLUMN_VEHICLE_MODEL + " TEXT, " +
+                        COLUMN_VEHICLE_YEAR + " INTEGER, " +
+                        COLUMN_VEHICLE_NICKNAME + " TEXT NOT NULL, " +
+                        COLUMN_VEHICLE_COLOR + " TEXT, " +
+                        COLUMN_VEHICLE_MILEAGE + " INTEGER, " +
+                        COLUMN_VEHICLE_VIN + " INTEGER, " +
+                        COLUMN_VEHICLE_LICENSE_PLATE + " TEXT, " +
+                        COLUMN_VEHICLE_DATE_PURCHASED + " INTEGER, " +
+                        COLUMN_VEHICLE_VALUE + " INTEGER)";
 
         // Constant to drop the vehicle table
         private static final String SQL_DROP_TABLE_VEHICLE = "DROP TABLE IF EXISTS " + TABLE_NAME_VEHICLE;

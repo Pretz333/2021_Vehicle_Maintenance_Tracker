@@ -45,16 +45,14 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
         //Set the save button's onClickListener
         findViewById(R.id.maintenanceLogSettings_buttonSave).setOnClickListener(
                 v -> {
-                    Log.d(TAG, String.valueOf(v.getId()));
                     if (v.getId() == R.id.maintenanceLogSettings_buttonSave) {
                         updateLogWithValues();
                         //If we found a vehicle from the id passed, update it. If not, make one
                         if (log == null || log.getId() == -1) {
                             dbHelper.insertMaintenanceLog(log);
-                            ;
                             Snackbar.make(v, "Successfully added the log!", Snackbar.LENGTH_SHORT).show();
                         } else {
-                            //TODO
+                            dbHelper.updateLog(log);
                             Snackbar.make(v, "Successfully updated the log!", Snackbar.LENGTH_SHORT).show();
                         }
                     }
@@ -64,7 +62,6 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
         // Set the delete button's onClickListener
         findViewById(R.id.maintenanceLogSettings_buttonDelete).setOnClickListener(
                 v -> {
-                    Log.d(TAG, String.valueOf(v.getId()));
                     if (v.getId() == R.id.maintenanceLogSettings_buttonDelete) {
                         // Display the alert dialog to confirm the log delete.
                         AlertDialog.Builder builder = new AlertDialog.Builder(MaintenanceLogSettingsActivity.this);
@@ -85,27 +82,21 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
                         alertDialogText.setText(R.string.alertDialog_messageDeleteMaintenanceLog);
 
                         // The yes button was clicked.
-                        yesButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                // Delete maintenance log from the database
-                                dbHelper.deleteMaintenanceLog(log);
+                        yesButton.setOnClickListener(v1 -> {
+                            // Delete maintenance log from the database
+                            dbHelper.deleteMaintenanceLog(log);
 
-                                // Close the alert dialog box
-                                alert.cancel();
+                            // Close the alert dialog box
+                            alert.cancel();
 
-                                // Display a toast that the maintenance log was deleted
-                                Toast.makeText(getApplicationContext(), "The maintenance log was deleted.", Toast.LENGTH_SHORT).show();
-                            }
+                            // Display a toast that the maintenance log was deleted
+                            Toast.makeText(getApplicationContext(), "The maintenance log was deleted.", Toast.LENGTH_SHORT).show();
                         });
 
                         // The no button was clicked.
-                        noButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                // Close the alert dialog
-                                alert.cancel();
-                            }
+                        noButton.setOnClickListener(v12 -> {
+                            // Close the alert dialog
+                            alert.cancel();
                         });
 
                         // Display the alert dialog
@@ -166,16 +157,15 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
         mSystem.setSelection(maintenanceLog.getSystemId());
     }
 
-    private void updateLogWithValues(){
+    private void updateLogWithValues() {
         //Ensure they have the minimum values
-        if(vehicleId != -1 && !mTitle.getText().toString().equals("")){
+        if((vehicleId != -1 || log.getVehicleId() != -1) && !mTitle.getText().toString().equals("")){
+
             //Make a new log if we're not editing one
             if(log == null){
                 log = new MaintenanceLog(mTitle.getText().toString(), vehicleId);
-            }
-
-            if(!mTitle.getText().toString().equals("")){
-                //run it through the verifier
+            } else if (!mTitle.getText().toString().equals("")) {
+                //since the other option adds the title to new logs, we'll set the title for edited logs
                 log.setTitle(mTitle.getText().toString());
             }
 
@@ -185,12 +175,12 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
 
             //TODO
             if(!mMaintenanceDate.getText().toString().equals("")){
-                log.setDate(new Date(mMaintenanceDate.getText().toString()));
+                //log.setDate(new Date(mMaintenanceDate.getText().toString()));
                 Log.d(TAG, "DATE: " + mMaintenanceDate.getText().toString());
             }
 
             if(!mCost.getText().toString().equals("")){
-                log.setCost(Double.parseDouble(mMaintenanceDate.getText().toString()));
+                log.setCost(Double.parseDouble(mCost.getText().toString()));
             }
 
             //TODO
@@ -200,7 +190,7 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
             }
 
             if(!mMileage.getText().toString().equals("")){
-                log.setMileage(Integer.parseInt(mTime.getText().toString()));
+                log.setMileage(Integer.parseInt(mMileage.getText().toString()));
             }
 
             //TODO: Test this
