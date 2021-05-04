@@ -43,15 +43,19 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity implements
         mMileage = findViewById(R.id.maintenanceLogSettings_editTextMileage);
         mSystem = findViewById(R.id.maintenanceLogSettings_spinnerSystems);
 
-        // Set the listener for the selected item if it is not empty
-        if (mSystem != null) {
+        // Set up the systems spinner if there are systems in the db
+        List<System> systems = dbHelper.getAllSystems();
+        if(systems.size() > 0) {
+            mSystem.setVisibility(View.VISIBLE); //It defaults to invisible
             mSystem.setOnItemSelectedListener(this);
+            //TODO: Fix this
+            ArrayAdapter<System> dataAdapter = new ArrayAdapter(MaintenanceLogSettingsActivity.this,
+                    android.R.layout.simple_spinner_item, systems);
+            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            mSystem.setAdapter(dataAdapter);
         }
 
-        // Use the system table data to populate the spinner
-        populateSystemSpinner();
-
-        // Get the logID from the intent
+        // Get the logId from the intent
         Intent receivedIntent = getIntent();
         int logID = receivedIntent.getIntExtra(LogActivity.EXTRA_LOG_ID, -1);
 
@@ -80,17 +84,6 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity implements
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
-    }
-
-    private void populateSystemSpinner() {
-        List<System> systems = dbHelper.getAllSystems();
-
-        ArrayAdapter<System> dataAdapter = new ArrayAdapter(MaintenanceLogSettingsActivity.this,
-                android.R.layout.simple_spinner_item, systems);
-
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        mSystem.setAdapter(dataAdapter);
     }
 
     private void populateFieldsByObject(MaintenanceLog maintenanceLog) {

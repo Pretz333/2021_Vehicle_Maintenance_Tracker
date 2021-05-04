@@ -32,8 +32,8 @@ public class LogActivity extends AppCompatActivity {
     public static final String TAG = "LogActivity_CLASS";
     public static final String EXTRA_LOG_ID = "edu.cvtc.capstone.vehiclemaintenancetracker.EXTRA_LOG_ID";
 
-    // Member variables
-    private int vehicleId;
+    int vehicleId;
+    DBHelper dbHelper = new DBHelper(LogActivity.this);
     Toolbar toolbar;
 
     // An array of logs used to populate the RecyclerView
@@ -60,18 +60,32 @@ public class LogActivity extends AppCompatActivity {
         // Grab the vehicleId from the received intent
         vehicleId = getIntent().getIntExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, -1);
 
+        populateRecyclerView();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        populateRecyclerView();
+    }
+
+    private void populateRecyclerView(){
         // Only pull logs if the vehicleId is valid.
-        // In other words, we can't get logs from a vehicle that doesn't exist
+        // In other words, we don't want to get logs from a vehicle that doesn't exist
         if (vehicleId != -1) {
             // Initialize the log list
-            logArrayList = new ArrayList<>();
+            logArrayList = dbHelper.getAllLogsByVehicleId(vehicleId);
 
-            // Generate logs as demo-data. TODO: Don't
-            prepDemoData();
+            //Display the demo-data.
+            //prepDemoData();
 
-            // Prepare the RecyclerView
-            prepRecyclerView();
-
+            //Only display the logs if there are logs, otherwise we'll display the "you have none" text
+            if(logArrayList.isEmpty()){
+                findViewById(R.id.noLogsTextView).setVisibility(View.VISIBLE);
+            } else {
+                prepRecyclerView();
+            }
         } else {
             // Not a valid id
             Snackbar.make(toolbar, String.format("The vehicle id of %s is not valid", vehicleId), Snackbar.LENGTH_INDEFINITE).show();
@@ -80,6 +94,7 @@ public class LogActivity extends AppCompatActivity {
 
     // Add a few fake maintenance logs to the logArrayList to be used in the RecyclerView for demo
     private void prepDemoData() {
+        logArrayList = new ArrayList<>();
 
         // Create objects
         Time time = new Time(Calendar.getInstance().getTimeInMillis());

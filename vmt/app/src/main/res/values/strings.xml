@@ -101,6 +101,7 @@
     <string name="night_mode">Night Mode</string>
     <string name="day_mode">Day Mode</string>
     <string name="add_new_log">Add A New Log</string>
+    <string name="no_logs">You have no saved maintenance logs, add one to get started.</string>
 
 
 </resources>

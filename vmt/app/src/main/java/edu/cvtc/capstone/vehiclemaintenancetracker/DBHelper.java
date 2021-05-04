@@ -284,6 +284,62 @@ public class DBHelper extends SQLiteOpenHelper {
         return vehicles;
     }
 
+    public ArrayList<MaintenanceLog> getAllLogsByVehicleId(int id) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        //Get all of the fields
+        String[] categoryColumns = {
+                MaintenanceLogSQL._ID,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DESCRIPTION,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_COST,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TOTAL_TIME,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_MILEAGE,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_SYSTEM_ID
+        };
+
+        String orderBy = MaintenanceLogSQL._ID;
+        String filter = MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID + " = ?";
+        String[] filterArgs = {String.valueOf(id)};
+
+        ArrayList<MaintenanceLog> logs = new ArrayList<>();
+
+        Cursor cursor = db.query(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, categoryColumns, filter,
+                filterArgs, null, null, orderBy);
+
+
+        int idPosition = cursor.getColumnIndex(MaintenanceLogSQL._ID);
+        int titlePosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE);
+        int descriptionPosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DESCRIPTION);
+        int datePosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE);
+        int costPosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_COST);
+        int timePosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TOTAL_TIME);
+        int mileagePosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_MILEAGE);
+        int vehicleIdPosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID);
+        int systemIdPosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_SYSTEM_ID);
+
+        while (cursor.moveToNext()) {
+            logs.add(new MaintenanceLog(
+                    cursor.getInt(idPosition),
+                    cursor.getString(titlePosition),
+                    cursor.getString(descriptionPosition),
+                    new Date(cursor.getInt(datePosition)),
+                    cursor.getInt(costPosition),
+                    new Time(cursor.getInt(timePosition)),
+                    cursor.getInt(mileagePosition),
+                    cursor.getInt(vehicleIdPosition),
+                    cursor.getInt(systemIdPosition)
+            ));
+        }
+
+        cursor.close();
+        db.close();
+
+        return logs;
+    }
+
     public List<System> getAllSystems() {
         SQLiteDatabase db = getReadableDatabase();
 
@@ -410,7 +466,7 @@ public class DBHelper extends SQLiteOpenHelper {
             int vehicleIdPosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID);
             int systemIdPosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_SYSTEM_ID);
 
-            //Get the information of the first matching vehicle (so be as specific as possible!)
+            //Get the information of the first matching log (so be as specific as possible!)
             cursor.moveToNext();
             log = new MaintenanceLog(
                     cursor.getInt(idPosition),
