@@ -70,6 +70,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
 
         // Initialize listener for this activity
         buttonSave.setOnClickListener(this);
+        buttonDelete.setOnClickListener(this);
 
         // Get the vehicleID from the intent
         Intent receivedIntent = getIntent();
