@@ -21,7 +21,7 @@ import java.util.List;
 public class DBHelper extends SQLiteOpenHelper {
     public static final String TAG = "DBHELPER_CLASS";
     public static final String DATABASE_NAME = "VehicleMaintenanceTracker.db";
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
     private final Context context;
 
     public DBHelper(@Nullable Context context) {
@@ -663,7 +663,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         COLUMN_MAINTENANCE_LOG_TOTAL_TIME + " INTEGER, " +
                         COLUMN_MAINTENANCE_LOG_MILEAGE + " INTEGER, " +
                         COLUMN_MAINTENANCE_LOG_VEHICLE_ID + " INTEGER NOT NULL, " +
-                        COLUMN_MAINTENANCE_LOG_SYSTEM_ID + " INTEGER NOT NULL, " +
+                        COLUMN_MAINTENANCE_LOG_SYSTEM_ID + " INTEGER, " +
                         "FOREIGN KEY (" + COLUMN_MAINTENANCE_LOG_VEHICLE_ID + ") REFERENCES " +
                         VehicleSQL.TABLE_NAME_VEHICLE + " (" + VehicleSQL._ID + "), " +
                         "FOREIGN KEY (" + COLUMN_MAINTENANCE_LOG_SYSTEM_ID + ") REFERENCES " +

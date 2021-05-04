@@ -170,6 +170,7 @@ public class LogActivity extends AppCompatActivity {
             // Go to the log settings activity and send an id of -1 so it knows we're creating a new log
             Intent intent = new Intent(LogActivity.this, MaintenanceLogSettingsActivity.class);
             intent.putExtra(LogActivity.EXTRA_LOG_ID, -1);
+            intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, vehicleId);
             startActivity(intent);
         }
 

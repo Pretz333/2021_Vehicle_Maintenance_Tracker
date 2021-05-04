@@ -46,12 +46,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
 
         // Back button, better than the Manifest way for reasons... - Alexander
         toolbar.setNavigationIcon(R.drawable.ic_back);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                VehicleSettingsActivity.super.finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> VehicleSettingsActivity.super.finish());
 
         // Get references to all the editText fields
         mNickname = findViewById(R.id.vehicleSettings_editTextNickname);

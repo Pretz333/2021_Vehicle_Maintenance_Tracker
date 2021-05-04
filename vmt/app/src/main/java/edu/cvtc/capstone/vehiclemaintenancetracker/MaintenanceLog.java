@@ -20,11 +20,10 @@ public class MaintenanceLog {
 
     //Constructors
     //Minimum
-    public MaintenanceLog(String title, int vehicleId, int systemId) {
+    public MaintenanceLog(String title, int vehicleId) {
         this.id = -1;
         setTitle(title);
         setVehicleId(vehicleId);
-        setSystemId(systemId);
     }
 
     //Everything but the id
