@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="@dimen/adultPadding">
+
+    <TextView
+        android:id="@+id/deleteAlertDialog_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/minorPadding"
+        android:fontFamily="sans-serif"
+        android:text="@string/deleteAlertDialog_message"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/deleteAlertDialog_buttonYes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/adultPadding"
+        android:text="@string/deleteAlertDialog_buttonYes"
+        app:layout_constraintEnd_toStartOf="@+id/deleteAlertDialog_buttonNo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/deleteAlertDialog_message" />
+
+    <Button
+        android:id="@+id/deleteAlertDialog_buttonNo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/adultPadding"
+        android:text="@string/deleteAlertDialog_buttonNo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/deleteAlertDialog_buttonYes"
+        app:layout_constraintTop_toBottomOf="@id/deleteAlertDialog_message" />
+</androidx.constraintlayout.widget.ConstraintLayout>

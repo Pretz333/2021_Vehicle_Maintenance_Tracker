@@ -457,6 +457,18 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
+    public void deleteVehicle (Vehicle vehicle) {
+        // Create the selection criteria
+        final String selection = VehicleSQL._ID + " =?";
+        final String[] selectionArgs = {Integer.toString(vehicle.getId())};
+
+        // Get a writable database connection
+        SQLiteDatabase db = getWritableDatabase();
+
+        // Call the delete method.
+        db.delete(VehicleSQL.TABLE_NAME_VEHICLE, selection, selectionArgs);
+    }
+
     private static final class VehicleSQL implements BaseColumns {
         // Constants for vehicle table and fields
         private static final String TABLE_NAME_VEHICLE = "vehicle";
