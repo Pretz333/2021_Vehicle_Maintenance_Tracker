@@ -20,10 +20,10 @@ import java.util.ArrayList;
 
 public class VehicleOptionActivity extends AppCompatActivity {
 
-    // Intent extras used by the MainActivity's RecyclerView
+    // Intent extras used by other activities
     public static final String EXTRA_VEHICLE_ID = "edu.cvtc.capstone.vehiclemaintenancetracker.EXTRA_VEHICLE_ID";
 
-    //The vehicle ID & Nickname so it can passed to child activities
+    //The vehicle ID so it can passed to child activities
     public static int vehicleId;
 
     // The list that contains item objects used in the

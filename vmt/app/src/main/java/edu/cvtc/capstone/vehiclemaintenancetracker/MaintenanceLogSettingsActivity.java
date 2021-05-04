@@ -2,9 +2,11 @@ package edu.cvtc.capstone.vehiclemaintenancetracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,30 +14,48 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.google.android.material.snackbar.Snackbar;
+
+import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class MaintenanceLogSettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class MaintenanceLogSettingsActivity extends AppCompatActivity {
+    public static final String TAG = "MaintenanceLogSettingsActivity_CLASS";
 
-    private int mMaintenanceLogId;
-    private String mSelectedSystem;
+    //Class variables
+    DBHelper dbHelper = new DBHelper(MaintenanceLogSettingsActivity.this);
+    MaintenanceLog log = null;
+    int vehicleId;
 
-    private EditText mTitle;
-    private EditText mDescription;
-    private EditText mMaintenanceDate;
-    private EditText mCost;
-    private EditText mTime;
-    private EditText mMileage;
+    private EditText mTitle, mDescription, mMaintenanceDate, mCost, mTime, mMileage;
     private Spinner mSystem;
-    private DBHelper mDbOpenHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maintenance_log_settings);
 
-        mDbOpenHelper = new DBHelper(MaintenanceLogSettingsActivity.this);
+        //Set the save button's onClickListener
+        findViewById(R.id.maintenanceLogSettings_buttonSave).setOnClickListener(
+                v -> {
+                    Log.d(TAG, String.valueOf(v.getId()));
+                    if (v.getId() == R.id.maintenanceLogSettings_buttonSave) {
+                        updateLogWithValues();
+                        //If we found a vehicle from the id passed, update it. If not, make one
+                        if (log == null || log.getId() == -1) {
+                            dbHelper.insertMaintenanceLog(log);
+                            ;
+                            Snackbar.make(v, "Successfully added the log!", Snackbar.LENGTH_SHORT).show();
+                        } else {
+                            //TODO
+                            Snackbar.make(v, "Successfully updated the log!", Snackbar.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
 
         // Get a reference to the member objects
         mTitle = findViewById(R.id.maintenanceLogSettings_editTextTitle);
@@ -46,54 +66,31 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity implements
         mMileage = findViewById(R.id.maintenanceLogSettings_editTextMileage);
         mSystem = findViewById(R.id.maintenanceLogSettings_spinnerSystems);
 
-        // Set the listener for the selected item if it is not empty
-        if (mSystem != null) {
-            mSystem.setOnItemSelectedListener(this);
+        // Set up the systems spinner if there are systems in the db
+        List<System> systems = dbHelper.getAllSystems();
+        if(systems.size() > 0) {
+            mSystem.setVisibility(View.VISIBLE); //It defaults to invisible
+            //TODO: Fix this
+            ArrayAdapter<System> dataAdapter = new ArrayAdapter(MaintenanceLogSettingsActivity.this,
+                    android.R.layout.simple_spinner_item, systems);
+            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            mSystem.setAdapter(dataAdapter);
         }
 
-        // Use the system table data to populate the spinner
-        populateSystemSpinner();
+        // Get the logId from the intent
+        Intent receivedIntent = getIntent();
+        int logId = receivedIntent.getIntExtra(LogActivity.EXTRA_LOG_ID, -1);
+        vehicleId = receivedIntent.getIntExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, -1);
 
-        // TODO: Get the intent from the LogActivity recycler view and populate the fields
-
-        // Create a reference to the save button
-        Button saveButton = findViewById(R.id.maintenanceLogSettings_buttonSave);
-        saveButton.setOnClickListener(v -> {
-            //SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
-            //db.close();
-
-            // TODO: Validate maintenance log and update the record in the database
-        });
+        // If a valid logId was passed to this activity, we want to pre-populate the fields
+        if (logId != -1) {
+            //Since a logId was passed, we also want to grab the log from the db for later modification
+            log = dbHelper.getLogByLogId(logId);
+            populateFieldsByObject(log);
+        }
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        mSelectedSystem = parent.getItemAtPosition(position).toString();
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        mDbOpenHelper.close();
-        super.onDestroy();
-    }
-
-    private void populateSystemSpinner() {
-        List<System> systems = mDbOpenHelper.getAllSystems();
-
-        ArrayAdapter<System> dataAdapter = new ArrayAdapter(MaintenanceLogSettingsActivity.this,
-                android.R.layout.simple_spinner_item, systems);
-
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        mSystem.setAdapter(dataAdapter);
-    }
-
-    private void populateFieldsWithMaintenanceLogInfo (MaintenanceLog maintenanceLog) {
+    private void populateFieldsByObject(MaintenanceLog maintenanceLog) {
         mTitle.setText(maintenanceLog.getTitle());
         mDescription.setText(maintenanceLog.getDescription());
         mCost.setText(String.valueOf(maintenanceLog.getCost()));
@@ -106,5 +103,50 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity implements
 
         // Set the spinner to the id of the selected system
         mSystem.setSelection(maintenanceLog.getSystemId());
+    }
+
+    private void updateLogWithValues(){
+        //Ensure they have the minimum values
+        if(vehicleId != -1 && !mTitle.getText().toString().equals("")){
+            //Make a new log if we're not editing one
+            if(log == null){
+                log = new MaintenanceLog(mTitle.getText().toString(), vehicleId);
+            }
+
+            if(!mTitle.getText().toString().equals("")){
+                //run it through the verifier
+                log.setTitle(mTitle.getText().toString());
+            }
+
+            if(!mDescription.getText().toString().equals("")){
+                log.setDescription(mDescription.getText().toString());
+            }
+
+            //TODO
+            if(!mMaintenanceDate.getText().toString().equals("")){
+                log.setDate(new Date(mMaintenanceDate.getText().toString()));
+                Log.d(TAG, "DATE: " + mMaintenanceDate.getText().toString());
+            }
+
+            if(!mCost.getText().toString().equals("")){
+                log.setCost(Double.parseDouble(mMaintenanceDate.getText().toString()));
+            }
+
+            //TODO
+            if(!mTime.getText().toString().equals("")){
+                //log.setTime(new Time(mTime.getText().toString()));
+                Log.d(TAG, "TIME: " + mTime.getText().toString());
+            }
+
+            if(!mMileage.getText().toString().equals("")){
+                log.setMileage(Integer.parseInt(mTime.getText().toString()));
+            }
+
+            //TODO: Test this
+            //system spinner selection
+            if(mSystem.getSelectedItem() != null){
+                log.setSystemId(((System) mSystem.getSelectedItem()).getId());
+            }
+        }
     }
 }

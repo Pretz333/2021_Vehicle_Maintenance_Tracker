@@ -234,7 +234,7 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
             // Create the target intent
             Intent intent = new Intent(context, VehicleOptionActivity.class);
 
-            // Extras include the ID of the vehicle and the Nickname
+            // Pass the vehicle ID
             intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, vehicleID);
 
             // Start the activity
