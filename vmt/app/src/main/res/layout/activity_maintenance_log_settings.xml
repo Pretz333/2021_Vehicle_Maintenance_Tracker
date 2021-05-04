@@ -11,10 +11,10 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/maintenanceLogSettings_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme" />
+        android:layout_height="?attr/actionBarSize"
+        android:elevation="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -55,7 +55,8 @@
                         android:id="@+id/maintenanceLogSettings_editTextTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textCapWords"/>
+                        android:inputType="textCapWords"
+                        android:maxLength="32"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -89,7 +90,8 @@
                         android:id="@+id/maintenanceLogSettings_editTextMaintenanceDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="date"/>
+                        android:inputType="date"
+                        android:maxLength="10"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -106,7 +108,8 @@
                         android:id="@+id/maintenanceLogSettings_editTextCost"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"/>
+                        android:inputType="numberDecimal"
+                        android:maxLength="6"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -123,7 +126,8 @@
                         android:id="@+id/maintenanceLogSettings_editTextTime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="time"/>
+                        android:inputType="time"
+                        android:maxLength="5"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -140,7 +144,8 @@
                         android:id="@+id/maintenanceLogSettings_editTextMileage"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="number"/>
+                        android:inputType="number"
+                        android:maxLength="7"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
