@@ -115,7 +115,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
         // Store each editText into an array
         // This makes it easier to loop through all the fields and check them without having
         // to write lots of boilerplate code for new or removed editText box's.
-        EditText[] fieldsToCheck = {mNickname, mMake, mModel, mYear, mPlate, mDatePurchased, mColor, mMileage/*, mValue, mVIN*/};
+        EditText[] fieldsToCheck = {mNickname, /*mMake, mModel, mYear, mPlate, mDatePurchased, mColor, mMileage/*, mValue, mVIN*/};
 
         // Loop through the fields and check if they contain
         // data. If not, highlight the respectful field(s)
@@ -250,6 +250,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
 
                     // Display a toast that the vehicle was deleted
                     Toast.makeText(getApplicationContext(), "The vehicle was deleted.", Toast.LENGTH_SHORT).show();
+                    VehicleSettingsActivity.super.finish();
                 }
             });
 

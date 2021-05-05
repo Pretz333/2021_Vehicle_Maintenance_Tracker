@@ -13,7 +13,7 @@ public class MaintenanceLog {
     private String description;
     private Date date;
     private double cost;
-    private Time time;
+    private int time;
     private int mileage;
     private int vehicleId;
     private int systemId;
@@ -27,7 +27,7 @@ public class MaintenanceLog {
     }
 
     //Everything but the id
-    public MaintenanceLog(String title, String description, Date date, double cost, Time time, int mileage, int vehicleId, int systemId) {
+    public MaintenanceLog(String title, String description, Date date, double cost, int time, int mileage, int vehicleId, int systemId) {
         this.id = -1;
         setTitle(title);
         setDescription(description);
@@ -40,7 +40,7 @@ public class MaintenanceLog {
     }
 
     //Everything, for use when reading from the database. Since it's in the database, it's already passed verification
-    public MaintenanceLog(int id, String title, String description, Date date, double cost, Time time, int mileage, int vehicleId, int systemId) {
+    public MaintenanceLog(int id, String title, String description, Date date, double cost, int time, int mileage, int vehicleId, int systemId) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -104,12 +104,12 @@ public class MaintenanceLog {
         this.cost = cost;
     }
 
-    public Time getTime() {
+    public int getTime() {
         return time;
     }
 
     //Type casting from the TextView is all we need for verification
-    public void setTime(Time time) {
+    public void setTime(int time) {
         this.time = time;
     }
 

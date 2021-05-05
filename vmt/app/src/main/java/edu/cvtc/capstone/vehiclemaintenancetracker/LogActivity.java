@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.sql.Time;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -100,7 +101,7 @@ public class LogActivity extends AppCompatActivity {
         logArrayList = new ArrayList<>();
 
         // Create objects
-        Time time = new Time(Calendar.getInstance().getTimeInMillis());
+        int time = 30;
 
         MaintenanceLog log1 = new MaintenanceLog(0,
                 "Replaced Something",
@@ -187,8 +188,7 @@ class LogRecyclerAdapter extends RecyclerView.Adapter<LogRecyclerAdapter.ViewHol
     // An array holding maintenance logs
     final private ArrayList<MaintenanceLog> logArrayList;
 
-    // Date formatter for the date TextView
-    // and time TextView
+    // Date formatter for the date TextView and time TextView
     static SimpleDateFormat simpleDateFormat;
     static SimpleDateFormat simpleTimeFormat;
 
@@ -196,11 +196,9 @@ class LogRecyclerAdapter extends RecyclerView.Adapter<LogRecyclerAdapter.ViewHol
     public LogRecyclerAdapter(ArrayList<MaintenanceLog> logArrayList) {
         this.logArrayList = logArrayList;
         simpleDateFormat = new SimpleDateFormat("MMM d, y", Locale.ENGLISH);
-        simpleTimeFormat = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
         // Member variables
         Context context;
 
@@ -242,8 +240,7 @@ class LogRecyclerAdapter extends RecyclerView.Adapter<LogRecyclerAdapter.ViewHol
             context.startActivity(intent);
         }
 
-        // One-hitter method for setting the data for all
-        // the TextViews
+        // One-hitter method for setting the data for all the TextViews
         public void setDataByObject(MaintenanceLog log) {
             this.logID = log.getId();
             title.setText(log.getTitle());
@@ -251,11 +248,12 @@ class LogRecyclerAdapter extends RecyclerView.Adapter<LogRecyclerAdapter.ViewHol
             date.setText(simpleDateFormat.format(log.getDate()));
             cost.setText(context.getResources()
                     .getString(R.string.card_log_cost)
-                    .concat(String.valueOf(log.getCost())));
+                    .concat(String.format(Locale.US, "%.2f", log.getCost())));
             time.setText(context.getResources()
                     .getString(R.string.card_log_time)
                     .concat(" ") // Empty space
-                    .concat(simpleTimeFormat.format(log.getTime())));
+                    .concat(String.valueOf(log.getTime()))
+                    .concat(" minutes"));
             mileage.setText(String.format(context.getResources()
                     .getString(R.string.card_log_mileage) + " %s", log.getMileage()));
         }

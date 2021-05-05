@@ -6,13 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
-import android.provider.Settings;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import java.sql.Time;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -114,9 +112,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE, maintenanceLog.getDate().getTime());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_COST, maintenanceLog.getCost());
-        if(maintenanceLog.getTime() != null) {
-            values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TOTAL_TIME, maintenanceLog.getTime().getTime());
-        }
+        values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TOTAL_TIME, maintenanceLog.getTime());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_MILEAGE, maintenanceLog.getMileage());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID, maintenanceLog.getVehicleId());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_SYSTEM_ID, maintenanceLog.getSystemId());
@@ -243,8 +239,6 @@ public class DBHelper extends SQLiteOpenHelper {
         //Get a writable db
         SQLiteDatabase db = getWritableDatabase();
 
-        Log.d(TAG, String.valueOf(maintenanceLog.getId()));
-
         //Set all values
         ContentValues values = new ContentValues();
         values.put(MaintenanceLogSQL._ID, maintenanceLog.getId());
@@ -252,9 +246,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DESCRIPTION, maintenanceLog.getDescription());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE, maintenanceLog.getDate().getTime());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_COST, maintenanceLog.getCost());
-        if(maintenanceLog.getTime() != null) {
-            values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TOTAL_TIME, maintenanceLog.getTime().getTime());
-        }
+        values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TOTAL_TIME, maintenanceLog.getTime());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_MILEAGE, maintenanceLog.getMileage());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID, maintenanceLog.getVehicleId());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_SYSTEM_ID, maintenanceLog.getSystemId());
@@ -358,7 +350,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     cursor.getString(descriptionPosition),
                     new Date(cursor.getLong(datePosition)),
                     cursor.getInt(costPosition),
-                    new Time(cursor.getLong(timePosition)),
+                    cursor.getInt(timePosition),
                     cursor.getInt(mileagePosition),
                     cursor.getInt(vehicleIdPosition),
                     cursor.getInt(systemIdPosition)
@@ -505,7 +497,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     cursor.getString(descriptionPosition),
                     new Date(cursor.getLong(datePosition)),
                     cursor.getInt(costPosition),
-                    new Time(cursor.getLong(timePosition)),
+                    cursor.getInt(timePosition),
                     cursor.getInt(mileagePosition),
                     cursor.getInt(vehicleIdPosition),
                     cursor.getInt(systemIdPosition)

@@ -152,7 +152,7 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
     private void populateFieldsByObject(MaintenanceLog maintenanceLog) {
         mTitle.setText(maintenanceLog.getTitle());
         mDescription.setText(maintenanceLog.getDescription());
-        mCost.setText(String.valueOf(maintenanceLog.getCost()));
+        mCost.setText(String.format(Locale.US, "%.2f", maintenanceLog.getCost()));
         mTime.setText(String.valueOf(maintenanceLog.getTime()));
         mMileage.setText(String.valueOf(maintenanceLog.getMileage()));
 
@@ -180,24 +180,24 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
                 log.setDescription(mDescription.getText().toString());
             }
 
-            //TODO
             if(!mMaintenanceDate.getText().toString().equals("")){
                 //date will be null if it fails any of the validity checks (there are several)
                 Date date = VerifyUtil.parseStringToDate(mMaintenanceDate.getText().toString());
                 if(date != null) {
                     log.setDate(date);
                 }
-                Log.d(TAG, "DATE: " + mMaintenanceDate.getText().toString());
             }
 
             if(!mCost.getText().toString().equals("")){
                 log.setCost(Double.parseDouble(mCost.getText().toString()));
             }
 
-            //TODO
             if(!mTime.getText().toString().equals("")){
-                //log.setTime(new Time(mTime.getText().toString()));
-                Log.d(TAG, "TIME: " + mTime.getText().toString());
+                try {
+                    log.setTime(Integer.parseInt(mTime.getText().toString()));
+                } catch (NumberFormatException ex){
+                    log.setTime(0);
+                }
             }
 
             if(!mMileage.getText().toString().equals("")){

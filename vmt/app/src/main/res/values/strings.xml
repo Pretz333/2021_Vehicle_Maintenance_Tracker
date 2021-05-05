@@ -71,7 +71,7 @@
     <string name="maintenanceLogSettings_editTextHint_description">Description</string>
     <string name="maintenanceLogSettings_editTextHint_maintenanceDate">Maintenance Date (mm/dd/yyyy)</string>
     <string name="maintenanceLogSettings_editTextHint_cost">Cost of Maintenance</string>
-    <string name="maintenanceLogSettings_editTextHint_time">Total Time of Maintenance (hh:mm)</string>
+    <string name="maintenanceLogSettings_editTextHint_time">Total Time of Maintenance (in minutes)</string>
     <string name="maintenanceLogSettings_editTextHint_mileage">Mileage</string>
 
     <string name="maintenanceLogSettings_systemLabel">System:</string>
