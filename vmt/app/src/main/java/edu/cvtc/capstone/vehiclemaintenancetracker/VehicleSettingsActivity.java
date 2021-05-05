@@ -103,12 +103,6 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
             buttonDelete.setVisibility(View.VISIBLE);
         }
 
-        if (mNickname.getParent() instanceof TextInputLayout) {
-            TextInputLayout tip = (TextInputLayout) mNickname.getParent();
-            tip.setError("Some error message here");
-        }
-
-
     }
 
     // Populate all the fields by a Vehicle object
