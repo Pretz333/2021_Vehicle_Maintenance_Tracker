@@ -59,6 +59,11 @@
     <string name="vehicleSettingsActivity_buttonSave">Save Changes</string>
     <string name="vehicleSettingsActivity_buttonDelete">Delete Vehicle</string>
 
+    <string name="vehicleSettingsActivity_errorValidationEditTextMessage">This field cannot be empty!</string>
+    <string name="vehicleSettingsActivity_errorValidationTitle">Missing some information…</string>
+    <string name="vehicleSettingsActivity_errorValidationMessage">One or more fields did not contain anything. Go back and fix the fields highlighted with a warning sign, and try again.</string>
+    <string name="vehicleSettingsActivity_errorValidationButtonNeutral">Okay</string>
+
     <!-- Strings regarding MaintenanceLogSettingsActivity -->
     <string name="maintenanceLogSettings_titleDisplay">Edit Maintenance Log</string>
 

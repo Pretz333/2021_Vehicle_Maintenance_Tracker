@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
@@ -99,6 +100,65 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
         mDatePurchased.setText(simpleDateFormat.format(vehicle.getPurchaseDate()));
     }
 
+    // Validate that required fields contain data.
+    //
+    // If some fields don't contain data, alert the user
+    // and highlight the field red.
+    //
+    // Returns TRUE if all fields are good to go, FALSE
+    // otherwise.
+    //
+    private boolean areFieldsValid() {
+        // If any field was empty, or contains invalid
+        // data, set this to true.
+        //
+        // This will trigger an alert dialog alerting
+        // the user of the fields that aren't correct.
+        //
+        // This also serves as a return value.
+        boolean flagFieldEmpty = false;
+
+        // Store each editText into an array
+        //
+        // This makes it easier to loop through all
+        // the fields and check them without having
+        // to write lots of boilerplate code for new
+        // or removed editText box's.
+        //
+        EditText[] fieldsToCheck = {mNickname, mMake, mModel, mYear, mPlate, mDatePurchased, mColor, mMileage/*, mValue*/};
+
+        // Loop through the fields and check if they contain
+        // data. If not, highlight the respectful field(s)
+        for (EditText editText : fieldsToCheck) {
+            String tempStringFromField = editText.getText().toString();
+
+            // If the field contains no string, just a space,
+            // or is literally empty, highlight the respectful
+            // editText box with a warning message and set the
+            // flagFieldEmpty variable to true
+            if (tempStringFromField.equals("")
+                    || tempStringFromField.equals(" ")
+                    || tempStringFromField.isEmpty()) {
+                // Set the error message for the dialog
+                editText.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
+                // One or more fields were empty, set to true
+                flagFieldEmpty = true;
+            }
+        }
+
+        // One or more fields were empty. Let's
+        // tell the user about it!
+        if (flagFieldEmpty) {
+            MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(this);
+            alert.setTitle(getResources().getString(R.string.vehicleSettingsActivity_errorValidationTitle));
+            alert.setMessage(getResources().getString(R.string.vehicleSettingsActivity_errorValidationMessage));
+            alert.setPositiveButton(getResources().getString(R.string.vehicleSettingsActivity_errorValidationButtonNeutral), null);
+            alert.show();
+        }
+
+        return !flagFieldEmpty;
+    }
+
     private void updateVehicleWithValues() {
         //Ensure they have the params needed to have the minimum constructor
         if(!mNickname.getText().toString().equals("")) {
@@ -149,15 +209,25 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
         if (v.getId() == R.id.vehicleSettings_buttonSave){
             //If we found a vehicle from the id passed, update it. If not, make one
             if (vehicle == null || vehicle.getId() == -1) {
-                updateVehicleWithValues();
-                dbHelper.insertVehicle(vehicle);
-                Snackbar.make(v, "Successfully added " + vehicle.getName() + "!", Snackbar.LENGTH_SHORT).show();
-                // Close this activity and return to the main activity
-                VehicleSettingsActivity.super.finish();
+
+                // Check if all fields are valid
+                //
+                // No need for an ELSE block as the
+                // function areFieldsValid() will
+                // alert the user on its own.
+                if (areFieldsValid()) {
+                    updateVehicleWithValues();
+                    dbHelper.insertVehicle(vehicle);
+                    Snackbar.make(v, "Successfully added " + vehicle.getName() + "!", Snackbar.LENGTH_SHORT).show();
+                    // Close this activity and return to the main activity
+                    VehicleSettingsActivity.super.finish();
+                }
             } else {
-                updateVehicleWithValues();
-                dbHelper.updateVehicle(vehicle);
-                Snackbar.make(v, "Successfully updated " + vehicle.getName() + "!", Snackbar.LENGTH_SHORT).show();
+                if (areFieldsValid()) {
+                    updateVehicleWithValues();
+                    dbHelper.updateVehicle(vehicle);
+                    Snackbar.make(v, "Successfully updated " + vehicle.getName() + "!", Snackbar.LENGTH_SHORT).show();
+                }
             }
         } else if (v.getId() == R.id.vehicleSettings_buttonDelete) {
             // Display the alert dialog to confirm the vehicle delete.
