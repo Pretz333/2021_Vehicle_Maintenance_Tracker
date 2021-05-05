@@ -37,7 +37,7 @@
                     android:id="@+id/maintenanceLogSettings_textViewTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/maintenanceLogSettings_titleDisplay"
+                    android:text="@string/maintenanceLogSettings_titleDisplay_add"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

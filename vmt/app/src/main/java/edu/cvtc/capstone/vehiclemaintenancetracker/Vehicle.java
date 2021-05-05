@@ -57,6 +57,21 @@ public class Vehicle {
         this.value = value;
     }
 
+    //Everything but the date, for use when reading from the database and the long date value is null.
+    //Since it's in the database, it's already passed verification
+    public Vehicle(int id, String name, String make, String model, String year, String color, int mileage, String VIN, String licensePlate, double value) {
+        this.id = id;
+        this.name = name;
+        this.make = make;
+        this.model = model;
+        this.year = year;
+        this.color = color;
+        this.mileage = mileage;
+        this.VIN = VIN;
+        this.licensePlate = licensePlate;
+        this.value = value;
+    }
+
     //Getters and Setters
     //TODO: Capitalize first letters of makes, models, and colors
     public int getId() {

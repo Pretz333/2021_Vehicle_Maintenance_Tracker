@@ -146,6 +146,10 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
 
             // Since the log was already in the database, the delete button should be visible.
             buttonDelete.setVisibility(View.VISIBLE);
+
+            //And we want to change the title to say "Edit Log" instead of "Add Log"
+            TextView title = findViewById(R.id.maintenanceLogSettings_textViewTitle);
+            title.setText(getResources().getString(R.string.maintenanceLogSettings_titleDisplay_edit));
         }
     }
 

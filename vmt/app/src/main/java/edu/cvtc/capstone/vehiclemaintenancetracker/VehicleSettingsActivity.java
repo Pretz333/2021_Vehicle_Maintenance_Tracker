@@ -3,6 +3,7 @@ package edu.cvtc.capstone.vehiclemaintenancetracker;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -94,13 +95,19 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
         mYear.setText(vehicle.getYear());
         mPlate.setText(vehicle.getLicensePlate());
         mColor.setText(vehicle.getColor());
-        mMileage.setText(String.valueOf(vehicle.getMileage()));
-        mValue.setText(String.valueOf(vehicle.getValue()));
+        if(vehicle.getMileage() != 0) {
+            mMileage.setText(String.valueOf(vehicle.getMileage()));
+        }
+        if(vehicle.getValue() != 0) {
+            mValue.setText(String.valueOf(vehicle.getValue()));
+        }
         mVIN.setText(vehicle.getVIN());
 
-        // Set the date formatting for easier reading because no one wants to read a LONG date.
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/y", Locale.ENGLISH);
-        mDatePurchased.setText(simpleDateFormat.format(vehicle.getPurchaseDate()));
+        if(vehicle.getPurchaseDate() != null) {
+            // Set the date formatting for easier reading because no one wants to read a LONG date.
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/y", Locale.ENGLISH);
+            mDatePurchased.setText(simpleDateFormat.format(vehicle.getPurchaseDate()));
+        }
     }
 
     // Validate that required fields contain data.
@@ -115,7 +122,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
         // Store each editText into an array
         // This makes it easier to loop through all the fields and check them without having
         // to write lots of boilerplate code for new or removed editText box's.
-        EditText[] fieldsToCheck = {mNickname, /*mMake, mModel, mYear, mPlate, mDatePurchased, mColor, mMileage/*, mValue, mVIN*/};
+        EditText[] fieldsToCheck = {mNickname, mMake, mModel, mYear, mColor, mPlate, /*mDatePurchased, mMileage/*, mValue, mVIN*/};
 
         // Loop through the fields and check if they contain
         // data. If not, highlight the respectful field(s)
@@ -224,6 +231,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
                 } else {
                     dbHelper.updateVehicle(vehicle);
                     Snackbar.make(v, "Successfully updated " + vehicle.getName() + "!", Snackbar.LENGTH_SHORT).show();
+                    VehicleSettingsActivity.super.finish();
                 }
             }
         } else if (v.getId() == R.id.vehicleSettings_buttonDelete) {

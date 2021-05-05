@@ -293,12 +293,20 @@ public class DBHelper extends SQLiteOpenHelper {
         ArrayList<Vehicle> vehicles = new ArrayList<>();
 
         while (cursor.moveToNext()) {
-            vehicles.add(new Vehicle(cursor.getInt(vehicleIdPosition), cursor.getString(vehicleNicknamePosition),
-                    cursor.getString(vehicleMakePosition), cursor.getString(vehicleModelPosition),
-                    cursor.getString(vehicleYearPosition), cursor.getString(vehicleColorPosition),
-                    cursor.getInt(vehicleMileagePosition), cursor.getString(vehicleVINPosition),
-                    cursor.getString(vehicleLicensePlatePosition), new Date(cursor.getLong(vehicleDatePurchasedPosition)),
-                    cursor.getInt(vehicleValuePosition)));
+            if(cursor.getLong(vehicleDatePurchasedPosition) == 0L){
+                vehicles.add(new Vehicle(cursor.getInt(vehicleIdPosition), cursor.getString(vehicleNicknamePosition),
+                        cursor.getString(vehicleMakePosition), cursor.getString(vehicleModelPosition),
+                        cursor.getString(vehicleYearPosition), cursor.getString(vehicleColorPosition),
+                        cursor.getInt(vehicleMileagePosition), cursor.getString(vehicleVINPosition),
+                        cursor.getString(vehicleLicensePlatePosition), cursor.getInt(vehicleValuePosition)));
+            } else {
+                vehicles.add(new Vehicle(cursor.getInt(vehicleIdPosition), cursor.getString(vehicleNicknamePosition),
+                        cursor.getString(vehicleMakePosition), cursor.getString(vehicleModelPosition),
+                        cursor.getString(vehicleYearPosition), cursor.getString(vehicleColorPosition),
+                        cursor.getInt(vehicleMileagePosition), cursor.getString(vehicleVINPosition),
+                        cursor.getString(vehicleLicensePlatePosition), new Date(cursor.getLong(vehicleDatePurchasedPosition)),
+                        cursor.getInt(vehicleValuePosition)));
+            }
         }
         cursor.close();
         db.close();
@@ -429,19 +437,24 @@ public class DBHelper extends SQLiteOpenHelper {
 
             //Get the information of the first matching vehicle (so be as specific as possible!)
             cursor.moveToNext();
-            v = new Vehicle(
-                    cursor.getInt(idPosition),
-                    cursor.getString(namePosition),
-                    cursor.getString(makePosition),
-                    cursor.getString(modelPosition),
-                    cursor.getString(yearPosition),
-                    cursor.getString(colorPosition),
-                    cursor.getInt(mileagePosition),
-                    cursor.getString(VINPosition),
-                    cursor.getString(licensePlatePosition),
-                    new Date(cursor.getLong(datePosition)),
-                    cursor.getInt(valuePosition)
-            );
+            if(cursor.getLong(datePosition) == 0L) {
+                v = new Vehicle(
+                        cursor.getInt(idPosition), cursor.getString(namePosition),
+                        cursor.getString(makePosition), cursor.getString(modelPosition),
+                        cursor.getString(yearPosition), cursor.getString(colorPosition),
+                        cursor.getInt(mileagePosition), cursor.getString(VINPosition),
+                        cursor.getString(licensePlatePosition), cursor.getInt(valuePosition)
+                );
+            } else {
+                v = new Vehicle(
+                        cursor.getInt(idPosition), cursor.getString(namePosition),
+                        cursor.getString(makePosition), cursor.getString(modelPosition),
+                        cursor.getString(yearPosition), cursor.getString(colorPosition),
+                        cursor.getInt(mileagePosition), cursor.getString(VINPosition),
+                        cursor.getString(licensePlatePosition), new Date(cursor.getLong(datePosition)),
+                        cursor.getInt(valuePosition)
+                );
+            }
             cursor.close();
         } catch (Exception ex) {
             Log.e(TAG, ex.toString());

@@ -65,7 +65,8 @@
     <string name="vehicleSettingsActivity_errorValidationButtonNeutral">Okay</string>
 
     <!-- Strings regarding MaintenanceLogSettingsActivity -->
-    <string name="maintenanceLogSettings_titleDisplay">Edit Maintenance Log</string>
+    <string name="maintenanceLogSettings_titleDisplay_edit">Edit Maintenance Log</string>
+    <string name="maintenanceLogSettings_titleDisplay_add">Add Maintenance Log</string>
 
     <string name="maintenanceLogSettings_editTextHint_title">Title</string>
     <string name="maintenanceLogSettings_editTextHint_description">Description</string>
