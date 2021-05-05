@@ -169,6 +169,8 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
         // Member variables
         Context context;
 
+        private int issueId;
+
         final TextView title;
         final TextView description;
         final TextView date;
@@ -196,7 +198,7 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
         public void onClick(View v) {
             switch(v.getId()) {
                 case R.id.card_issueActivity_buttonEdit :
-                        Snackbar.make(title, "Edit button tapped on RecyclerView element: " + getLayoutPosition(), Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(title, "Edit button tapped on RecyclerView element: " + getLayoutPosition(), Snackbar.LENGTH_SHORT).show();
                     break;
 
                 case R.id.card_issueActivity_buttonComplete :
