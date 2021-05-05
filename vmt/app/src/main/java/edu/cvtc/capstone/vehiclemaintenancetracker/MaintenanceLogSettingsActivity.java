@@ -119,6 +119,7 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
         List<System> systems = dbHelper.getAllSystems();
         if(systems.size() > 0) {
             mSystem.setVisibility(View.VISIBLE); //It defaults to invisible
+            findViewById(R.id.maintenanceLogSettings_textViewSystemLabel).setVisibility(View.VISIBLE); //It defaults to invisible
             //TODO: Fix this
             ArrayAdapter<System> dataAdapter = new ArrayAdapter(MaintenanceLogSettingsActivity.this,
                     android.R.layout.simple_spinner_item, systems);

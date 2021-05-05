@@ -156,6 +156,7 @@
                     android:layout_marginTop="@dimen/minorPadding"
                     android:text="@string/maintenanceLogSettings_systemLabel"
                     android:textColor="@color/black"
+                    android:visibility="invisible"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/maintenanceLogSettings_textInputMileage" />
 

@@ -306,7 +306,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     cursor.getString(vehicleMakePosition), cursor.getString(vehicleModelPosition),
                     cursor.getString(vehicleYearPosition), cursor.getString(vehicleColorPosition),
                     cursor.getInt(vehicleMileagePosition), cursor.getString(vehicleVINPosition),
-                    cursor.getString(vehicleLicensePlatePosition), new Date(cursor.getInt(vehicleDatePurchasedPosition)),
+                    cursor.getString(vehicleLicensePlatePosition), new Date(cursor.getLong(vehicleDatePurchasedPosition)),
                     cursor.getInt(vehicleValuePosition)));
         }
         cursor.close();
@@ -356,9 +356,9 @@ public class DBHelper extends SQLiteOpenHelper {
                     cursor.getInt(idPosition),
                     cursor.getString(titlePosition),
                     cursor.getString(descriptionPosition),
-                    new Date(cursor.getInt(datePosition)),
+                    new Date(cursor.getLong(datePosition)),
                     cursor.getInt(costPosition),
-                    new Time(cursor.getInt(timePosition)),
+                    new Time(cursor.getLong(timePosition)),
                     cursor.getInt(mileagePosition),
                     cursor.getInt(vehicleIdPosition),
                     cursor.getInt(systemIdPosition)
@@ -448,7 +448,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     cursor.getInt(mileagePosition),
                     cursor.getString(VINPosition),
                     cursor.getString(licensePlatePosition),
-                    new Date(cursor.getInt(datePosition)),
+                    new Date(cursor.getLong(datePosition)),
                     cursor.getInt(valuePosition)
             );
             cursor.close();
@@ -503,9 +503,9 @@ public class DBHelper extends SQLiteOpenHelper {
                     cursor.getInt(idPosition),
                     cursor.getString(titlePosition),
                     cursor.getString(descriptionPosition),
-                    new Date(cursor.getInt(datePosition)),
+                    new Date(cursor.getLong(datePosition)),
                     cursor.getInt(costPosition),
-                    new Time(cursor.getInt(timePosition)),
+                    new Time(cursor.getLong(timePosition)),
                     cursor.getInt(mileagePosition),
                     cursor.getInt(vehicleIdPosition),
                     cursor.getInt(systemIdPosition)
