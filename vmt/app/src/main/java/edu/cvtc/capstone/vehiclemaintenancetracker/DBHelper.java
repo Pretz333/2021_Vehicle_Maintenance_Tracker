@@ -10,7 +10,6 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -323,7 +322,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_SYSTEM_ID
         };
 
-        String orderBy = MaintenanceLogSQL._ID;
+        String orderBy = MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE + " DESC";
         String filter = MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID + " = ?";
         String[] filterArgs = {String.valueOf(id)};
 

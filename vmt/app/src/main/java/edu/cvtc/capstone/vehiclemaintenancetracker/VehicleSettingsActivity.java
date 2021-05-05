@@ -154,8 +154,14 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
             //Make the vehicle if this is a new vehicle
             if (vehicle == null) {
                 vehicle = new Vehicle(mNickname.getText().toString());
+            } else {
+                vehicle.setName(mNickname.getText().toString());
             }
+        }
 
+        // Now that we've given a chance to create the vehicle, only
+        // set the remaining properties if we have a vehicle
+        if(vehicle != null && vehicle.getName() != null) {
             //For the remaining properties, send them through the validation and set them
             //as long as the user typed something in
             if (!mMake.getText().toString().equals("")) {

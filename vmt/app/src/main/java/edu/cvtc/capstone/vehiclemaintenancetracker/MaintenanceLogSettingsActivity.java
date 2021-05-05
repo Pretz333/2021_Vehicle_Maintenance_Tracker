@@ -167,7 +167,6 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
     private void updateLogWithValues() {
         //Ensure they have the minimum values
         if((vehicleId != -1 || log.getVehicleId() != -1) && !mTitle.getText().toString().equals("")){
-
             //Make a new log if we're not editing one
             if(log == null){
                 log = new MaintenanceLog(mTitle.getText().toString(), vehicleId);
@@ -175,7 +174,11 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
                 //since the other option adds the title to new logs, we'll set the title for edited logs
                 log.setTitle(mTitle.getText().toString());
             }
+        }
 
+        // Now that we've given a chance to create the log, only
+        // set the remaining properties if we have a log
+        if(log != null && log.getTitle() != null) {
             if(!mDescription.getText().toString().equals("")){
                 log.setDescription(mDescription.getText().toString());
             }
