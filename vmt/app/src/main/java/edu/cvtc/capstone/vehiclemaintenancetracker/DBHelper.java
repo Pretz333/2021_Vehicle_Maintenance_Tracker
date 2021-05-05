@@ -36,6 +36,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(IssueStatusSQL.SQL_CREATE_TABLE_ISSUE_STATUS);
         db.execSQL(SystemSQL.SQL_CREATE_TABLE_SYSTEM);
         db.execSQL(IssueLogSQL.SQL_CREATE_TABLE_ISSUE_LOG);
+        db.execSQL(IssuePrioritySQL.SQL_CREATE_TABLE_ISSUE_PRIORITY);
 
     }
 
@@ -49,6 +50,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(IssueStatusSQL.SQL_DROP_TABLE_ISSUE_STATUS);
         db.execSQL(SystemSQL.SQL_DROP_TABLE_SYSTEM);
         db.execSQL(IssueLogSQL.SQL_DROP_TABLE_ISSUE_LOG);
+        db.execSQL(IssuePrioritySQL.SQL_DROP_TABLE_ISSUE_PRIORITY);
 
         //make it again
         db.execSQL(VehicleSQL.SQL_CREATE_TABLE_VEHICLE);
@@ -57,6 +59,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(IssueStatusSQL.SQL_CREATE_TABLE_ISSUE_STATUS);
         db.execSQL(SystemSQL.SQL_CREATE_TABLE_SYSTEM);
         db.execSQL(IssueLogSQL.SQL_CREATE_TABLE_ISSUE_LOG);
+        db.execSQL(IssuePrioritySQL.SQL_CREATE_TABLE_ISSUE_PRIORITY);
     }
 
     // Inserts
@@ -164,7 +167,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         values.put(IssueSQL.COLUMN_ISSUE_TITLE, issue.getTitle());
         values.put(IssueSQL.COLUMN_ISSUE_DESCRIPTION, issue.getDescription());
-        values.put(IssueSQL.COLUMN_ISSUE_PRIORITY, issue.getPriority());
+        values.put(IssueSQL.COLUMN_ISSUE_PRIORITY_ID, issue.getPriority());
         values.put(IssueSQL.COLUMN_ISSUE_VEHICLE_ID, issue.getVehicleId());
         values.put(IssueSQL.COLUMN_ISSUE_STATUS_ID, issue.getStatusId());
 
@@ -202,6 +205,30 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if(newRowId != issueStatus.getId()){
             issueStatus.setId((int) newRowId);
+        }
+
+    }
+
+    public void insertIssuePriority(IssuePriority issuePriority) {
+
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        if(issuePriority.getId() != -1) {
+            values.put(IssuePrioritySQL._ID, issuePriority.getId());
+        }
+        values.put(IssuePrioritySQL.COLUMN_ISSUE_PRIORITY_DESCRIPTION, issuePriority.getDescription());
+
+        long newRowId = db.insert(IssuePrioritySQL.TABLE_NAME_ISSUE_PRIORITY, null, values);
+        db.close();
+
+        if(newRowId == -1){
+            Log.w(TAG, "DB Insert Failed!");
+            VerifyUtil.alertUser(context, "Database Insert Failed", "Your data did not save, please try again");
+        }
+
+        if(newRowId != issuePriority.getId()){
+            issuePriority.setId((int) newRowId);
         }
 
     }
@@ -254,6 +281,25 @@ public class DBHelper extends SQLiteOpenHelper {
         String[] args = {String.valueOf(maintenanceLog.getId())};
 
         db.update(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, values, MaintenanceLogSQL._ID + "=?", args);
+    }
+
+    public void updateIssue(Issue issue) {
+        // Get a writable database
+        SQLiteDatabase db = getWritableDatabase();
+
+        // Set all of the values
+        ContentValues values = new ContentValues();
+        values.put(IssueSQL._ID, issue.getId());
+        values.put(IssueSQL.COLUMN_ISSUE_TITLE, issue.getTitle());
+        values.put(IssueSQL.COLUMN_ISSUE_DESCRIPTION, issue.getDescription());
+        values.put(IssueSQL.COLUMN_ISSUE_PRIORITY_ID, issue.getPriority());
+        values.put(IssueSQL.COLUMN_ISSUE_VEHICLE_ID, issue.getVehicleId());
+        values.put(IssueSQL.COLUMN_ISSUE_STATUS_ID, issue.getStatusId());
+
+        // Get the id of the issue to use for the where clause
+        String[] args = {String.valueOf(issue.getId())};
+
+        db.update(IssueSQL.TABLE_NAME_ISSUE, values, IssueSQL._ID + "=?", args);
     }
 
     // Retrievals
@@ -368,6 +414,53 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
 
         return logs;
+    }
+
+    public ArrayList<Issue> getAllIssuesByVehicleId(int id) {
+        // Get a readable database
+        SQLiteDatabase db = getReadableDatabase();
+
+        // Get all of the fields
+        String[] issueColumns = {
+                IssueSQL._ID,
+                IssueSQL.COLUMN_ISSUE_TITLE,
+                IssueSQL.COLUMN_ISSUE_DESCRIPTION,
+                IssueSQL.COLUMN_ISSUE_PRIORITY_ID,
+                IssueSQL.COLUMN_ISSUE_VEHICLE_ID,
+                IssueSQL.COLUMN_ISSUE_STATUS_ID
+        };
+
+        String orderBy = IssueSQL.COLUMN_ISSUE_PRIORITY_ID;
+        String filter = IssueSQL.COLUMN_ISSUE_VEHICLE_ID + " = ?";
+        String[] filterArgs = {String.valueOf(id)};
+
+        ArrayList<Issue> issues = new ArrayList<>();
+
+        Cursor cursor = db.query(IssueSQL.TABLE_NAME_ISSUE, issueColumns, filter,
+                filterArgs, null, null, orderBy);
+
+        int idPosition = cursor.getColumnIndex(IssueSQL._ID);
+        int titlePosition = cursor.getColumnIndex(IssueSQL.COLUMN_ISSUE_TITLE);
+        int descriptionPosition = cursor.getColumnIndex(IssueSQL.COLUMN_ISSUE_DESCRIPTION);
+        int priorityIdPosition = cursor.getColumnIndex(IssueSQL.COLUMN_ISSUE_PRIORITY_ID);
+        int vehicleIdPosition = cursor.getColumnIndex(IssueSQL.COLUMN_ISSUE_VEHICLE_ID);
+        int statusIdPosition = cursor.getColumnIndex(IssueSQL.COLUMN_ISSUE_STATUS_ID);
+
+        while (cursor.moveToNext()) {
+            issues.add(new Issue(
+                    cursor.getInt(idPosition),
+                    cursor.getString(titlePosition),
+                    cursor.getString(descriptionPosition),
+                    cursor.getInt(priorityIdPosition),
+                    cursor.getInt(vehicleIdPosition),
+                    cursor.getInt(statusIdPosition)
+            ));
+        }
+
+        cursor.close();
+        db.close();
+
+        return issues;
     }
 
     public List<System> getAllSystems() {
@@ -523,6 +616,55 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
 
         return log;
+    }
+
+    public Issue getIssueByIssueId(int id) {
+        SQLiteDatabase db = getReadableDatabase();
+        Issue issue = null;
+
+        // Get all of the fields
+        String[] issueColumns = {
+                IssueSQL._ID,
+                IssueSQL.COLUMN_ISSUE_TITLE,
+                IssueSQL.COLUMN_ISSUE_DESCRIPTION,
+                IssueSQL.COLUMN_ISSUE_PRIORITY_ID,
+                IssueSQL.COLUMN_ISSUE_VEHICLE_ID,
+                IssueSQL.COLUMN_ISSUE_STATUS_ID
+        };
+
+        String filter = IssueSQL._ID + " = ?";
+        String[] filterArgs = {String.valueOf(id)};
+
+        try {
+            Cursor cursor = db.query(IssueSQL.TABLE_NAME_ISSUE, issueColumns, filter,
+                    filterArgs, null, null, null);
+
+            int idPosition = cursor.getColumnIndex(IssueSQL._ID);
+            int titlePosition = cursor.getColumnIndex(IssueSQL.COLUMN_ISSUE_TITLE);
+            int descriptionPosition = cursor.getColumnIndex(IssueSQL.COLUMN_ISSUE_DESCRIPTION);
+            int priorityIdPosition = cursor.getColumnIndex(IssueSQL.COLUMN_ISSUE_PRIORITY_ID);
+            int vehicleIdPosition = cursor.getColumnIndex(IssueSQL.COLUMN_ISSUE_VEHICLE_ID);
+            int statusIdPosition = cursor.getColumnIndex(IssueSQL.COLUMN_ISSUE_STATUS_ID);
+
+            cursor.moveToNext();
+            issue = new Issue(
+                    cursor.getInt(idPosition),
+                    cursor.getString(titlePosition),
+                    cursor.getString(descriptionPosition),
+                    cursor.getInt(priorityIdPosition),
+                    cursor.getInt(vehicleIdPosition),
+                    cursor.getInt(statusIdPosition)
+            );
+
+            cursor.close();
+        } catch (Exception ex) {
+            Log.e(TAG, ex.toString());
+            VerifyUtil.alertUser(context, "Database Retrieval Failed", "Unable to fetch issue information, please try again");
+        }
+
+        db.close();
+
+        return issue;
     }
 
     public int getVehicleIdByNickname(String name) {
@@ -744,7 +886,7 @@ public class DBHelper extends SQLiteOpenHelper {
         private static final String TABLE_NAME_ISSUE = "issue";
         private static final String COLUMN_ISSUE_TITLE = "issue_title";
         private static final String COLUMN_ISSUE_DESCRIPTION = "issue_description";
-        private static final String COLUMN_ISSUE_PRIORITY = "issue_priority";
+        private static final String COLUMN_ISSUE_PRIORITY_ID = "issue_priority_id";
         private static final String COLUMN_ISSUE_VEHICLE_ID = "issue_vehicle_id";
         private static final String COLUMN_ISSUE_STATUS_ID = "issue_status_id";
 
@@ -754,9 +896,11 @@ public class DBHelper extends SQLiteOpenHelper {
                         _ID + " INTEGER PRIMARY KEY, " +
                         COLUMN_ISSUE_TITLE + " TEXT NOT NULL, " +
                         COLUMN_ISSUE_DESCRIPTION + " TEXT, " +
-                        COLUMN_ISSUE_PRIORITY + " INTEGER, " +
+                        COLUMN_ISSUE_PRIORITY_ID + " INTEGER, " +
                         COLUMN_ISSUE_VEHICLE_ID + " INTEGER NOT NULL, " +
                         COLUMN_ISSUE_STATUS_ID + " INTEGER NOT NULL, " +
+                        "FOREIGN KEY (" + COLUMN_ISSUE_PRIORITY_ID + ") REFERENCES " +
+                        IssuePrioritySQL.TABLE_NAME_ISSUE_PRIORITY + " (" + IssuePrioritySQL._ID + "), " +
                         "FOREIGN KEY (" + COLUMN_ISSUE_VEHICLE_ID + ") REFERENCES " +
                         VehicleSQL.TABLE_NAME_VEHICLE + " (" + VehicleSQL._ID + "), " +
                         "FOREIGN KEY (" + COLUMN_ISSUE_STATUS_ID + ") REFERENCES " +
@@ -794,6 +938,21 @@ public class DBHelper extends SQLiteOpenHelper {
 
         // Constant to drop the status table
         private static final String SQL_DROP_TABLE_ISSUE_STATUS = "DROP TABLE IF EXISTS " + TABLE_NAME_ISSUE_STATUS;
+    }
+
+    private static final class IssuePrioritySQL implements BaseColumns {
+        // Constants for issue priority table and fields
+        private static final String TABLE_NAME_ISSUE_PRIORITY = "issue_priority";
+        private static final String COLUMN_ISSUE_PRIORITY_DESCRIPTION = "issue_priority_description";
+
+        // Constant to create the issue priority table
+        private static final String SQL_CREATE_TABLE_ISSUE_PRIORITY =
+                "CREATE TABLE " + TABLE_NAME_ISSUE_PRIORITY + " (" +
+                        _ID + " INTEGER PRIMARY KEY, " +
+                        COLUMN_ISSUE_PRIORITY_DESCRIPTION + " TEXT NOT NULL)";
+
+        // Constant to drop the priority table
+        private static final String SQL_DROP_TABLE_ISSUE_PRIORITY = "DROP TABLE IF EXISTS " + TABLE_NAME_ISSUE_PRIORITY;
     }
 
     private static final class IssueLogSQL implements BaseColumns {
