@@ -118,5 +118,14 @@
     <string name="alertDialog_buttonYes">Yes</string>
     <string name="alertDialog_buttonNo">No</string>
 
+    <!-- Issue Settings strings -->
+    <string name="issueSettings_titleDisplayAdd">Add Issue</string>
+    <string name="issueSettings_titleDisplayEdit">Edit Issue</string>
+    <string name="issueSettings_editTextHint_title">Title</string>
+    <string name="issueSettings_editTextHint_description">Description</string>
+    <string name="issueSettings_textViewPriorityLabel">Priority:</string>
+    <string name="issueSettings_buttonSave">Save Changes</string>
+    <string name="issueSettings_buttonClose">Close Issue</string>
+
 
 </resources>

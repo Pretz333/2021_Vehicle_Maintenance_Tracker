@@ -29,6 +29,8 @@ import java.util.Locale;
 
 public class IssueActivity extends AppCompatActivity {
 
+    public static final String EXTRA_ISSUE_ID = "edu.cvtc.capstone.vehiclemaintenancetracker.EXTRA_ISSUE_ID";
+
     // Member variables
     private int vehicleId;
     Toolbar toolbar;
@@ -126,6 +128,12 @@ public class IssueActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menuItem_addALog:
+                Intent intent = new Intent(IssueActivity.this, IssueSettingsActivity.class);
+                intent.putExtra(IssueActivity.EXTRA_ISSUE_ID, -1);
+                intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, vehicleId);
+                startActivity(intent);
+                break;
             case R.id.menuItem_log_filter:
                 Snackbar.make(toolbar, "Filter button tapped", Snackbar.LENGTH_SHORT).show();
                 break;
