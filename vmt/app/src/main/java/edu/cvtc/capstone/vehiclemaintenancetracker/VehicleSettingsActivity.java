@@ -35,7 +35,8 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
             mDatePurchased,
             mColor,
             mMileage,
-            mValue;
+            mValue,
+            mVIN;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
         mColor = findViewById(R.id.vehicleSettings_editTextColor);
         mMileage = findViewById(R.id.vehicleSettings_editTextMileage);
         mValue = findViewById(R.id.vehicleSettings_editTextValue);
+        mVIN = findViewById(R.id.vehicleSettings_editTextVin);
         Button buttonSave = findViewById(R.id.vehicleSettings_buttonSave);
         Button buttonDelete = findViewById(R.id.vehicleSettings_buttonDelete);
 
@@ -94,6 +96,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
         mColor.setText(vehicle.getColor());
         mMileage.setText(String.valueOf(vehicle.getMileage()));
         mValue.setText(String.valueOf(vehicle.getValue()));
+        mVIN.setText(vehicle.getVIN());
 
         // Set the date formatting for easier reading because no one wants to read a LONG date.
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/y", Locale.ENGLISH);
@@ -101,31 +104,18 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
     }
 
     // Validate that required fields contain data.
-    //
-    // If some fields don't contain data, alert the user
-    // and highlight the field red.
-    //
-    // Returns TRUE if all fields are good to go, FALSE
-    // otherwise.
-    //
-    private boolean areFieldsValid() {
-        // If any field was empty, or contains invalid
-        // data, set this to true.
-        //
-        // This will trigger an alert dialog alerting
-        // the user of the fields that aren't correct.
-        //
+    // If some fields don't contain data, alert the user and highlight the field red.
+    // Returns TRUE if all fields are good to go, FALSE otherwise.
+    private boolean hasMinimums() {
+        // If any field was empty, or contains invalid data, set this to true.
+        // This will trigger an alert dialog alerting the user of the fields that aren't correct.
         // This also serves as a return value.
         boolean flagFieldEmpty = false;
 
         // Store each editText into an array
-        //
-        // This makes it easier to loop through all
-        // the fields and check them without having
-        // to write lots of boilerplate code for new
-        // or removed editText box's.
-        //
-        EditText[] fieldsToCheck = {mNickname, mMake, mModel, mYear, mPlate, mDatePurchased, mColor, mMileage/*, mValue*/};
+        // This makes it easier to loop through all the fields and check them without having
+        // to write lots of boilerplate code for new or removed editText box's.
+        EditText[] fieldsToCheck = {mNickname, mMake, mModel, mYear, mPlate, mDatePurchased, mColor, mMileage/*, mValue, mVIN*/};
 
         // Loop through the fields and check if they contain
         // data. If not, highlight the respectful field(s)
@@ -146,8 +136,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
             }
         }
 
-        // One or more fields were empty. Let's
-        // tell the user about it!
+        // One or more fields were empty. Let's tell the user about it!
         if (flagFieldEmpty) {
             MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(this);
             alert.setTitle(getResources().getString(R.string.vehicleSettingsActivity_errorValidationTitle));
@@ -197,34 +186,36 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
                 vehicle.setLicensePlate(mPlate.getText().toString());
             }
 
-            //VIN
-            //Purchase Date
+            if (!mVIN.getText().toString().equals("")) {
+                vehicle.setVIN(mVIN.getText().toString());
+            }
+
+            if (!mDatePurchased.getText().toString().equals("")) {
+                vehicle.setPurchaseDate(VerifyUtil.parseStringToDate(mDatePurchased.getText().toString()));
+            }
         }
     }
 
     // Listener for view events.
-    // Though, it might just be for the save button
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.vehicleSettings_buttonSave){
-            //If we found a vehicle from the id passed, update it. If not, make one
-            if (vehicle == null || vehicle.getId() == -1) {
+            // Check if all fields are valid, no need for an ELSE block as
+            // the function hasMinimums() will alert the user on its own.
+            if(hasMinimums()) {
+                //Update all values
+                updateVehicleWithValues();
 
-                // Check if all fields are valid
-                //
-                // No need for an ELSE block as the
-                // function areFieldsValid() will
-                // alert the user on its own.
-                if (areFieldsValid()) {
-                    updateVehicleWithValues();
+                //If we found a vehicle from the id passed, update it. If not, make one
+                if (vehicle == null) { //Should never be called, as hasMinimums() should catch this
+                    //It couldn't be made as it didn't have the minimum properties needed to be functional
+                    Snackbar.make(v, "Vehicle must have a nickname", Snackbar.LENGTH_SHORT).show();
+                } else if(vehicle.getId() == -1) {
                     dbHelper.insertVehicle(vehicle);
                     Snackbar.make(v, "Successfully added " + vehicle.getName() + "!", Snackbar.LENGTH_SHORT).show();
                     // Close this activity and return to the main activity
                     VehicleSettingsActivity.super.finish();
-                }
-            } else {
-                if (areFieldsValid()) {
-                    updateVehicleWithValues();
+                } else {
                     dbHelper.updateVehicle(vehicle);
                     Snackbar.make(v, "Successfully updated " + vehicle.getName() + "!", Snackbar.LENGTH_SHORT).show();
                 }

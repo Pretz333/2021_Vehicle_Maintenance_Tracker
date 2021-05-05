@@ -48,12 +48,17 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
                     if (v.getId() == R.id.maintenanceLogSettings_buttonSave) {
                         updateLogWithValues();
                         //If we found a vehicle from the id passed, update it. If not, make one
-                        if (log == null || log.getId() == -1) {
+                        if (log == null) {
+                            //It couldn't be made as it didn't have the minimum properties needed to be functional
+                            Snackbar.make(v, "The log must have a title", Snackbar.LENGTH_SHORT).show();
+                        } else if (log.getId() == -1) {
                             dbHelper.insertMaintenanceLog(log);
                             Snackbar.make(v, "Successfully added the log!", Snackbar.LENGTH_SHORT).show();
+                            MaintenanceLogSettingsActivity.super.finish();
                         } else {
                             dbHelper.updateLog(log);
                             Snackbar.make(v, "Successfully updated the log!", Snackbar.LENGTH_SHORT).show();
+                            MaintenanceLogSettingsActivity.super.finish();
                         }
                     }
                 }
@@ -91,6 +96,7 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
 
                             // Display a toast that the maintenance log was deleted
                             Toast.makeText(getApplicationContext(), "The maintenance log was deleted.", Toast.LENGTH_SHORT).show();
+                            MaintenanceLogSettingsActivity.super.finish();
                         });
 
                         // The no button was clicked.
