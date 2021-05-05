@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -38,6 +40,13 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
             mMileage,
             mValue,
             mVIN;
+
+    TextInputLayout eNickname,
+                    eMake,
+                    eModel,
+                    eYear,
+                    ePlate,
+                    eColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +75,16 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
         Button buttonSave = findViewById(R.id.vehicleSettings_buttonSave);
         Button buttonDelete = findViewById(R.id.vehicleSettings_buttonDelete);
 
+        // These view references are for the container that holds the
+        // edit text. The purposes of these are only to provide the
+        // material design error message with better highlighting.
+        eNickname = findViewById(R.id.vehicleSettings_textInputNickname);
+        eMake = findViewById(R.id.vehicleSettings_textInputMake);
+        eModel = findViewById(R.id.vehicleSettings_textInputModel);
+        eYear = findViewById(R.id.vehicleSettings_textInputYear);
+        ePlate = findViewById(R.id.vehicleSettings_textInputPlate);
+        eColor = findViewById(R.id.vehicleSettings_textInputColor);
+
         // Initialize listener for this activity
         buttonSave.setOnClickListener(this);
         buttonDelete.setOnClickListener(this);
@@ -83,6 +102,12 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
             // This vehicle is already in the database, so the delete button should be visible.
             buttonDelete.setVisibility(View.VISIBLE);
         }
+
+        if (mNickname.getParent() instanceof TextInputLayout) {
+            TextInputLayout tip = (TextInputLayout) mNickname.getParent();
+            tip.setError("Some error message here");
+        }
+
 
     }
 
@@ -117,34 +142,56 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
         // If any field was empty, or contains invalid data, set this to true.
         // This will trigger an alert dialog alerting the user of the fields that aren't correct.
         // This also serves as a return value.
-        boolean flagFieldEmpty = false;
+        boolean flagField = false;
 
         // Store each editText into an array
         // This makes it easier to loop through all the fields and check them without having
         // to write lots of boilerplate code for new or removed editText box's.
         EditText[] fieldsToCheck = {mNickname, mMake, mModel, mYear, mColor, mPlate, /*mDatePurchased, mMileage/*, mValue, mVIN*/};
 
+        // These are the fields that should be highlighted with the better
+        // material design error message indicators
+        TextInputLayout[] fieldsToHighlight = {eNickname, eMake, eModel, eYear, eColor, ePlate};
+
         // Loop through the fields and check if they contain
         // data. If not, highlight the respectful field(s)
-        for (EditText editText : fieldsToCheck) {
-            String tempStringFromField = editText.getText().toString();
+        for (int i=0; i<fieldsToCheck.length; i++) {
+            String tempStringFromField = fieldsToCheck[i].getText().toString();
 
             // If the field contains no string, just a space,
             // or is literally empty, highlight the respectful
             // editText box with a warning message and set the
             // flagFieldEmpty variable to true
+            //
+            // Check if the string is empty in any way.
+            // If so set the editText to that specific
+            // warning message
             if (tempStringFromField.equals("")
                     || tempStringFromField.equals(" ")
                     || tempStringFromField.isEmpty()) {
+
                 // Set the error message for the dialog
-                editText.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
+                //editText.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
+                fieldsToHighlight[i].setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
+
                 // One or more fields were empty, set to true
-                flagFieldEmpty = true;
+                flagField = true;
+
+            } else if (!VerifyUtil.isStringSafe(tempStringFromField)) {
+                fieldsToHighlight[i].setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageInvalidCharacters));
+                // One or more fields contained invalid data, set to true
+                flagField = true;
+
+            } else {
+                // Set the error to null
+                // if everything passes checking!
+                fieldsToHighlight[i].setError(null);
             }
+
         }
 
         // One or more fields were empty. Let's tell the user about it!
-        if (flagFieldEmpty) {
+        if (flagField) {
             MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(this);
             alert.setTitle(getResources().getString(R.string.vehicleSettingsActivity_errorValidationTitle));
             alert.setMessage(getResources().getString(R.string.vehicleSettingsActivity_errorValidationMessage));
@@ -152,7 +199,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
             alert.show();
         }
 
-        return !flagFieldEmpty;
+        return !flagField;
     }
 
     private void updateVehicleWithValues() {
