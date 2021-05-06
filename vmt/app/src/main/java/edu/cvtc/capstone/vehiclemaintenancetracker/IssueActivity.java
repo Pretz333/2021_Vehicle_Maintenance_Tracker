@@ -239,6 +239,14 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
         public void onClick(View v) {
             switch(v.getId()) {
                 case R.id.card_issueActivity_buttonEdit :
+                    // Create the target intent
+                    Intent intent = new Intent(context, IssueSettingsActivity.class);
+
+                    // Extras include the ID of the issue
+                    intent.putExtra(IssueActivity.EXTRA_ISSUE_ID, issueId);
+
+                    // Start the activity
+                    context.startActivity(intent);
                     Snackbar.make(title, "Edit button tapped on RecyclerView element: " + getLayoutPosition(), Snackbar.LENGTH_SHORT).show();
                     break;
 
