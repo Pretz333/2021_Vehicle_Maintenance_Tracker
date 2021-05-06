@@ -14,7 +14,9 @@
             android:name=".IssueSettingsActivity"
             android:label="@string/issueSettings_appTitle"/>
 
-        <activity android:name=".MaintenanceLogSettingsActivity" />
+        <activity
+            android:name=".MaintenanceLogSettingsActivity"
+            android:label="@string/optionActivity_maintenanceTitle"/>
 
         <activity
             android:name=".VehicleSettingsActivity"

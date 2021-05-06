@@ -1,6 +1,7 @@
 package edu.cvtc.capstone.vehiclemaintenancetracker;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -33,6 +34,7 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
     DBHelper dbHelper = new DBHelper(MaintenanceLogSettingsActivity.this);
     MaintenanceLog log = null;
     int vehicleId;
+    Toolbar toolbar;
 
     private EditText mTitle, mDescription, mMaintenanceDate, mCost, mTime, mMileage;
     private Spinner mSystem;
@@ -41,6 +43,15 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maintenance_log_settings);
+
+        toolbar = findViewById(R.id.maintenanceLogSettings_toolbar);
+
+        // Set support for the toolbar
+        setSupportActionBar(toolbar);
+
+        // Back button, better than the Manifest way for reasons... - Alexander
+        toolbar.setNavigationIcon(R.drawable.ic_close);
+        toolbar.setNavigationOnClickListener(v -> MaintenanceLogSettingsActivity.super.finish());
 
         //Set the save button's onClickListener
         findViewById(R.id.maintenanceLogSettings_buttonSave).setOnClickListener(
