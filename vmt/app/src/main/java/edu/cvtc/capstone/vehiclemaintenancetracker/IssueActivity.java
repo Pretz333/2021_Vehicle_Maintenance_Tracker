@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,11 +24,14 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class IssueActivity extends AppCompatActivity {
 
     public static final String EXTRA_ISSUE_ID = "edu.cvtc.capstone.vehiclemaintenancetracker.EXTRA_ISSUE_ID";
+    @SuppressLint("StaticFieldLeak")
+    public static Context context;
 
     // Member variables
     private int vehicleId;
@@ -44,6 +48,7 @@ public class IssueActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_issue);
+        context = this;
 
         // Initialize the toolbar
         toolbar = findViewById(R.id.toolbar);
@@ -84,6 +89,12 @@ public class IssueActivity extends AppCompatActivity {
         populateRecyclerView();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        context = null;
+    }
+
     // Add a few fake issue logs to the logArrayList
     // to be used in the RecyclerView for demo
     private void populateRecyclerView() {
@@ -94,7 +105,7 @@ public class IssueActivity extends AppCompatActivity {
 
             // Grab all the issues from the database and throw them
             // into the issueArrayList
-            issueArrayList = dbHelper.getAllIssuesByVehicleId(vehicleId);
+            issueArrayList = dbHelper.getAllIssuesByVehicleId(vehicleId, false);
 
             // Prepare the RecyclerView
             prepRecyclerView();
@@ -123,6 +134,31 @@ public class IssueActivity extends AppCompatActivity {
         // Create the adapter and make the RecyclerView use it
         IssueRecyclerAdapter IssueRecyclerAdapter = new IssueRecyclerAdapter(issueArrayList);
         recyclerView.setAdapter(IssueRecyclerAdapter);
+    }
+
+    public static void setIssueStatusToComplete(int issueId){
+        if(context != null) {
+            DBHelper dbHelper = new DBHelper(context);
+            Issue issue = dbHelper.getIssueByIssueId(issueId);
+            if (issue != null) {
+                issue.setStatusId(dbHelper.getClosedIssueStatusId());
+                dbHelper.updateIssue(issue);
+
+                //Todo: Delete when the status is visible
+                List<IssueStatus> issueStatuses = dbHelper.getPossibleIssueStatuses();
+                issue = dbHelper.getIssueByIssueId(issueId);
+                String description = "None";
+                for (int i = 0; i < issueStatuses.size(); i++) {
+                    if (issueStatuses.get(i).getId() == issue.getStatusId()) {
+                        description = issueStatuses.get(i).getDescription();
+                        break;
+                    }
+                }
+                Toast.makeText(context, "Set to: " + description, Toast.LENGTH_SHORT).show();
+            } else {
+                //TODO: alert the user something funky is going on
+            }
+        }
     }
 
     @Override
@@ -186,7 +222,6 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
             super(itemView);
 
             context = itemView.getContext();
-
             title = itemView.findViewById(R.id.card_issueActivity_title);
             description = itemView.findViewById(R.id.card_issueActivity_description);
             date = itemView.findViewById(R.id.card_issueActivity_date);
@@ -199,7 +234,7 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
             buttonComplete.setOnClickListener(this);
         }
 
-        // Event handler for the edit button
+        // Event handler for the buttons
         @Override
         public void onClick(View v) {
             switch(v.getId()) {
@@ -216,7 +251,8 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
                     break;
 
                 case R.id.card_issueActivity_buttonComplete :
-                        Snackbar.make(title, "Complete button tapped on RecyclerView element: " + getLayoutPosition(), Snackbar.LENGTH_SHORT).show();
+                    IssueActivity.setIssueStatusToComplete(issueId);
+                    ((View)v.getParent()).setVisibility(View.GONE);
                     break;
 
                 default:
@@ -227,7 +263,7 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
         // One-hitter method for setting the data for all
         // the TextViews
         public void setDataByObject(Issue issue) {
-            this.issueId = issue.getId();
+            issueId = issue.getId();
             title.setText(issue.getTitle());
             description.setText(issue.getDescription());
             //date.setText(simpleDateFormat.format(issue.getDate()));

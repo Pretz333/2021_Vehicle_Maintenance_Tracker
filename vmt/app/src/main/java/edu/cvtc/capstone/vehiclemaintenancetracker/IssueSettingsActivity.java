@@ -97,32 +97,25 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
         if (v.getId() == R.id.issueSettings_buttonSave) {
             // Verify that all fields are valid
             if (hasMinimumRequirements()) {
+
                 // Update the values
-                updateIssueWithValues();
+                //updateIssueWithValues();
+              
+                // Since it passed verification, lets toss all the editText
+                // data into the class-level issue object and insert it
+                putFieldsIntoObject();
 
                 // If the issue exists, update it. Otherwise, insert the new issue.
                 if (issue == null) {
                     // The issue does not have the minimum requirements.
-                    Snackbar.make(v, "The issue must have a title", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(v, "The failed to be created", Snackbar.LENGTH_SHORT).show();
                 } else if (issue.getId() == -1) {
-                    // Since it passed verification, lets toss all the editText
-                    // data into the class-level issue object and insert it
-                    putFieldsIntoObject();
                     dbHelper.insertIssue(issue);
-                    Snackbar.make(v, "Successfully added the issue!", Snackbar.LENGTH_SHORT).show();
-
-                    // Close the activity
                     IssueSettingsActivity.super.finish();
                 } else {
-                    putFieldsIntoObject();
                     dbHelper.updateIssue(issue);
-                    Snackbar.make(v, "Successfully updated the issue!", Snackbar.LENGTH_SHORT).show();
-
-                    // Close the activity
                     IssueSettingsActivity.super.finish();
                 }
-
-
             } else {
                 // Something went wrong, lets alert the user!
                 MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(this);
@@ -141,20 +134,24 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
     // If it's not null, we are editing an object.
     private void putFieldsIntoObject() {
         if (issue == null) {
-            issue = new Issue(); //TODO: Don't
+            int openIssueId = dbHelper.getOpenIssueStatusId();
+            if(openIssueId != -1) {
+                issue = new Issue(mTitle.getText().toString(), vehicleId, openIssueId);
+            }
         }
 
-        issue.setTitle(mTitle.getText().toString());
-        issue.setDescription(mDescription.getText().toString());
-        issue.setPriority(priorityStringToInt(mPriority.getText().toString()));
-        issue.setVehicleId(vehicleId);
+        //If the issue was successfully created or already existed, set other properties
+        if(issue != null) {
+            issue.setTitle(mTitle.getText().toString());
+            issue.setDescription(mDescription.getText().toString());
+            issue.setPriority(priorityStringToInt(mPriority.getText().toString()));
+        }
     }
 
     // Used by the Spinner. It converts a String value, such as 
     // "High Priority," to an int for the database.
     private int priorityStringToInt(String string) {
-        // Convert the priority of the editText
-        // from letters to a single digit
+        // Convert the priority of the editText from letters to a single digit
         switch (string) {
             case "High Priority":
                 return 0;
@@ -241,30 +238,6 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
     // Simplified function to check if a string is empty
     private boolean isStringEmpty(String string) {
         return (string.isEmpty() || string.equals("") || string.equals(" "));
-    }
-
-    private void updateIssueWithValues() {
-        // Check if they have the minimum
-        if ((vehicleId != -1 || issue.getVehicleId() != -1) && !isStringEmpty(mTitle.getText().toString())) {
-
-            // Create a new issue or update an existing issue
-            if (issue == null) {
-                issue = new Issue(mTitle.getText().toString(), vehicleId, -1); //TODO: Update the statusId
-            } else if (!isStringEmpty(mTitle.getText().toString())) {
-                issue.setTitle(mTitle.getText().toString());
-            }
-
-            // Set the remaining properties if the issue exists
-            if (issue != null && issue.getTitle() != null) {
-                if(!isStringEmpty(mDescription.getText().toString())){
-                    issue.setDescription(mDescription.getText().toString());
-                }
-
-                if(!isStringEmpty(mPriority.getText().toString())){
-                    issue.setPriority(priorityStringToInt(mPriority.getText().toString()));
-                }
-            }
-        }
     }
 
 }
