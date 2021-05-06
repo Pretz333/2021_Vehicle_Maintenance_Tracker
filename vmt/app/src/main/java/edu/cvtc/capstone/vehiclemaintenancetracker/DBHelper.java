@@ -420,7 +420,10 @@ public class DBHelper extends SQLiteOpenHelper {
         return logs;
     }
 
-    public ArrayList<Issue> getAllIssuesByVehicleId(int id) {
+    public ArrayList<Issue> getAllIssuesByVehicleId(int id, boolean includeClosed) {
+        //Above so we don't have two open databases
+        int closedIssueId = getClosedIssueStatusId();
+
         // Get a readable database
         SQLiteDatabase db = getReadableDatabase();
 
@@ -437,6 +440,11 @@ public class DBHelper extends SQLiteOpenHelper {
         String orderBy = IssueSQL.COLUMN_ISSUE_PRIORITY_ID;
         String filter = IssueSQL.COLUMN_ISSUE_VEHICLE_ID + " = ?";
         String[] filterArgs = {String.valueOf(id)};
+
+        //Don't include closed if the user doesn't want them
+        if(!includeClosed) {
+            filter += " AND " + IssueSQL.COLUMN_ISSUE_STATUS_ID + " != " + closedIssueId;
+        }
 
         ArrayList<Issue> issues = new ArrayList<>();
 
@@ -554,7 +562,7 @@ public class DBHelper extends SQLiteOpenHelper {
             }
             cursor.close();
         } catch (Exception ex) {
-            Log.e(TAG, ex.toString());
+            Log.e(TAG, "getVehicleById: " + ex.getMessage());
             VerifyUtil.alertUser(context, "Database Retrieval Failed", "Unable to fetch vehicle information, please try again");
         }
 
@@ -613,7 +621,7 @@ public class DBHelper extends SQLiteOpenHelper {
             );
             cursor.close();
         } catch (Exception ex) {
-            Log.e(TAG, ex.toString());
+            Log.e(TAG, "getLogByLogId: " + ex.getMessage());
             VerifyUtil.alertUser(context, "Database Retrieval Failed", "Unable to fetch log information, please try again");
         }
 
@@ -650,7 +658,7 @@ public class DBHelper extends SQLiteOpenHelper {
             int vehicleIdPosition = cursor.getColumnIndex(IssueSQL.COLUMN_ISSUE_VEHICLE_ID);
             int statusIdPosition = cursor.getColumnIndex(IssueSQL.COLUMN_ISSUE_STATUS_ID);
 
-            cursor.moveToNext();
+            cursor.moveToFirst();
             issue = new Issue(
                     cursor.getInt(idPosition),
                     cursor.getString(titlePosition),
@@ -662,7 +670,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             cursor.close();
         } catch (Exception ex) {
-            Log.e(TAG, ex.toString());
+            Log.e(TAG, "getIssueByIssueId: " + ex.getMessage());
             VerifyUtil.alertUser(context, "Database Retrieval Failed", "Unable to fetch issue information, please try again");
         }
 
@@ -727,8 +735,11 @@ public class DBHelper extends SQLiteOpenHelper {
             int idPosition = cursor.getColumnIndex(IssueStatusSQL._ID);
             int id = -1;
 
-            cursor.moveToFirst();
-            id = cursor.getInt(idPosition);
+            // This has to be a while, as if there is no information it'll just crash the
+            // app instead of calling getPossibleIssueStatuses() to generate the statuses
+            while(cursor.moveToNext()) {
+                id = cursor.getInt(idPosition);
+            }
 
             cursor.close();
             db.close();
@@ -748,7 +759,54 @@ public class DBHelper extends SQLiteOpenHelper {
 
             return id;
         } catch (Exception ex) {
-            Log.e(TAG, ex.toString());
+            Log.e(TAG, "getOpenIssueStatusId: " + ex.getMessage());
+            db.close();
+            VerifyUtil.alertUser(context, "Database Retrieval Failed", "Unable to fetch issue status, please try again");
+            return -1;
+        }
+    }
+
+    public int getClosedIssueStatusId() {
+        SQLiteDatabase db = getReadableDatabase();
+
+        // Get all of the fields
+        String[] values = {
+                IssueStatusSQL._ID,
+                IssueStatusSQL.COLUMN_ISSUE_STATUS_DESCRIPTION
+        };
+
+        //No need for args as it's hardcoded here. It can't change
+        String filter = IssueStatusSQL.COLUMN_ISSUE_STATUS_DESCRIPTION + " = 'Fixed'";
+
+        try {
+            Cursor cursor = db.query(IssueStatusSQL.TABLE_NAME_ISSUE_STATUS, values, filter,
+                    null, null, null, null);
+
+            int idPosition = cursor.getColumnIndex(IssueStatusSQL._ID);
+            int id = -1;
+
+            cursor.moveToFirst();
+            id = cursor.getInt(idPosition);
+
+            cursor.close();
+            db.close();
+
+            if(id == -1) {
+                //Check if there are issue statuses in the DB
+                List<IssueStatus> issueStatuses = getPossibleIssueStatuses();
+                if(!issueStatuses.isEmpty()) {
+                    //see if it's in the list
+                    for(int i = 0; i < issueStatuses.size(); i++) {
+                        if (issueStatuses.get(i).getDescription().equals("Fixed")) {
+                            return issueStatuses.get(i).getId();
+                        }
+                    }
+                }
+            }
+
+            return id;
+        } catch (Exception ex) {
+            Log.e(TAG, "getClosedIssueStatusId: " + ex.getMessage());
             db.close();
             VerifyUtil.alertUser(context, "Database Retrieval Failed", "Unable to fetch issue status, please try again");
             return -1;
@@ -778,7 +836,7 @@ public class DBHelper extends SQLiteOpenHelper {
             cursor.close();
         } catch (NullPointerException ex){
             id = -1;
-            Log.e(TAG, ex.toString());
+            Log.e(TAG, "getVehicleIdByNickname: " + ex.getMessage());
             VerifyUtil.alertUser(context, "Database Retrieval Failed", "Unable to fetch vehicle information, please try again");
         }
 
