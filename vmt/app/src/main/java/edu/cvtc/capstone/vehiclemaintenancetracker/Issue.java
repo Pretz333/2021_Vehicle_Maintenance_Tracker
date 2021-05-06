@@ -12,7 +12,7 @@ public class Issue {
     private int vehicleId;
     private int statusId;
 
-    public Issue() {
+    public Issue() { //TODO: DELETE THIS
         // ... ?
     }
 

@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -23,20 +22,15 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
     
     DBHelper dbHelper = new DBHelper(IssueSettingsActivity.this);
     Issue issue = null;
-    int vehicleId;
+    int vehicleId = -1;
 
     // View references
-    //
     Toolbar toolbar;
     EditText mTitle, mDescription;
-    // Containers of the EditText fields (Only used for error messages)
-    TextInputLayout eTitle, eDescription, ePriority;
+    TextInputLayout eTitle, eDescription, ePriority; // Containers of the EditText fields (Used for error messages)
     // The spinner for selecting a priority
     AutoCompleteTextView mPriority; //TODO, a
-    Spinner mPriority; //TODO, j
-
-    // Objects and variables ("null", or -1 by default)
-    int vehicleId = -1;
+    //Spinner mPriority; //TODO, j
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,32 +46,27 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
         toolbar = findViewById(R.id.issueSettings_toolbar);
         mTitle = findViewById(R.id.issueSettings_editTextTitle);
         mDescription = findViewById(R.id.issueSettings_editTextDescription);
-        mPriority = findViewById(R.id.issueSettings_editTextPrioritySpinner); //TODO: a
-        mPriority = findViewById(R.id.issueSettings_spinnerPriority); //TODO: j
+        mPriority = findViewById(R.id.issueSettings_editTextPrioritySpinner);
+        //mPriority = findViewById(R.id.issueSettings_spinnerPriority); //TODO: j's priority handler
         eTitle = findViewById(R.id.issueSettings_textInputTitle);
         eDescription = findViewById(R.id.issueSettings_textInputDescription);
         ePriority = findViewById(R.id.issueSettings_textInputPriority);
-        Button buttonSave = findViewById(R.id.issueSettings_buttonSave);
-        Button saveButton = findViewById(R.id.issueSettings_buttonSave); //TODO: Duplicate
-        Button closeButton = findViewById(R.id.issueSettings_buttonClose); //TODO: j
+        Button saveButton = findViewById(R.id.issueSettings_buttonSave);
+        Button closeButton = findViewById(R.id.issueSettings_buttonClose);
 
         // Set support for the toolbar
         setSupportActionBar(toolbar);
 
         // Back button, better than the Manifest way for reasons... - Alexander
         toolbar.setNavigationIcon(R.drawable.ic_close);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IssueSettingsActivity.super.finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> IssueSettingsActivity.super.finish());
 
         // Setting up onClick listeners
-        buttonSave.setOnClickListener(this);
+        saveButton.setOnClickListener(this);
 
         // Initialize an adapter for the spinner and make the spinner use the adapter, a
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.list_item_spinner, getResources().getStringArray(R.array.issueSettingsActivity_spinnerPriority));
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.list_item_spinner, getResources()
+                .getStringArray(R.array.issueSettingsActivity_spinnerPriority));
         mPriority.setAdapter(adapter);
       
         // If a valid issueId was passed to this activity, we want to pre-populate the fields
@@ -100,7 +89,7 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
         mDescription.setText(issue.getDescription());
 
         // Set the spinner to the id of the selected priority
-        mPriority.setSelection(issue.getPriority()); //TODO: may cause error's using a's as this was written by j
+        mPriority.setSelection(issue.getPriority()); //TODO: may cause errors as this was written using a spinner and we're not anymore
     }
 
     // Event handler for button clicks
@@ -113,7 +102,7 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
                 // Since it passed verification, lets toss all the editText
                 // data into the class-level issue object and insert it
                 putFieldsIntoObject();
-                dbHelper.insertIssue(issueObject);
+                dbHelper.insertIssue(issue);
 
                 // Close the activity
                 IssueSettingsActivity.super.finish();
@@ -133,22 +122,22 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
     //
     // If the issueObject is null, we are creating an issue. 
     // If it's not null, we are editing an object.
-    private void putFieldsIntoObject() { //TODO, ensure this isn't called if vehicleID == -1 or title == ""
-        if (issueObject == null) {
-            issueObject = new Issue(); //TODO: Don't
+    private void putFieldsIntoObject() {
+        if (issue == null) {
+            issue = new Issue(); //TODO: Don't
         }
 
-        issueObject.setTitle(mTitle.getText().toString());
-        issueObject.setDescription(mDescription.getText().toString());
-        issueObject.setPriority(priorityStringToInt(mPriority.getText().toString()));
-        issueObject.setVehicleId(receivedVehicleId);
+        issue.setTitle(mTitle.getText().toString());
+        issue.setDescription(mDescription.getText().toString());
+        issue.setPriority(priorityStringToInt(mPriority.getText().toString()));
+        issue.setVehicleId(vehicleId);
     }
 
     // Used by the Spinner. It converts a String value, such as 
     // "High Priority," to an int for the database. TODO: A's, not friendly with database changes
     private int priorityStringToInt(String string) {
         // Convert the priority of the editText
-        // from letters to a single diget
+        // from letters to a single digit
         switch (string) {
             case "High Priority":
                 return 0;
@@ -168,6 +157,11 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
         // Whether the values from the fields can be inserted into the database without conflict.
         boolean retVal = true;
 
+        if(vehicleId == -1){
+            retVal = false;
+            //TODO: Display something to the user
+        }
+
         // Convert the EditText fields to strings
         String checkTitle = mTitle.getText().toString();
         String checkDescription = mDescription.getText().toString();
@@ -175,8 +169,8 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
 
         // Check if each field is not blank, null, or contains invalid data.
         // If it does, retVal will be false.
-        //
-        // Check if it's empty
+
+        // Check if the title's empty
         if (isStringEmpty(checkTitle)) {
             retVal = false;
             eTitle.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));

@@ -18,7 +18,7 @@ import java.util.List;
 public class DBHelper extends SQLiteOpenHelper {
     public static final String TAG = "DBHELPER_CLASS";
     public static final String DATABASE_NAME = "VehicleMaintenanceTracker.db";
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
     private final Context context;
 
     public DBHelper(@Nullable Context context) {
@@ -38,6 +38,8 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(IssueLogSQL.SQL_CREATE_TABLE_ISSUE_LOG);
         db.execSQL(IssuePrioritySQL.SQL_CREATE_TABLE_ISSUE_PRIORITY);
 
+        //TODO: Insert issue statuses (and priorities)
+
     }
 
     @Override
@@ -53,13 +55,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(IssuePrioritySQL.SQL_DROP_TABLE_ISSUE_PRIORITY);
 
         //make it again
-        db.execSQL(VehicleSQL.SQL_CREATE_TABLE_VEHICLE);
-        db.execSQL(MaintenanceLogSQL.SQL_CREATE_TABLE_MAINTENANCE_LOG);
-        db.execSQL(IssueSQL.SQL_CREATE_TABLE_ISSUE);
-        db.execSQL(IssueStatusSQL.SQL_CREATE_TABLE_ISSUE_STATUS);
-        db.execSQL(SystemSQL.SQL_CREATE_TABLE_SYSTEM);
-        db.execSQL(IssueLogSQL.SQL_CREATE_TABLE_ISSUE_LOG);
-        db.execSQL(IssuePrioritySQL.SQL_CREATE_TABLE_ISSUE_PRIORITY);
+        onCreate(getWritableDatabase());
     }
 
     // Inserts
