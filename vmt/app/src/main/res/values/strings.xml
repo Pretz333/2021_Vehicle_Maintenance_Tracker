@@ -101,6 +101,23 @@
     <string name="card_issue_buttonEdit">Edit</string>
     <string name="card_issue_buttonComplete">Complete</string>
 
+        <!-- The priority spinner -->
+        <string-array name="issueSettingsActivity_spinnerPriority">
+            <item name="priority_high">High Priority</item>
+            <item name="priority_high">Medium Priority</item>
+            <item name="priority_high">Low Priority</item>
+        </string-array>
+
+        <!-- Issue Settings strings when adding/editing -->
+        <string name="issueSettings_appTitle">Create an issue</string>
+        <string name="issueSettings_titleDisplayAdd">Add Issue</string>
+        <string name="issueSettings_titleDisplayEdit">Edit Issue</string>
+        <string name="issueSettings_editTextHint_title">Title</string>
+        <string name="issueSettings_editTextHint_description">Description</string>
+        <string name="issueSettings_textViewPriorityLabel">Priority of this issue</string>
+        <string name="issueSettings_buttonSave">Save Changes</string>
+        <string name="issueSettings_buttonClose">Close Issue</string>
+
     <!-- Strings regarding LogActivity's & IssueActivity's toolbar items -->
     <string name="add_new_log">Add A New Log</string>
     <string name="add_new_issue">Add A New Issue</string>
@@ -119,14 +136,6 @@
     <string name="alertDialog_buttonYes">Yes</string>
     <string name="alertDialog_buttonNo">No</string>
 
-    <!-- Issue Settings strings -->
-    <string name="issueSettings_titleDisplayAdd">Add Issue</string>
-    <string name="issueSettings_titleDisplayEdit">Edit Issue</string>
-    <string name="issueSettings_editTextHint_title">Title</string>
-    <string name="issueSettings_editTextHint_description">Description</string>
-    <string name="issueSettings_textViewPriorityLabel">Priority:</string>
-    <string name="issueSettings_buttonSave">Save Changes</string>
-    <string name="issueSettings_buttonClose">Close Issue</string>
 
 
 </resources>

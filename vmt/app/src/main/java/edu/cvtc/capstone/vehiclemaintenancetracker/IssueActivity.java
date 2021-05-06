@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,11 +21,8 @@ import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 public class IssueActivity extends AppCompatActivity {
@@ -38,6 +36,9 @@ public class IssueActivity extends AppCompatActivity {
     // An array of logs used to populate the
     // RecyclerView
     ArrayList<Issue> issueArrayList;
+
+    // Database helper
+    DBHelper dbHelper = new DBHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,10 +70,7 @@ public class IssueActivity extends AppCompatActivity {
             issueArrayList = new ArrayList<>();
 
             // Generate logs as demo-data
-            prepDemoData();
-
-            // Prepare the RecyclerView
-            prepRecyclerView();
+            populateRecyclerView();
 
         } else {
             // Not a valid id
@@ -80,30 +78,38 @@ public class IssueActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        populateRecyclerView();
+    }
+
     // Add a few fake issue logs to the logArrayList
     // to be used in the RecyclerView for demo
-    private void prepDemoData() {
+    private void populateRecyclerView() {
 
-        // Create objects
-        // TODO: Replace with actual Database objects
-        //Time time = new Time(Calendar.getInstance().getTimeInMillis());
+        // Only display issues if the vehicleId is valid!
+        if (vehicleId != -1) {
+            // We're good to go. Let's do some database stuff.
 
-        Issue issue1 = new Issue("No Oil",
-                "All the oil leaked out. Currently driving it without oil. Probably should add some in the future",
-                0, vehicleId, 0);
+            // Grab all the issues from the database and throw them
+            // into the issueArrayList
+            issueArrayList = dbHelper.getAllIssuesByVehicleId(vehicleId);
 
-        Issue issue2 = new Issue("Buy New Tires",
-                "The rear left tire is missing. Although driving with three wheels is fine by me, others are very judgemental",
-                0, vehicleId, 0);
+            // Prepare the RecyclerView
+            prepRecyclerView();
 
-        Issue issue3 = new Issue("Air Vents",
-                "Exhaust fumes are leaking into the vehicle cabin. Getting terrible headaches before work every day. Should look into that later on. Not a priority",
-                0, vehicleId, 0);
+            // If there aren't any issues, notify the user!
+            // TODO: Use a textView like William did, not this.
+            //  But this works for now.
+            if (issueArrayList.size() < 1) {
+                Snackbar.make(toolbar, "You don't have any issues for this vehicle. To create one, tap the plus icon in the toolbar.", Snackbar.LENGTH_INDEFINITE).show();
+            }
+        } else {
+            // Not a valid id
+            Snackbar.make(toolbar, String.format("The vehicle id of %s is not valid", vehicleId), Snackbar.LENGTH_INDEFINITE).show();
+        }
 
-        // Add the objects to the list
-        issueArrayList.add(issue1);
-        issueArrayList.add(issue2);
-        issueArrayList.add(issue3);
     }
 
     // Prepare the RecyclerView and its Adapter with data
@@ -214,7 +220,7 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
             title.setText(issue.getTitle());
             description.setText(issue.getDescription());
             //date.setText(simpleDateFormat.format(issue.getDate()));
-            //priority.setText(issue.getPriority());
+            priority.setText(issue.getPriorityAsString());
         }
     }
 
@@ -236,5 +242,196 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
     @Override
     public int getItemCount() {
         return issueArrayList.size();
+    }
+}
+
+
+/*
+    The issue object that represents a single issue
+ */
+class Issue {
+    public static final String TAG = "ISSUE_CLASS";
+
+    private int id;
+    private String title;
+    private String description;
+    private int priority; //TODO: Make this a FK?
+    private int vehicleId;
+    private int statusId;
+
+    public Issue() {
+        // ...
+    }
+
+    //Constructors
+    //Minimum
+    public Issue(String title, int vehicleId, int statusId) {
+        this.id = -1;
+        setTitle(title);
+        this.priority = 0;
+        setVehicleId(vehicleId);
+        setStatusId(statusId);
+    }
+
+    //Everything but the id and priority
+    public Issue(String title, String description, int vehicleId, int statusId) {
+        this.id = -1;
+        setTitle(title);
+        setDescription(description);
+        this.priority = 0;
+        setVehicleId(vehicleId);
+        setStatusId(statusId);
+    }
+
+    //Everything but the id
+    public Issue(String title, String description, int priority, int vehicleId, int statusId) {
+        this.id = -1;
+        setTitle(title);
+        setDescription(description);
+        setPriority(priority);
+        setVehicleId(vehicleId);
+        setStatusId(statusId);
+    }
+
+    //Everything, for use when reading from the database. Since it's in the database, it's already passed verification
+    public Issue(int id, String title, String description, int priority, int vehicleId, int statusId) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.priority = priority;
+        this.vehicleId = vehicleId;
+        this.statusId = statusId;
+    }
+
+    //Getters and Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        if(VerifyUtil.isStringSafe(title)) {
+            this.title = title;
+        } else {
+            Log.w(TAG, "Issue title unsafe");
+        }
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        if(VerifyUtil.isTextSafe(description)) {
+            this.description = description;
+        } else {
+            Log.w(TAG, "Issue description unsafe");
+        }
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public String getPriorityAsString() {
+        switch(priority) {
+            case 0 :
+                return "High Priority";
+            case 1 :
+                return "Medium Priority";
+            case 2 :
+                return "Low Priority";
+            default :
+                return "No Priority";
+        }
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    public int getVehicleId() {
+        return vehicleId;
+    }
+
+    public void setVehicleId(int vehicleId) {
+        //DBHelper dbHelper = new DBHelper(null);
+        //if(dbHelper.checkIfVehicleIdExists(vehicleId)) {
+        this.vehicleId = vehicleId;
+        //} else {
+        //   Log.w(TAG, "VehicleId did not exist");
+        //}
+    }
+
+    public int getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(int statusId) {
+        //DBHelper dbHelper = new DBHelper(null);
+        //if(dbHelper.checkIfIssueStatusIdExists(statusId)) {
+        this.statusId = statusId;
+        //} else {
+        //    Log.w(TAG, "StatusId did not exist");
+        //}
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Issue ID:").append(id)
+                .append("\nTitle:").append(title)
+                .append("\nDescription:").append(description);
+        return builder.toString();
+    }
+}
+
+/*
+    The issueStatus object that represents the status of an issue.
+    e.g. complete, not complete, etc...
+ */
+class IssueStatus {
+    public static final String TAG = "ISSUESTATUS_CLASS";
+
+    private int id;
+    private String description;
+
+    //Pre-database insert
+    public IssueStatus(String description) {
+        this.id = -1;
+        setDescription(description);
+    }
+
+    //For use when reading from the database. Since it's in the database, it's already passed verification
+    public IssueStatus(int id, String description) {
+        this.id = id;
+        this.description = description;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        if(VerifyUtil.isStringLettersOnly(description)) {
+            this.description = description;
+        } else {
+            Log.w(TAG, "Description unsafe");
+        }
     }
 }

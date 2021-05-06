@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -19,7 +18,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/issueSettings_cardView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -42,7 +41,8 @@
                 android:layout_marginTop="@dimen/minorPadding"
                 android:hint="@string/issueSettings_editTextHint_title"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/issueSettings_textViewTitle">
+                app:layout_constraintTop_toBottomOf="@id/issueSettings_textViewTitle"
+                app:errorEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/issueSettings_editTextTitle"
@@ -50,6 +50,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="textCapWords"
                     android:maxLength="32" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -59,34 +60,39 @@
                 android:layout_marginTop="@dimen/minorPadding"
                 android:hint="@string/issueSettings_editTextHint_description"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/issueSettings_textInputTitle">
+                app:layout_constraintTop_toBottomOf="@id/issueSettings_textInputTitle"
+                app:errorEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/issueSettings_editTextDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textCapSentences"/>
+                    android:inputType="textCapSentences" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:id="@+id/issueSettings_textViewPriorityLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/minorPadding"
-                android:text="@string/issueSettings_textViewPriorityLabel"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/issueSettings_textInputDescription" />
-
-            <Spinner
-                android:id="@+id/issueSettings_spinnerPriority"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/issueSettings_textInputPriority"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/minorPadding"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/issueSettings_textViewPriorityLabel" />
+                app:layout_constraintTop_toBottomOf="@id/issueSettings_textInputDescription"
+                app:errorEnabled="true">
+
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/issueSettings_editTextPrioritySpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:enabled="false"
+                    android:hint="@string/issueSettings_textViewPriorityLabel"
+                    android:inputType="none"
+                    android:textColor="@color/black" />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
 
             <Button
                 android:id="@+id/issueSettings_buttonClose"
@@ -96,7 +102,7 @@
                 android:text="@string/issueSettings_buttonClose"
                 android:visibility="invisible"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/issueSettings_spinnerPriority" />
+                app:layout_constraintTop_toBottomOf="@id/issueSettings_textInputPriority" />
 
             <Button
                 android:id="@+id/issueSettings_buttonSave"
@@ -105,7 +111,7 @@
                 android:layout_marginTop="@dimen/minorPadding"
                 android:text="@string/issueSettings_buttonSave"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/issueSettings_spinnerPriority" />
+                app:layout_constraintTop_toBottomOf="@id/issueSettings_textInputPriority" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
