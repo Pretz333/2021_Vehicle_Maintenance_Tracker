@@ -1,6 +1,7 @@
 package edu.cvtc.capstone.vehiclemaintenancetracker;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class IssueSettingsActivity extends AppCompatActivity implements View.OnClickListener {
@@ -28,9 +30,7 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
     Toolbar toolbar;
     EditText mTitle, mDescription;
     TextInputLayout eTitle, eDescription, ePriority; // Containers of the EditText fields (Used for error messages)
-    // The spinner for selecting a priority
-    AutoCompleteTextView mPriority; //TODO, a
-    //Spinner mPriority; //TODO, j
+    AutoCompleteTextView mPriority; // The spinner for selecting a priority
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,6 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
         mTitle = findViewById(R.id.issueSettings_editTextTitle);
         mDescription = findViewById(R.id.issueSettings_editTextDescription);
         mPriority = findViewById(R.id.issueSettings_editTextPrioritySpinner);
-        //mPriority = findViewById(R.id.issueSettings_spinnerPriority); //TODO: j's priority handler
         eTitle = findViewById(R.id.issueSettings_textInputTitle);
         eDescription = findViewById(R.id.issueSettings_textInputDescription);
         ePriority = findViewById(R.id.issueSettings_textInputPriority);
@@ -75,7 +74,7 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
             issue = dbHelper.getIssueByIssueId(issueId);
             populateFieldsByObject(issue);
 
-            // Since the issue was already in the database, the close button should be visible. //TODO: Delete button, not close?
+            // Since the issue was already in the database, the close button should be visible.
             closeButton.setVisibility(View.VISIBLE);
 
             //And we want to change the title to say "Edit Issue" instead of "Add Issue"
@@ -88,8 +87,8 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
         mTitle.setText(issue.getTitle());
         mDescription.setText(issue.getDescription());
 
-        // Set the spinner to the id of the selected priority
-        mPriority.setSelection(issue.getPriority()); //TODO: may cause errors as this was written using a spinner and we're not anymore
+        // Fill the spinner with the text of the selected priority
+        //mPriority.setText(priorityIntToString(issue.getPriority())); //TODO
     }
 
     // Event handler for button clicks
@@ -98,14 +97,32 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
         if (v.getId() == R.id.issueSettings_buttonSave) {
             // Verify that all fields are valid
             if (hasMinimumRequirements()) {
+                // Update the values
+                updateIssueWithValues();
 
-                // Since it passed verification, lets toss all the editText
-                // data into the class-level issue object and insert it
-                putFieldsIntoObject();
-                dbHelper.insertIssue(issue);
+                // If the issue exists, update it. Otherwise, insert the new issue.
+                if (issue == null) {
+                    // The issue does not have the minimum requirements.
+                    Snackbar.make(v, "The issue must have a title", Snackbar.LENGTH_SHORT).show();
+                } else if (issue.getId() == -1) {
+                    // Since it passed verification, lets toss all the editText
+                    // data into the class-level issue object and insert it
+                    putFieldsIntoObject();
+                    dbHelper.insertIssue(issue);
+                    Snackbar.make(v, "Successfully added the issue!", Snackbar.LENGTH_SHORT).show();
 
-                // Close the activity
-                IssueSettingsActivity.super.finish();
+                    // Close the activity
+                    IssueSettingsActivity.super.finish();
+                } else {
+                    putFieldsIntoObject();
+                    dbHelper.updateIssue(issue);
+                    Snackbar.make(v, "Successfully updated the issue!", Snackbar.LENGTH_SHORT).show();
+
+                    // Close the activity
+                    IssueSettingsActivity.super.finish();
+                }
+
+
             } else {
                 // Something went wrong, lets alert the user!
                 MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(this);
@@ -134,7 +151,7 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
     }
 
     // Used by the Spinner. It converts a String value, such as 
-    // "High Priority," to an int for the database. TODO: A's, not friendly with database changes
+    // "High Priority," to an int for the database.
     private int priorityStringToInt(String string) {
         // Convert the priority of the editText
         // from letters to a single digit
@@ -150,6 +167,21 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
         }
     }
 
+    // Used by the Spinner. It converts a int value, such as 0,
+    // to its user-friend definition like "High Priority"
+    private String priorityIntToString(int priority) {
+        switch (priority) {
+            case 0:
+                return "High Priority";
+            case 1:
+                return "Medium Priority";
+            case 2:
+                return "Low Priority";
+            default:
+                return "None Selected";
+        }
+    }
+
     // This checks every editText field if its empty, or contains invalid data.
     //
     // If it catches any issues, it will highlight the editText container field and return false.
@@ -157,7 +189,7 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
         // Whether the values from the fields can be inserted into the database without conflict.
         boolean retVal = true;
 
-        if(vehicleId == -1){
+        if(vehicleId == -1 || (issue != null && issue.getVehicleId() == -1)){
             retVal = false;
             //TODO: Display something to the user
         }
@@ -209,6 +241,30 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
     // Simplified function to check if a string is empty
     private boolean isStringEmpty(String string) {
         return (string.isEmpty() || string.equals("") || string.equals(" "));
+    }
+
+    private void updateIssueWithValues() {
+        // Check if they have the minimum
+        if ((vehicleId != -1 || issue.getVehicleId() != -1) && !isStringEmpty(mTitle.getText().toString())) {
+
+            // Create a new issue or update an existing issue
+            if (issue == null) {
+                issue = new Issue(mTitle.getText().toString(), vehicleId, -1); //TODO: Update the statusId
+            } else if (!isStringEmpty(mTitle.getText().toString())) {
+                issue.setTitle(mTitle.getText().toString());
+            }
+
+            // Set the remaining properties if the issue exists
+            if (issue != null && issue.getTitle() != null) {
+                if(!isStringEmpty(mDescription.getText().toString())){
+                    issue.setDescription(mDescription.getText().toString());
+                }
+
+                if(!isStringEmpty(mPriority.getText().toString())){
+                    issue.setPriority(priorityStringToInt(mPriority.getText().toString()));
+                }
+            }
+        }
     }
 
 }
