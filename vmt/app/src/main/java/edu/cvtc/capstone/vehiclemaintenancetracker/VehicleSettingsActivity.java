@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -47,6 +46,8 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
                     eYear,
                     ePlate,
                     eColor;
+
+    int vehicleId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +92,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
 
         // Get the vehicleID from the intent
         Intent receivedIntent = getIntent();
-        int vehicleId = receivedIntent.getIntExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, -1);
+        vehicleId = receivedIntent.getIntExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, -1);
 
         // If a valid VehicleID was passed to this activity, we want to pre-populate the fields
         if (vehicleId != -1) {
@@ -120,6 +121,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
         if(vehicle.getValue() != 0) {
             mValue.setText(String.valueOf(vehicle.getValue()));
         }
+
         mVIN.setText(vehicle.getVIN());
 
         if(vehicle.getPurchaseDate() != null) {
@@ -129,139 +131,146 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
         }
     }
 
-    // Validate that required fields contain data.
-    // If some fields don't contain data, alert the user and highlight the field red.
-    // Returns TRUE if all fields are good to go, FALSE otherwise.
-    private boolean hasMinimums() {
-        // If any field was empty, or contains invalid data, set this to true.
-        // This will trigger an alert dialog alerting the user of the fields that aren't correct.
-        // This also serves as a return value.
-        boolean flagField = false;
 
-        // Store each editText into an array
-        // This makes it easier to loop through all the fields and check them without having
-        // to write lots of boilerplate code for new or removed editText box's.
-        EditText[] fieldsToCheck = {mNickname, mMake, mModel, mYear, mColor, mPlate, /*mDatePurchased, mMileage/*, mValue, mVIN*/};
+    // This checks every editText field if its empty, or contains invalid data.
+    //
+    // If it catches any issues, it will highlight the editText container field and return false.
+    private boolean hasMinimumRequirements() {
+        // Whether the values from the fields can be inserted into the database without conflict.
+        boolean retVal = true;
 
-        // These are the fields that should be highlighted with the better
-        // material design error message indicators
-        TextInputLayout[] fieldsToHighlight = {eNickname, eMake, eModel, eYear, eColor, ePlate};
+        // Convert the EditText fields to strings
+        String checkNickname = mNickname.getText().toString();
+        String checkMake = mMake.getText().toString();
+        String checkModel = mModel.getText().toString();
+        String checkYear = mYear.getText().toString();
+        String checkPlate = mPlate.getText().toString();
+        String checkColor = mColor.getText().toString();
 
-        // Loop through the fields and check if they contain
-        // data. If not, highlight the respectful field(s)
-        for (int i=0; i<fieldsToCheck.length; i++) {
-            String tempStringFromField = fieldsToCheck[i].getText().toString();
-
-            // If the field contains no string, just a space,
-            // or is literally empty, highlight the respectful
-            // editText box with a warning message and set the
-            // flagFieldEmpty variable to true
-            //
-            // Check if the string is empty in any way.
-            // If so set the editText to that specific
-            // warning message
-            if (tempStringFromField.equals("")
-                    || tempStringFromField.equals(" ")
-                    || tempStringFromField.isEmpty()) {
-
-                // Set the error message for the dialog
-                //editText.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
-                fieldsToHighlight[i].setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
-
-                // One or more fields were empty, set to true
-                flagField = true;
-
-            } else if (!VerifyUtil.isStringSafe(tempStringFromField)) {
-                fieldsToHighlight[i].setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageInvalidCharacters));
-                // One or more fields contained invalid data, set to true
-                flagField = true;
-
-            } else {
-                // Set the error to null
-                // if everything passes checking!
-                fieldsToHighlight[i].setError(null);
-            }
-
+        //Make the vehicle if this is a new vehicle
+        if (vehicle == null) {
+            vehicle = new Vehicle(checkNickname);
+        } else {
+            vehicle.setName(checkNickname);
         }
 
-        // One or more fields were empty. Let's tell the user about it!
-        if (flagField) {
-            MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(this);
-            alert.setTitle(getResources().getString(R.string.vehicleSettingsActivity_errorValidationTitle));
-            alert.setMessage(getResources().getString(R.string.vehicleSettingsActivity_errorValidationMessage));
-            alert.setPositiveButton(getResources().getString(R.string.vehicleSettingsActivity_errorValidationButtonNeutral), null);
-            alert.show();
+        // Check if each field is not blank, null, or contains invalid data.
+        // If it does, retVal will be false.
+
+        // Check if the nickname is empty or contains
+        // invalid data.
+        //
+        // If not, set the values to the object
+        // TODO: These are only seperated because each one might have a different
+        // VerifyUtil check
+        if (isStringEmpty(checkNickname)) {
+            retVal = false;
+            eNickname.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
+        } else if (!VerifyUtil.isStringSafe(checkNickname)) {
+            retVal = false;
+            eNickname.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageInvalidCharacters));
+        } else {
+            eNickname.setError(null);
+            // Set this attribute to the vehicle object
+            vehicle.setName(checkNickname);
         }
 
-        return !flagField;
+        if (isStringEmpty(checkMake)) {
+            retVal = false;
+            eMake.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
+        } else if (!VerifyUtil.isStringSafe(checkMake)) {
+            retVal = false;
+            eMake.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageInvalidCharacters));
+        } else {
+            eMake.setError(null);
+            // Set this attribute to the vehicle object
+            vehicle.setMake(checkMake);
+        }
+
+        if (isStringEmpty(checkModel)) {
+            retVal = false;
+            eModel.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
+        } else if (!VerifyUtil.isStringSafe(checkModel)) {
+            retVal = false;
+            eModel.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageInvalidCharacters));
+        } else {
+            eModel.setError(null);
+            // Set this attribute to the vehicle object
+            vehicle.setModel(checkModel);
+        }
+
+        if (isStringEmpty(checkYear)) {
+            retVal = false;
+            eYear.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
+        } else if (!VerifyUtil.isStringSafe(checkYear)) {
+            retVal = false;
+            eYear.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageInvalidCharacters));
+        } else {
+            eYear.setError(null);
+            // Set this attribute to the vehicle object
+            vehicle.setYear(checkYear);
+        }
+
+        if (isStringEmpty(checkPlate)) {
+            retVal = false;
+            ePlate.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
+        } else if (!VerifyUtil.isStringSafe(checkPlate)) {
+            retVal = false;
+            ePlate.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageInvalidCharacters));
+        } else {
+            ePlate.setError(null);
+            // Set this attribute to the vehicle object
+            vehicle.setLicensePlate(checkPlate);
+        }
+
+        if (isStringEmpty(checkColor)) {
+            retVal = false;
+            eColor.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
+        } else if (!VerifyUtil.isStringSafe(checkColor)) {
+            retVal = false;
+            eColor.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageInvalidCharacters));
+        } else {
+            eColor.setError(null);
+            // Set this attribute to the vehicle object
+            vehicle.setColor(checkColor);
+        }
+
+
+        if (!mMileage.getText().toString().equals("")) {
+            vehicle.setMileage(Integer.parseInt(mMileage.getText().toString()));
+        }
+
+        if (!mValue.getText().toString().equals("")) {
+            vehicle.setValue(Double.parseDouble(mValue.getText().toString()));
+        }
+
+        if (!mVIN.getText().toString().equals("")) {
+            vehicle.setVIN(mVIN.getText().toString());
+        }
+
+        if (!mDatePurchased.getText().toString().equals("")) {
+            vehicle.setPurchaseDate(VerifyUtil.parseStringToDate(mDatePurchased.getText().toString()));
+        }
+
+        return retVal;
     }
 
-    private void updateVehicleWithValues() {
-        //Ensure they have the params needed to have the minimum constructor
-        if(!mNickname.getText().toString().equals("")) {
-            //Make the vehicle if this is a new vehicle
-            if (vehicle == null) {
-                vehicle = new Vehicle(mNickname.getText().toString());
-            } else {
-                vehicle.setName(mNickname.getText().toString());
-            }
-        }
-
-        // Now that we've given a chance to create the vehicle, only
-        // set the remaining properties if we have a vehicle
-        if(vehicle != null && vehicle.getName() != null) {
-            //For the remaining properties, send them through the validation and set them
-            //as long as the user typed something in
-            if (!mMake.getText().toString().equals("")) {
-                vehicle.setMake(mMake.getText().toString());
-            }
-
-            if (!mModel.getText().toString().equals("")) {
-                vehicle.setModel(mModel.getText().toString());
-            }
-
-            if (!mYear.getText().toString().equals("")) {
-                vehicle.setYear(mYear.getText().toString());
-            }
-
-            if (!mColor.getText().toString().equals("")) {
-                vehicle.setColor(mColor.getText().toString());
-            }
-
-            if (!mMileage.getText().toString().equals("")) {
-                vehicle.setMileage(Integer.parseInt(mMileage.getText().toString()));
-            }
-
-            if (!mValue.getText().toString().equals("")) {
-                vehicle.setValue(Double.parseDouble(mValue.getText().toString()));
-            }
-
-            if (!mPlate.getText().toString().equals("")) {
-                vehicle.setLicensePlate(mPlate.getText().toString());
-            }
-
-            if (!mVIN.getText().toString().equals("")) {
-                vehicle.setVIN(mVIN.getText().toString());
-            }
-
-            if (!mDatePurchased.getText().toString().equals("")) {
-                vehicle.setPurchaseDate(VerifyUtil.parseStringToDate(mDatePurchased.getText().toString()));
-            }
-        }
+    // Simplified function to check if a string is empty
+    private boolean isStringEmpty(String string) {
+        return (string.isEmpty() || string.equals("") || string.equals(" "));
     }
+
 
     // Listener for view events.
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.vehicleSettings_buttonSave){
             // Check if all fields are valid, no need for an ELSE block as
-            // the function hasMinimums() will alert the user on its own.
-            if(hasMinimums()) {
-                //Update all values
-                updateVehicleWithValues();
+            // the function hasMinimumsDEP() will alert the user on its own.
+            if(hasMinimumRequirements()) {
 
                 //If we found a vehicle from the id passed, update it. If not, make one
-                if (vehicle == null) { //Should never be called, as hasMinimums() should catch this
+                if (vehicle == null) { //Should never be called, as hasMinimumsDEP() should catch this
                     //It couldn't be made as it didn't have the minimum properties needed to be functional
                     Snackbar.make(v, "Vehicle must have a nickname", Snackbar.LENGTH_SHORT).show();
                 } else if(vehicle.getId() == -1) {
@@ -274,6 +283,12 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
                     Snackbar.make(v, "Successfully updated " + vehicle.getName() + "!", Snackbar.LENGTH_SHORT).show();
                     VehicleSettingsActivity.super.finish();
                 }
+            } else {
+                MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(this);
+                alert.setTitle(getResources().getString(R.string.vehicleSettingsActivity_errorValidationTitle));
+                alert.setMessage(getResources().getString(R.string.vehicleSettingsActivity_errorValidationMessage));
+                alert.setPositiveButton(getResources().getString(R.string.vehicleSettingsActivity_errorValidationButtonNeutral), null);
+                alert.show();
             }
         } else if (v.getId() == R.id.vehicleSettings_buttonDelete) {
             // Display the alert dialog to confirm the vehicle delete.
