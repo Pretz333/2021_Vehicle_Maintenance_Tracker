@@ -1,6 +1,7 @@
 package edu.cvtc.capstone.vehiclemaintenancetracker;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -87,7 +88,7 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
         mDescription.setText(issue.getDescription());
 
         // Fill the spinner with the text of the selected priority
-        mPriority.setText(priorityIntToString(issue.getPriority()));
+        //mPriority.setText(priorityIntToString(issue.getPriority())); //TODO
     }
 
     // Event handler for button clicks
@@ -188,7 +189,7 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
         // Whether the values from the fields can be inserted into the database without conflict.
         boolean retVal = true;
 
-        if(vehicleId == -1){
+        if(vehicleId == -1 || (issue != null && issue.getVehicleId() == -1)){
             retVal = false;
             //TODO: Display something to the user
         }
