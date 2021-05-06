@@ -3,6 +3,7 @@ package edu.cvtc.capstone.vehiclemaintenancetracker;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
@@ -21,6 +22,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 4;
     private final Context context;
 
+    //TODO: Insert issue priorities if we use Jasper's method instead of Alex's
+
     public DBHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
 
@@ -37,8 +40,6 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(SystemSQL.SQL_CREATE_TABLE_SYSTEM);
         db.execSQL(IssueLogSQL.SQL_CREATE_TABLE_ISSUE_LOG);
         db.execSQL(IssuePrioritySQL.SQL_CREATE_TABLE_ISSUE_PRIORITY);
-
-        //TODO: Insert issue statuses (and priorities)
 
     }
 
@@ -63,8 +64,6 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(SystemSQL.SQL_CREATE_TABLE_SYSTEM);
         db.execSQL(IssueLogSQL.SQL_CREATE_TABLE_ISSUE_LOG);
         db.execSQL(IssuePrioritySQL.SQL_CREATE_TABLE_ISSUE_PRIORITY);
-
-        //TODO: Insert issue statuses (and priorities)
     }
 
     // Inserts
@@ -190,7 +189,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    public void insertIssueStatus(IssueStatus issueStatus) {
+    private void insertIssueStatus(IssueStatus issueStatus) {
 
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -214,7 +213,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    public void insertIssuePriority(IssuePriority issuePriority) {
+    private void insertIssuePriority(IssuePriority issuePriority) {
 
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -670,6 +669,90 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
 
         return issue;
+    }
+
+    public List<IssueStatus> getPossibleIssueStatuses() {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String[] values = {
+                IssueStatusSQL._ID,
+                IssueStatusSQL.COLUMN_ISSUE_STATUS_DESCRIPTION};
+
+        String orderBy = IssueStatusSQL._ID;
+        Cursor cursor = db.query(IssueStatusSQL.TABLE_NAME_ISSUE_STATUS, values, null,
+                null, null, null, orderBy);
+
+        int idPosition = cursor.getColumnIndex(IssueStatusSQL._ID);
+        int descriptionPosition = cursor.getColumnIndex(IssueStatusSQL.COLUMN_ISSUE_STATUS_DESCRIPTION);
+
+        List<IssueStatus> possibleStatuses = new ArrayList<>();
+
+        while (cursor.moveToNext()) {
+            possibleStatuses.add(new IssueStatus(cursor.getInt(idPosition), cursor.getString(descriptionPosition)));
+        }
+
+        if(possibleStatuses.size() < 1) {
+            //This gets called if there are no issue statuses in the DB. We'll add our statuses here
+            IssueStatus issueStatus = new IssueStatus("Open"); //New issues should use this status
+            insertIssueStatus(issueStatus);
+            possibleStatuses.add(issueStatus);
+
+            issueStatus = new IssueStatus("Fixed"); //Finished/closed issues should use this one
+            insertIssueStatus(issueStatus);
+            possibleStatuses.add(issueStatus);
+        }
+
+        cursor.close();
+        db.close();
+
+        return possibleStatuses;
+    }
+
+    public int getOpenIssueStatusId() {
+        SQLiteDatabase db = getReadableDatabase();
+
+        // Get all of the fields
+        String[] values = {
+                IssueStatusSQL._ID,
+                IssueStatusSQL.COLUMN_ISSUE_STATUS_DESCRIPTION
+        };
+
+        //No need for args as it's hardcoded here. It can't change
+        String filter = IssueStatusSQL.COLUMN_ISSUE_STATUS_DESCRIPTION + " = 'Open'";
+
+        try {
+            Cursor cursor = db.query(IssueStatusSQL.TABLE_NAME_ISSUE_STATUS, values, filter,
+                    null, null, null, null);
+
+            int idPosition = cursor.getColumnIndex(IssueStatusSQL._ID);
+            int id = -1;
+
+            cursor.moveToFirst();
+            id = cursor.getInt(idPosition);
+
+            cursor.close();
+            db.close();
+
+            if(id == -1) {
+                //Check if there are issue statuses in the DB
+                List<IssueStatus> issueStatuses = getPossibleIssueStatuses();
+                if(!issueStatuses.isEmpty()) {
+                    //see if it's in the list
+                    for(int i = 0; i < issueStatuses.size(); i++) {
+                        if (issueStatuses.get(i).getDescription().equals("Open")) {
+                            return issueStatuses.get(i).getId();
+                        }
+                    }
+                }
+            }
+
+            return id;
+        } catch (Exception ex) {
+            Log.e(TAG, ex.toString());
+            db.close();
+            VerifyUtil.alertUser(context, "Database Retrieval Failed", "Unable to fetch issue status, please try again");
+            return -1;
+        }
     }
 
     public int getVehicleIdByNickname(String name) {

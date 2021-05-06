@@ -12,10 +12,6 @@ public class Issue {
     private int vehicleId;
     private int statusId;
 
-    public Issue() { //TODO: DELETE THIS
-        // ... ?
-    }
-
     //Constructors
     //Minimum
     public Issue(String title, int vehicleId, int statusId) {

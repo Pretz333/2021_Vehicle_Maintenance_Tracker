@@ -1,6 +1,7 @@
 package edu.cvtc.capstone.vehiclemaintenancetracker;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -102,10 +103,12 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
                 // Since it passed verification, lets toss all the editText
                 // data into the class-level issue object and insert it
                 putFieldsIntoObject();
-                dbHelper.insertIssue(issue);
-
-                // Close the activity
-                IssueSettingsActivity.super.finish();
+                if(issue != null) { //next person to make this same mistake is getting fired (joking)
+                    dbHelper.insertIssue(issue);
+                    IssueSettingsActivity.super.finish(); // Close the activity
+                } else {
+                    //TODO: Alert the user the issue wasn't created
+                }
             } else {
                 // Something went wrong, lets alert the user!
                 MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(this);
@@ -124,20 +127,24 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
     // If it's not null, we are editing an object.
     private void putFieldsIntoObject() {
         if (issue == null) {
-            issue = new Issue(); //TODO: Don't
+            int openIssueId = dbHelper.getOpenIssueStatusId();
+            if(openIssueId != -1) {
+                issue = new Issue(mTitle.getText().toString(), vehicleId, openIssueId);
+            }
         }
 
-        issue.setTitle(mTitle.getText().toString());
-        issue.setDescription(mDescription.getText().toString());
-        issue.setPriority(priorityStringToInt(mPriority.getText().toString()));
-        issue.setVehicleId(vehicleId);
+        //If the issue was successfully created or already existed, set other properties
+        if(issue != null) {
+            issue.setTitle(mTitle.getText().toString());
+            issue.setDescription(mDescription.getText().toString());
+            issue.setPriority(priorityStringToInt(mPriority.getText().toString()));
+        }
     }
 
     // Used by the Spinner. It converts a String value, such as 
     // "High Priority," to an int for the database. TODO: A's, not friendly with database changes
     private int priorityStringToInt(String string) {
-        // Convert the priority of the editText
-        // from letters to a single digit
+        // Convert the priority of the editText from letters to a single digit
         switch (string) {
             case "High Priority":
                 return 0;
