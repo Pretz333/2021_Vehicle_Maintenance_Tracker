@@ -29,9 +29,7 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
     Toolbar toolbar;
     EditText mTitle, mDescription;
     TextInputLayout eTitle, eDescription, ePriority; // Containers of the EditText fields (Used for error messages)
-    // The spinner for selecting a priority
-    AutoCompleteTextView mPriority; //TODO, a
-    //Spinner mPriority; //TODO, j
+    AutoCompleteTextView mPriority; // The spinner for selecting a priority
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +46,6 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
         mTitle = findViewById(R.id.issueSettings_editTextTitle);
         mDescription = findViewById(R.id.issueSettings_editTextDescription);
         mPriority = findViewById(R.id.issueSettings_editTextPrioritySpinner);
-        //mPriority = findViewById(R.id.issueSettings_spinnerPriority); //TODO: j's priority handler
         eTitle = findViewById(R.id.issueSettings_textInputTitle);
         eDescription = findViewById(R.id.issueSettings_textInputDescription);
         ePriority = findViewById(R.id.issueSettings_textInputPriority);
@@ -76,7 +73,7 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
             issue = dbHelper.getIssueByIssueId(issueId);
             populateFieldsByObject(issue);
 
-            // Since the issue was already in the database, the close button should be visible. //TODO: Delete button, not close?
+            // Since the issue was already in the database, the close button should be visible.
             closeButton.setVisibility(View.VISIBLE);
 
             //And we want to change the title to say "Edit Issue" instead of "Add Issue"
@@ -89,8 +86,8 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
         mTitle.setText(issue.getTitle());
         mDescription.setText(issue.getDescription());
 
-        // Set the spinner to the id of the selected priority
-        mPriority.setSelection(issue.getPriority()); //TODO: may cause errors as this was written using a spinner and we're not anymore
+        // Fill the spinner with the text of the selected priority
+        mPriority.setText(priorityIntToString(issue.getPriority()));
     }
 
     // Event handler for button clicks
@@ -153,7 +150,7 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
     }
 
     // Used by the Spinner. It converts a String value, such as 
-    // "High Priority," to an int for the database. TODO: A's, not friendly with database changes
+    // "High Priority," to an int for the database.
     private int priorityStringToInt(String string) {
         // Convert the priority of the editText
         // from letters to a single digit
@@ -166,6 +163,21 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
                 return 2;
             default:
                 return -1;
+        }
+    }
+
+    // Used by the Spinner. It converts a int value, such as 0,
+    // to its user-friend definition like "High Priority"
+    private String priorityIntToString(int priority) {
+        switch (priority) {
+            case 0:
+                return "High Priority";
+            case 1:
+                return "Medium Priority";
+            case 2:
+                return "Low Priority";
+            default:
+                return "None Selected";
         }
     }
 
