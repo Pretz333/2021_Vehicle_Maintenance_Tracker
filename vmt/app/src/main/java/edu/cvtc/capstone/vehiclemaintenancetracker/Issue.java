@@ -8,7 +8,7 @@ public class Issue {
     private int id;
     private String title;
     private String description;
-    private int priority; //TODO: Make this a FK?
+    private int priority;
     private int vehicleId;
     private int statusId;
 
