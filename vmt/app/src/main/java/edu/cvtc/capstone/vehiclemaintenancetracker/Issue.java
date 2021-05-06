@@ -12,6 +12,10 @@ public class Issue {
     private int vehicleId;
     private int statusId;
 
+    public Issue() {
+        // ... ?
+    }
+
     //Constructors
     //Minimum
     public Issue(String title, int vehicleId, int statusId) {
@@ -87,6 +91,19 @@ public class Issue {
 
     public int getPriority() {
         return priority;
+    }
+
+    public String getPriorityAsString() {
+        switch(priority) {
+            case 0 :
+                return "High Priority";
+            case 1 :
+                return "Medium Priority";
+            case 2 :
+                return "Low Priority";
+            default :
+                return "No Priority";
+        }
     }
 
     public void setPriority(int priority) {
