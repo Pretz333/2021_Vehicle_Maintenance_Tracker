@@ -50,8 +50,6 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
         eTitle = findViewById(R.id.issueSettings_textInputTitle);
         eDescription = findViewById(R.id.issueSettings_textInputDescription);
         ePriority = findViewById(R.id.issueSettings_textInputPriority);
-        Button saveButton = findViewById(R.id.issueSettings_buttonSave);
-        Button closeButton = findViewById(R.id.issueSettings_buttonClose);
 
         // Set support for the toolbar
         setSupportActionBar(toolbar);
@@ -60,8 +58,8 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
         toolbar.setNavigationIcon(R.drawable.ic_close);
         toolbar.setNavigationOnClickListener(v -> IssueSettingsActivity.super.finish());
 
-        // Setting up onClick listeners
-        saveButton.setOnClickListener(this);
+        // Setting up the onClick listener for the save button
+        findViewById(R.id.issueSettings_buttonSave).setOnClickListener(this);
 
         // Initialize an adapter for the spinner and make the spinner use the adapter, a
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.list_item_spinner, getResources()
@@ -74,8 +72,13 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
             issue = dbHelper.getIssueByIssueId(issueId);
             populateFieldsByObject(issue);
 
+            //set the vehicleId to the issue's vehicleId
+            vehicleId = issue.getVehicleId();
+
             // Since the issue was already in the database, the close button should be visible.
+            Button closeButton = findViewById(R.id.issueSettings_buttonClose);
             closeButton.setVisibility(View.VISIBLE);
+            closeButton.setOnClickListener(this);
 
             //And we want to change the title to say "Edit Issue" instead of "Add Issue"
             TextView title = findViewById(R.id.issueSettings_textViewTitle);
@@ -97,18 +100,14 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
         if (v.getId() == R.id.issueSettings_buttonSave) {
             // Verify that all fields are valid
             if (hasMinimumRequirements()) {
-
-                // Update the values
-                //updateIssueWithValues();
-              
                 // Since it passed verification, lets toss all the editText
                 // data into the class-level issue object and insert it
                 putFieldsIntoObject();
 
-                // If the issue exists, update it. Otherwise, insert the new issue.
+                // If the issue already existed, update it. Otherwise, insert the new issue.
                 if (issue == null) {
-                    // The issue does not have the minimum requirements.
-                    Snackbar.make(v, "The failed to be created", Snackbar.LENGTH_SHORT).show();
+                    // The issue was not successfully created
+                    Snackbar.make(v, "The issue failed to be created", Snackbar.LENGTH_SHORT).show();
                 } else if (issue.getId() == -1) {
                     dbHelper.insertIssue(issue);
                     IssueSettingsActivity.super.finish();
@@ -124,7 +123,11 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
                 alert.setPositiveButton(getResources().getString(R.string.vehicleSettingsActivity_errorValidationButtonNeutral), null);
                 alert.show();
             }
-
+        } else if (v.getId() == R.id.issueSettings_buttonClose){
+            DBHelper dbHelper = new DBHelper(IssueSettingsActivity.this);
+            issue.setStatusId(dbHelper.getClosedIssueStatusId());
+            dbHelper.updateIssue(issue);
+            IssueSettingsActivity.super.finish();
         }
     }
 
@@ -186,7 +189,7 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
         // Whether the values from the fields can be inserted into the database without conflict.
         boolean retVal = true;
 
-        if(vehicleId == -1 || (issue != null && issue.getVehicleId() == -1)){
+        if(vehicleId == -1){
             retVal = false;
             //TODO: Display something to the user
         }
