@@ -204,7 +204,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
             eYear.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
         } else if (!VerifyUtil.isYearValid(checkYear)) {
             retVal = false;
-            eYear.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageInvalidCharacters));
+            eYear.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageInvalidYear));
         } else {
             eYear.setError(null);
             // Set this attribute to the vehicle object
