@@ -17,6 +17,11 @@
 
     <string name="card_mainActivity_viewDetails">View details</string>
 
+        <!-- These strings are for the Preference Util inside the RecyclerView -->
+        <string name="card_mainActivity_recyclerView_noIssues">No issues</string>
+        <string name="card_mainActivity_recyclerView_withIssues">issues</string>
+
+
     <!-- Strings regarding the vehicle options list in the VehicleOptionActivity page -->
     <string name="optionActivity_title">Options</string>
     <string name="listItem_optionActivity_iconDescription">A colored circle</string>

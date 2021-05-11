@@ -272,15 +272,15 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
 
 
             // Default issue string
-            String issueString = "No issues.";
+            String issueString = context.getResources().getString(R.string.card_mainActivity_recyclerView_noIssues);
 
             // Get the amount of issues this specific vehicle has
             int issueCount = preferenceUtil.getIssueCountByVehicleId(vehicleID);
 
             // If this vehicle has any issues, set it. If not,
             // display the default issue string.
-            if (issueCount != -1) {
-                this.issueDescription.setText(String.format("%s issues.", issueCount));
+            if (issueCount > 0) {
+                this.issueDescription.setText(String.format("%s %s", issueCount, context.getResources().getString(R.string.card_mainActivity_recyclerView_withIssues)));
             } else {
                 this.issueDescription.setText(issueString);
             }
