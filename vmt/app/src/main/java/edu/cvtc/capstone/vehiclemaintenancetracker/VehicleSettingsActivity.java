@@ -45,7 +45,8 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
                     eModel,
                     eYear,
                     ePlate,
-                    eColor;
+                    eColor,
+                    eVIN;
 
     int vehicleId;
 
@@ -85,6 +86,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
         eYear = findViewById(R.id.vehicleSettings_textInputYear);
         ePlate = findViewById(R.id.vehicleSettings_textInputPlate);
         eColor = findViewById(R.id.vehicleSettings_textInputColor);
+        eVIN = findViewById(R.id.vehicleSettings_textInputVin);
 
         // Initialize listener for this activity
         buttonSave.setOnClickListener(this);
@@ -146,6 +148,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
         String checkYear = mYear.getText().toString();
         String checkPlate = mPlate.getText().toString();
         String checkColor = mColor.getText().toString();
+        String checkVIN = mVIN.getText().toString().toUpperCase();
 
         //Make the vehicle if this is a new vehicle
         if (vehicle == null) {
@@ -244,8 +247,15 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
             vehicle.setValue(Double.parseDouble(mValue.getText().toString()));
         }
 
-        if (!mVIN.getText().toString().equals("")) {
-            vehicle.setVIN(mVIN.getText().toString());
+        if (isStringEmpty(checkVIN)) {
+            retVal = false;
+            eVIN.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
+        } else if (!VerifyUtil.isVINValid(checkVIN, checkYear)) {
+            retVal = false;
+            eVIN.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageInvalidVIN));
+        } else {
+            eVIN.setError(null);
+            vehicle.setVIN(checkVIN);
         }
 
         if (!mDatePurchased.getText().toString().equals("")) {
