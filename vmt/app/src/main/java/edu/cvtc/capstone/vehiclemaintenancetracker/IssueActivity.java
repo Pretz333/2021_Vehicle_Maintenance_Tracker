@@ -37,6 +37,11 @@ public class IssueActivity extends AppCompatActivity {
     private int vehicleId;
     Toolbar toolbar;
 
+    // A custom preference util used to set/get
+    // a key-value pair. In this case, the amount
+    // of issues a given vehicle has.
+    PreferenceUtil preferenceUtil;
+
     // An array of logs used to populate the
     // RecyclerView
     ArrayList<Issue> issueArrayList;
@@ -53,6 +58,9 @@ public class IssueActivity extends AppCompatActivity {
         // Initialize the toolbar
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Initialize the custom preference util
+        preferenceUtil = new PreferenceUtil(this);
 
         // Back button, better than the Manifest way for
         // reasons... - Alexander
@@ -109,6 +117,11 @@ public class IssueActivity extends AppCompatActivity {
 
             // Prepare the RecyclerView
             prepRecyclerView();
+
+            // Using the custom preference util, set the key as the vehicleID
+            // and the amount of issues this vehicle has equal to the amount of
+            // currently open issues.
+            preferenceUtil.setIssueCountByVehicleId(vehicleId, issueArrayList.size());
 
             // If there aren't any issues, notify the user!
             // TODO: Use a textView like William did, not this.
