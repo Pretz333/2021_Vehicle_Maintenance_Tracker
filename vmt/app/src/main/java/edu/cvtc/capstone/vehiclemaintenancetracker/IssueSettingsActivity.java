@@ -228,7 +228,7 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
         if (isStringEmpty(checkPriority)) {
             retVal = false;
             ePriority.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
-        } else if (!VerifyUtil.isStringLettersOrDigitsOnly(checkPriority)) { //TODO: This isn't verified in A's version
+        } else if (!VerifyUtil.isStringSafe(checkPriority)) { //TODO: This isn't verified in A's version
             retVal = false;
             ePriority.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageInvalidCharacters));
         } else {

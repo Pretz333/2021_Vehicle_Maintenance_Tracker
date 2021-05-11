@@ -111,12 +111,7 @@ public class Issue {
     }
 
     public void setVehicleId(int vehicleId) {
-        //DBHelper dbHelper = new DBHelper(null);
-        //if(dbHelper.checkIfVehicleIdExists(vehicleId)) {
-            this.vehicleId = vehicleId;
-        //} else {
-        //   Log.w(TAG, "VehicleId did not exist");
-        //}
+        this.vehicleId = vehicleId;
     }
 
     public int getStatusId() {
@@ -124,12 +119,7 @@ public class Issue {
     }
 
     public void setStatusId(int statusId) {
-        //DBHelper dbHelper = new DBHelper(null);
-        //if(dbHelper.checkIfIssueStatusIdExists(statusId)) {
-            this.statusId = statusId;
-        //} else {
-        //    Log.w(TAG, "StatusId did not exist");
-        //}
+        this.statusId = statusId;
     }
 
     @Override

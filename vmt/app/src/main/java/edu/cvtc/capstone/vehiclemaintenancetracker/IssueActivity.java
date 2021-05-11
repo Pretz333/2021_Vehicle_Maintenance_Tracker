@@ -75,7 +75,7 @@ public class IssueActivity extends AppCompatActivity {
             issueArrayList = new ArrayList<>();
 
             // Generate logs as demo-data
-            populateRecyclerView();
+            //populateRecyclerView();
 
         } else {
             // Not a valid id
@@ -252,7 +252,7 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
 
                 case R.id.card_issueActivity_buttonComplete :
                     IssueActivity.setIssueStatusToComplete(issueId);
-                    ((View)v.getParent()).setVisibility(View.GONE);
+                    ((View)v.getParent()).setVisibility(View.GONE); //TODO: Fix this
                     break;
 
                 default:
@@ -266,7 +266,6 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
             issueId = issue.getId();
             title.setText(issue.getTitle());
             description.setText(issue.getDescription());
-            //date.setText(simpleDateFormat.format(issue.getDate()));
             priority.setText(issue.getPriorityAsString());
         }
     }

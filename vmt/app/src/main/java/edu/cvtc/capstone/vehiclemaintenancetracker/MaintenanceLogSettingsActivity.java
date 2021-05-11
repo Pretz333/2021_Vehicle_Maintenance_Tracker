@@ -64,11 +64,9 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
                             Snackbar.make(v, "The log must have a title", Snackbar.LENGTH_SHORT).show();
                         } else if (log.getId() == -1) {
                             dbHelper.insertMaintenanceLog(log);
-                            Snackbar.make(v, "Successfully added the log!", Snackbar.LENGTH_SHORT).show();
                             MaintenanceLogSettingsActivity.super.finish();
                         } else {
                             dbHelper.updateLog(log);
-                            Snackbar.make(v, "Successfully updated the log!", Snackbar.LENGTH_SHORT).show();
                             MaintenanceLogSettingsActivity.super.finish();
                         }
                     }
@@ -135,8 +133,9 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
         // Set up the systems spinner if there are systems in the db
         List<System> systems = dbHelper.getAllSystems();
         if(systems.size() > 0) {
-            mSystem.setVisibility(View.VISIBLE); //It defaults to invisible
-            findViewById(R.id.maintenanceLogSettings_textViewSystemLabel).setVisibility(View.VISIBLE); //It defaults to invisible
+            //These default to "gone"
+            mSystem.setVisibility(View.VISIBLE);
+            findViewById(R.id.maintenanceLogSettings_textViewSystemLabel).setVisibility(View.VISIBLE);
             //TODO: Fix this
             ArrayAdapter<System> dataAdapter = new ArrayAdapter(MaintenanceLogSettingsActivity.this,
                     android.R.layout.simple_spinner_item, systems);

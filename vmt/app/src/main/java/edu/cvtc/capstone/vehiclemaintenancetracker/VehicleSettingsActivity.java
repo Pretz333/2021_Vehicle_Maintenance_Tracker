@@ -157,11 +157,10 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
         // Check if each field is not blank, null, or contains invalid data.
         // If it does, retVal will be false.
 
-        // Check if the nickname is empty or contains
-        // invalid data.
+        // Check if the nickname is empty or contains invalid data.
         //
         // If not, set the values to the object
-        // TODO: These are only seperated because each one might have a different
+        // TODO: These are only separated because each one might have a different
         // VerifyUtil check
         if (isStringEmpty(checkNickname)) {
             retVal = false;
@@ -226,7 +225,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
         if (isStringEmpty(checkColor)) {
             retVal = false;
             eColor.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
-        } else if (!VerifyUtil.isStringSafe(checkColor)) {
+        } else if (!VerifyUtil.isStringLettersOnly(checkColor)) {
             retVal = false;
             eColor.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageInvalidCharacters));
         } else {
@@ -235,6 +234,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
             vehicle.setColor(checkColor);
         }
 
+        //TODO: Add warnings if these fail, such as VIN being "14" or DatePurchased being "/////"
 
         if (!mMileage.getText().toString().equals("")) {
             vehicle.setMileage(Integer.parseInt(mMileage.getText().toString()));
@@ -275,12 +275,10 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
                     Snackbar.make(v, "Vehicle must have a nickname", Snackbar.LENGTH_SHORT).show();
                 } else if(vehicle.getId() == -1) {
                     dbHelper.insertVehicle(vehicle);
-                    Snackbar.make(v, "Successfully added " + vehicle.getName() + "!", Snackbar.LENGTH_SHORT).show();
                     // Close this activity and return to the main activity
                     VehicleSettingsActivity.super.finish();
                 } else {
                     dbHelper.updateVehicle(vehicle);
-                    Snackbar.make(v, "Successfully updated " + vehicle.getName() + "!", Snackbar.LENGTH_SHORT).show();
                     VehicleSettingsActivity.super.finish();
                 }
             } else {
