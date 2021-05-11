@@ -28,6 +28,11 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
     DBHelper dbHelper = new DBHelper(VehicleSettingsActivity.this);
     Vehicle vehicle = null;
 
+    // A custom preference util used to set/get
+    // a key-value pair. In this case, the amount
+    // of issues a given vehicle has.
+    private PreferenceUtil preferenceUtil;
+
     // View references to all the editText fields
     EditText mNickname,
             mMake,
@@ -54,6 +59,9 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vehicle_settings);
+
+        // Initialize the preference util
+        preferenceUtil = new PreferenceUtil(this);
 
         // Initialize the toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -324,6 +332,10 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
                 public void onClick(View v) {
                     // Delete vehicle from the database
                     dbHelper.deleteVehicle(vehicle);
+
+                    // Delete the issueCounter key-value pair
+                    // associated with this vehicle
+                    preferenceUtil.deleteIssueCountByVehicleId(vehicleId);
 
                     // Close the alert dialog box
                     alert.cancel();
