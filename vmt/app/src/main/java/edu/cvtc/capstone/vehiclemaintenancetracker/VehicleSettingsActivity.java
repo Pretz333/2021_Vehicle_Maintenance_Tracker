@@ -28,6 +28,11 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
     DBHelper dbHelper = new DBHelper(VehicleSettingsActivity.this);
     Vehicle vehicle = null;
 
+    // A custom preference util used to set/get
+    // a key-value pair. In this case, the amount
+    // of issues a given vehicle has.
+    private PreferenceUtil preferenceUtil;
+
     // View references to all the editText fields
     EditText mNickname,
             mMake,
@@ -45,7 +50,8 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
                     eModel,
                     eYear,
                     ePlate,
-                    eColor;
+                    eColor,
+                    eVIN;
 
     int vehicleId;
 
@@ -53,6 +59,9 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vehicle_settings);
+
+        // Initialize the preference util
+        preferenceUtil = new PreferenceUtil(this);
 
         // Initialize the toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -85,6 +94,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
         eYear = findViewById(R.id.vehicleSettings_textInputYear);
         ePlate = findViewById(R.id.vehicleSettings_textInputPlate);
         eColor = findViewById(R.id.vehicleSettings_textInputColor);
+        eVIN = findViewById(R.id.vehicleSettings_textInputVin);
 
         // Initialize listener for this activity
         buttonSave.setOnClickListener(this);
@@ -146,6 +156,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
         String checkYear = mYear.getText().toString();
         String checkPlate = mPlate.getText().toString();
         String checkColor = mColor.getText().toString();
+        String checkVIN = mVIN.getText().toString().toUpperCase();
 
         //Make the vehicle if this is a new vehicle
         if (vehicle == null) {
@@ -203,7 +214,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
             eYear.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
         } else if (!VerifyUtil.isYearValid(checkYear)) {
             retVal = false;
-            eYear.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageInvalidCharacters));
+            eYear.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageInvalidYear));
         } else {
             eYear.setError(null);
             // Set this attribute to the vehicle object
@@ -244,8 +255,15 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
             vehicle.setValue(Double.parseDouble(mValue.getText().toString()));
         }
 
-        if (!mVIN.getText().toString().equals("")) {
-            vehicle.setVIN(mVIN.getText().toString());
+        if (isStringEmpty(checkVIN)) {
+            retVal = false;
+            eVIN.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
+        } else if (!VerifyUtil.isVINValid(checkVIN, checkYear)) {
+            retVal = false;
+            eVIN.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageInvalidVIN));
+        } else {
+            eVIN.setError(null);
+            vehicle.setVIN(checkVIN);
         }
 
         if (!mDatePurchased.getText().toString().equals("")) {
@@ -312,6 +330,10 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
                 public void onClick(View v) {
                     // Delete vehicle from the database
                     dbHelper.deleteVehicle(vehicle);
+
+                    // Delete the issueCounter key-value pair
+                    // associated with this vehicle
+                    preferenceUtil.deleteIssueCountByVehicleId(vehicleId);
 
                     // Close the alert dialog box
                     alert.cancel();

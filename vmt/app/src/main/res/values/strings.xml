@@ -17,6 +17,11 @@
 
     <string name="card_mainActivity_viewDetails">View details</string>
 
+        <!-- These strings are for the Preference Util inside the RecyclerView -->
+        <string name="card_mainActivity_recyclerView_noIssues">No issues</string>
+        <string name="card_mainActivity_recyclerView_withIssues">issues</string>
+
+
     <!-- Strings regarding the vehicle options list in the VehicleOptionActivity page -->
     <string name="optionActivity_title">Options</string>
     <string name="listItem_optionActivity_iconDescription">A colored circle</string>
@@ -61,6 +66,8 @@
 
     <string name="vehicleSettingsActivity_errorValidationEditTextMessage">This field cannot be empty.</string>
     <string name="vehicleSettingsActivity_errorValidationEditTextMessageInvalidCharacters">Only letters and numbers are allowed.</string>
+    <string name="vehicleSettingsActivity_errorValidationEditTextMessageInvalidYear">Please enter a numeric year after 1900.</string>
+    <string name="vehicleSettingsActivity_errorValidationEditTextMessageInvalidVIN">Please enter a valid VIN.</string>
     <string name="vehicleSettingsActivity_errorValidationTitle">Let\'s check over this…</string>
     <string name="vehicleSettingsActivity_errorValidationMessage">One or more of the fields contain invalid data. The fields highlighted in red must be edited before the vehicle can be added.</string>
     <string name="vehicleSettingsActivity_errorValidationButtonNeutral">Okay</string>
