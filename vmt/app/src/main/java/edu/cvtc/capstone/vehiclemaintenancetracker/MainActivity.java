@@ -194,6 +194,11 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
         // Context of super class
         Context context;
 
+        // A custom preference util used to set/get
+        // a key-value pair. In this case, the amount
+        // of issues a given vehicle has.
+        private PreferenceUtil preferenceUtil;
+
         // VehicleID
         private int vehicleID;
 
@@ -207,12 +212,16 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
         private final TextView logDescription;
         private final TextView issueDescription;
 
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             // Context used mainly for OnClickListener
             context = itemView.getContext();
+
+            // TODO: Maybe this shouldn't be re-created multiple times.
+            //  Just sayin' - Alex
+            // Initialize the preference util
+            preferenceUtil = new PreferenceUtil(context);
 
             // Find the views within the itemView (cardview)
             // layout and set them to the member variables above.
@@ -250,8 +259,7 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
                             String makeAndModel,
                             String colorAndYear,
                             String plateNumber,
-                            String logDescription,
-                            String issueDescription) {
+                            String logDescription) {
 
             this.vehicleID = vehicleID;
 
@@ -261,7 +269,23 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
             this.plateNumber.setText(plateNumber);
 
             this.logDescription.setText(logDescription);
-            this.issueDescription.setText(issueDescription);
+
+
+            // Default issue string
+            String issueString = context.getResources().getString(R.string.card_mainActivity_recyclerView_noIssues);
+
+            // Get the amount of issues this specific vehicle has
+            int issueCount = preferenceUtil.getIssueCountByVehicleId(vehicleID);
+
+            // If this vehicle has any issues, set it. If not,
+            // display the default issue string.
+            if (issueCount > 0) {
+                this.issueDescription.setText(String.format("%s %s", issueCount, context.getResources().getString(R.string.card_mainActivity_recyclerView_withIssues)));
+            } else {
+                this.issueDescription.setText(issueString);
+            }
+
+
         }
 
     }
@@ -280,6 +304,7 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
     public void onBindViewHolder(@NonNull VehicleRecyclerAdapter.ViewHolder holder, int position) {
         // Grab the vehicle at the specified position
         Vehicle v = vehicleDataSet.get(position);
+
         // Set the view holder data based on the vehicle above
         // Note: Make & Model, along with Color & Year are a SINGLE
         // TextView view if you checkout card_vehicle.xml.
@@ -290,7 +315,8 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
                 v.getName(),
                 v.getMake() + " " + v.getModel(),
                 v.getColor() + ", " + v.getYear(),
-                v.getLicensePlate(), "No maintenance logs.", "No issues created.");
+                v.getLicensePlate(),
+                "No maintenance logs.");
     }
 
     @Override
