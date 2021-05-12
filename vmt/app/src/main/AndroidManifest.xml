@@ -18,6 +18,10 @@
             android:name=".MaintenanceLogSettingsActivity"
             android:label="@string/optionActivity_maintenanceTitle"/>
 
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
+
         <activity
             android:name=".VehicleSettingsActivity"
             android:label="@string/vehicleSettingsActivity_title" />

@@ -418,6 +418,62 @@ public class DBHelper extends SQLiteOpenHelper {
         return logs;
     }
 
+    public ArrayList<MaintenanceLog> getAllLogsBySearchTerm(String searchTerm) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        //Get all of the fields
+        String[] categoryColumns = {
+                MaintenanceLogSQL._ID,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DESCRIPTION,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_COST,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TOTAL_TIME,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_MILEAGE,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID,
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_SYSTEM_ID
+        };
+
+        String orderBy = MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE + " DESC";
+        String filter = MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE + " LIKE ?";
+        String[] filterArgs = {"'%" + searchTerm + "%'"};
+
+        ArrayList<MaintenanceLog> logs = new ArrayList<>();
+
+        Cursor cursor = db.query(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, categoryColumns, filter,
+                filterArgs, null, null, orderBy);
+
+
+        int idPosition = cursor.getColumnIndex(MaintenanceLogSQL._ID);
+        int titlePosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE);
+        int descriptionPosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DESCRIPTION);
+        int datePosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE);
+        int costPosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_COST);
+        int timePosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TOTAL_TIME);
+        int mileagePosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_MILEAGE);
+        int vehicleIdPosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID);
+        int systemIdPosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_SYSTEM_ID);
+
+        while (cursor.moveToNext()) {
+            logs.add(new MaintenanceLog(
+                    cursor.getInt(idPosition),
+                    cursor.getString(titlePosition),
+                    cursor.getString(descriptionPosition),
+                    new Date(cursor.getLong(datePosition)),
+                    cursor.getInt(costPosition),
+                    cursor.getInt(timePosition),
+                    cursor.getInt(mileagePosition),
+                    cursor.getInt(vehicleIdPosition),
+                    cursor.getInt(systemIdPosition)
+            ));
+        }
+
+        cursor.close();
+        db.close();
+
+        return logs;
+    }
+
     public ArrayList<Issue> getAllIssuesByVehicleId(int id, boolean includeClosed) {
         //Above so we don't have two open databases
         int closedIssueId = getClosedIssueStatusId();
