@@ -137,9 +137,17 @@ public class IssueActivity extends AppCompatActivity {
             // TODO: Use a textView like William did, not this.
             //  But this works for now.
             if (issueArrayList.size() < 1) {
-                Snackbar.make(toolbar, getResources().getString(R.string.no_open_issues),
-                        Snackbar.LENGTH_LONG)
-                        .show();
+                String message = "";
+
+                if(viewingClosed) {
+                    message = getResources().getString(R.string.no_closed_issues);
+                } else {
+                    message = getResources().getString(R.string.no_open_issues);
+                }
+
+                if(!message.equals("")) {
+                    Snackbar.make(toolbar, message, Snackbar.LENGTH_LONG).show();
+                }
             }
         } else {
             // Not a valid id
@@ -161,12 +169,17 @@ public class IssueActivity extends AppCompatActivity {
         recyclerView.setAdapter(issueRecyclerAdapter);
     }
 
-    public static void setIssueStatusToComplete(int issueId){
+    public static void setIssueStatus(int issueId, boolean complete){
         if(context != null) {
             DBHelper dbHelper = new DBHelper(context);
             Issue issue = dbHelper.getIssueByIssueId(issueId);
             if (issue != null) {
-                issue.setStatusId(dbHelper.getClosedIssueStatusId());
+                if(complete) {
+                    issue.setStatusId(dbHelper.getClosedIssueStatusId());
+                } else {
+                    issue.setStatusId(dbHelper.getOpenIssueStatusId());
+                }
+
                 dbHelper.updateIssue(issue);
 
                 /*
@@ -232,13 +245,9 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
     // An array holding issue logs
     final private ArrayList<Issue> issueArrayList;
 
-    // Date formatter for the date TextView
-    static SimpleDateFormat simpleDateFormat;
-
     // Constructor accepting an array
     public IssueRecyclerAdapter(ArrayList<Issue> issueArrayList) {
         this.issueArrayList = issueArrayList;
-        simpleDateFormat = new SimpleDateFormat("MMM d, y", Locale.ENGLISH);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -265,6 +274,10 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
 
             buttonEdit.setOnClickListener(this);
             buttonComplete.setOnClickListener(this);
+
+            if(IssueActivity.viewingClosed) {
+                buttonComplete.setText(R.string.card_issue_buttonReopen);
+            }
         }
 
         // Event handler for the buttons
@@ -283,7 +296,11 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
                     break;
 
                 case R.id.card_issueActivity_buttonComplete :
-                    IssueActivity.setIssueStatusToComplete(issueId);
+                    if(IssueActivity.viewingClosed) {
+                        IssueActivity.setIssueStatus(issueId, false);
+                    } else {
+                        IssueActivity.setIssueStatus(issueId, true);
+                    }
                     //((View)v.getParent()).setVisibility(View.GONE);
                     break;
 
@@ -292,8 +309,7 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
             }
         }
 
-        // One-hitter method for setting the data for all
-        // the TextViews
+        // One-hitter method for setting the data for all the TextViews
         public void setDataByObject(Issue issue) {
             issueId = issue.getId();
             title.setText(issue.getTitle());

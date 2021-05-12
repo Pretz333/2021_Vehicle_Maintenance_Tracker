@@ -107,7 +107,9 @@
     <string name="card_issue_priority_high">High Priority</string>
     <string name="card_issue_buttonEdit">Edit</string>
     <string name="card_issue_buttonComplete">Complete</string>
+    <string name="card_issue_buttonReopen">Reopen</string>
     <string name="no_open_issues">You don\'t have any open issues for this vehicle. To create one, tap the plus icon in the toolbar.</string>
+    <string name="no_closed_issues">You don\'t have any closed issues for this vehicle. To close one, tap the complete button on an open issue.</string>
 
         <!-- The priority spinner -->
         <string-array name="issueSettingsActivity_spinnerPriority">
