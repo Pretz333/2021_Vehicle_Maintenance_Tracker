@@ -34,13 +34,13 @@ public class IssueActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     public static Context context;
 
-    // The request code of the child activity when an issue
-    // is created.
+    // The request code of the child activity when an issue is created.
     public static final int REQUEST_ADD_ISSUE = 420;
 
     // Member variables
     private int vehicleId;
     Toolbar toolbar;
+    public static boolean includeClosed = false;
 
     // A custom preference util used to set/get
     // a key-value pair. In this case, the amount
@@ -48,12 +48,10 @@ public class IssueActivity extends AppCompatActivity {
     PreferenceUtil preferenceUtil;
 
     // The adapter used by the RecyclerView.
-    // It's used to notify the adapter when
-    // the dataset has changed.
+    // It's used to notify the adapter when the dataset has changed.
     IssueRecyclerAdapter issueRecyclerAdapter;
 
-    // An array of logs used to populate the
-    // RecyclerView
+    // An array of logs used to populate the RecyclerView
     ArrayList<Issue> issueArrayList;
 
     // Database helper
@@ -93,7 +91,7 @@ public class IssueActivity extends AppCompatActivity {
             issueArrayList = new ArrayList<>();
 
             // Generate logs as demo-data
-            populateRecyclerView();
+            populateRecyclerView(includeClosed);
 
         } else {
             // Not a valid id
@@ -105,7 +103,7 @@ public class IssueActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         context = this;
-        populateRecyclerView();
+        populateRecyclerView(includeClosed);
     }
 
     @Override
@@ -116,15 +114,14 @@ public class IssueActivity extends AppCompatActivity {
 
     // Add a few fake issue logs to the logArrayList
     // to be used in the RecyclerView for demo
-    private void populateRecyclerView() {
+    private void populateRecyclerView(boolean includeClosed) {
 
         // Only display issues if the vehicleId is valid!
         if (vehicleId != -1) {
             // We're good to go. Let's do some database stuff.
 
-            // Grab all the issues from the database and throw them
-            // into the issueArrayList
-            issueArrayList = dbHelper.getAllIssuesByVehicleId(vehicleId, false);
+            // Grab all the issues from the database and throw them into the issueArrayList
+            issueArrayList = dbHelper.getAllIssuesByVehicleId(vehicleId, includeClosed);
 
             // Prepare the RecyclerView
             prepRecyclerView();
@@ -132,13 +129,15 @@ public class IssueActivity extends AppCompatActivity {
             // Using the custom preference util, set the key as the vehicleID
             // and the amount of issues this vehicle has equal to the amount of
             // currently open issues.
-            preferenceUtil.setIssueCountByVehicleId(vehicleId, issueArrayList.size());
+            if(!includeClosed) {
+                preferenceUtil.setIssueCountByVehicleId(vehicleId, issueArrayList.size());
+            }
 
             // If there aren't any issues, notify the user!
             // TODO: Use a textView like William did, not this.
             //  But this works for now.
             if (issueArrayList.size() < 1) {
-                Snackbar.make(toolbar, "You don't have any issues for this vehicle. To create one, tap the plus icon in the toolbar.",
+                Snackbar.make(toolbar, getResources().getString(R.string.no_open_issues),
                         Snackbar.LENGTH_LONG)
                         .show();
             }
@@ -187,9 +186,8 @@ public class IssueActivity extends AppCompatActivity {
                  */
 
                 if (context instanceof IssueActivity) {
-                    ((IssueActivity) context).populateRecyclerView();
+                    ((IssueActivity) context).populateRecyclerView(includeClosed);
                 }
-
             }
         }
     }
@@ -210,7 +208,9 @@ public class IssueActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_ADD_ISSUE);
                 break;
             case R.id.menuItem_log_filter:
-                Snackbar.make(toolbar, "Filter button tapped", Snackbar.LENGTH_SHORT).show();
+                includeClosed = !includeClosed;
+                populateRecyclerView(includeClosed);
+                //Snackbar.make(toolbar, "Filter button tapped", Snackbar.LENGTH_SHORT).show();
                 break;
             case R.id.menuItem_log_search:
                 Snackbar.make(toolbar, "Search button tapped", Snackbar.LENGTH_SHORT).show();
@@ -283,7 +283,7 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
 
                     // Start the activity
                     context.startActivity(intent);
-                    Snackbar.make(title, "Edit button tapped on RecyclerView element: " + getLayoutPosition(), Snackbar.LENGTH_SHORT).show();
+                    //Snackbar.make(title, "Edit button tapped on RecyclerView element: " + getLayoutPosition(), Snackbar.LENGTH_SHORT).show();
                     break;
 
                 case R.id.card_issueActivity_buttonComplete :
