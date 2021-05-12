@@ -40,7 +40,7 @@ public class IssueActivity extends AppCompatActivity {
     // Member variables
     private int vehicleId;
     Toolbar toolbar;
-    public static boolean includeClosed = false;
+    public static boolean viewingClosed = false;
 
     // A custom preference util used to set/get
     // a key-value pair. In this case, the amount
@@ -91,7 +91,7 @@ public class IssueActivity extends AppCompatActivity {
             issueArrayList = new ArrayList<>();
 
             // Generate logs as demo-data
-            populateRecyclerView(includeClosed);
+            populateRecyclerView(viewingClosed);
 
         } else {
             // Not a valid id
@@ -103,7 +103,7 @@ public class IssueActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         context = this;
-        populateRecyclerView(includeClosed);
+        populateRecyclerView(viewingClosed);
     }
 
     @Override
@@ -114,14 +114,14 @@ public class IssueActivity extends AppCompatActivity {
 
     // Add a few fake issue logs to the logArrayList
     // to be used in the RecyclerView for demo
-    private void populateRecyclerView(boolean includeClosed) {
+    private void populateRecyclerView(boolean viewingClosed) {
 
         // Only display issues if the vehicleId is valid!
         if (vehicleId != -1) {
             // We're good to go. Let's do some database stuff.
 
             // Grab all the issues from the database and throw them into the issueArrayList
-            issueArrayList = dbHelper.getAllIssuesByVehicleId(vehicleId, includeClosed);
+            issueArrayList = dbHelper.getAllIssuesByVehicleId(vehicleId, viewingClosed);
 
             // Prepare the RecyclerView
             prepRecyclerView();
@@ -129,7 +129,7 @@ public class IssueActivity extends AppCompatActivity {
             // Using the custom preference util, set the key as the vehicleID
             // and the amount of issues this vehicle has equal to the amount of
             // currently open issues.
-            if(!includeClosed) {
+            if(!viewingClosed) {
                 preferenceUtil.setIssueCountByVehicleId(vehicleId, issueArrayList.size());
             }
 
@@ -186,7 +186,7 @@ public class IssueActivity extends AppCompatActivity {
                  */
 
                 if (context instanceof IssueActivity) {
-                    ((IssueActivity) context).populateRecyclerView(includeClosed);
+                    ((IssueActivity) context).populateRecyclerView(viewingClosed);
                 }
             }
         }
@@ -208,9 +208,8 @@ public class IssueActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_ADD_ISSUE);
                 break;
             case R.id.menuItem_log_filter:
-                includeClosed = !includeClosed;
-                populateRecyclerView(includeClosed);
-                //Snackbar.make(toolbar, "Filter button tapped", Snackbar.LENGTH_SHORT).show();
+                viewingClosed = !viewingClosed;
+                populateRecyclerView(viewingClosed);
                 break;
             case R.id.menuItem_log_search:
                 Snackbar.make(toolbar, "Search button tapped", Snackbar.LENGTH_SHORT).show();
