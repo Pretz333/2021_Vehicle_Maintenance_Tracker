@@ -156,8 +156,7 @@ public final class VerifyUtil {
     }
 
     //For VINs
-    //TODO: Check year matches VIN year
-    public static boolean isVINValid(String VIN, String year) {
+    public static boolean isVINValid(String VIN, String strYear) {
         if(VIN == null || VIN.equals("")) {
             return true;
         }
@@ -168,7 +167,8 @@ public final class VerifyUtil {
         }
 
         //Vehicles pre-1981 don't follow a set standard that can be easily tested
-        if (Integer.parseInt(year) < 1981) {
+        int year = Integer.parseInt(strYear);
+        if (year < 1981) {
             //If using an API query, we can test vehicles pre-1981
             //For now, we'll just assume it's good
             return true;
@@ -179,6 +179,36 @@ public final class VerifyUtil {
             char[] VINArray = VIN.toCharArray();
             char c; //More efficient to re-assign it than re-declare it 17 times in the for loop
 
+            //Year digit (10th digit) check
+            //Start with getting the digit as a year
+            int yearFromChar = 0;
+            try {
+                yearFromChar = yearChar.get(VINArray[9]);
+            } catch(NullPointerException ex) {
+                //The year digit is an invalid char
+                return false;
+            }
+
+            //Ensure we got a year
+            if(yearFromChar < 1980 || yearFromChar > 2009){
+                //We failed to get a year from the hashmap
+                return false;
+            }
+
+            //If the year passed in is > 2009, subtract 30 so it aligns with
+            //the hash map, since the pattern loops every 30 years.
+            //For example, A can be for a VIN from 1980 or a VIN from 2010.
+            while(year > 2009){
+                year -= 30;
+            }
+
+            //Check if the VIN's year digit is equal to the year passed in from the vehicle
+            //Don't return true if it passes, as we want to run other tests as well
+            if(year != yearFromChar){
+                return false;
+            }
+
+            //Check the rest of the VIN
             for (int i = 0; i < VINArray.length; i++) {
                 c = VINArray[i];
 
@@ -241,7 +271,36 @@ public final class VerifyUtil {
 
     //The HashMap for the VIN year digit, also at the class level so
     //it isn't destroyed and recreated any more than necessary
-    private static final HashMap<String, Character> yearChar = new HashMap<String, Character>() {{
-        put("", ' ');
+    private static final HashMap<Character, Integer> yearChar = new HashMap<Character, Integer>() {{
+        put('A', 1980);
+        put('B', 1981);
+        put('C', 1982);
+        put('D', 1983);
+        put('E', 1984);
+        put('F', 1985);
+        put('G', 1986);
+        put('H', 1987);
+        put('J', 1988);
+        put('K', 1989);
+        put('L', 1990);
+        put('M', 1991);
+        put('N', 1992);
+        put('P', 1993);
+        put('R', 1994);
+        put('S', 1995);
+        put('T', 1996);
+        put('V', 1997);
+        put('W', 1998);
+        put('X', 1999);
+        put('Y', 2000);
+        put('1', 2001);
+        put('2', 2002);
+        put('3', 2003);
+        put('4', 2004);
+        put('5', 2005);
+        put('6', 2006);
+        put('7', 2007);
+        put('8', 2008);
+        put('9', 2009);
     }};
 }

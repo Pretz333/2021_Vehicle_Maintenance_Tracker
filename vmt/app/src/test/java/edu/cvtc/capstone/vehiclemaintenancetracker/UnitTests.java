@@ -16,8 +16,13 @@ public class UnitTests {
 
     //Vehicle Data Verification
     @Test
-    public void VINSimpleCheckDigitTestPasses(){
-        assertTrue(VerifyUtil.isVINValid("11111111111111111", "1999"));
+    public void VINSimpleCheckDigitWithYearPasses(){
+        assertTrue(VerifyUtil.isVINValid("11111111111111111", "2001"));
+    }
+
+    @Test
+    public void VINYearCheckIsFutureProof(){
+        assertTrue(VerifyUtil.isVINValid("11111111111111111", "2061"));
     }
 
     @Test
