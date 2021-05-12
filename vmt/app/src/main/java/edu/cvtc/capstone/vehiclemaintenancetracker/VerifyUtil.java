@@ -16,7 +16,6 @@ import java.util.Locale;
 public final class VerifyUtil {
     public static final String TAG = "VERIFYUTIL_CLASS";
     //TODO: Consider non-english characters
-    //TODO: Character limits
 
     public static void alertUser(@NonNull Context context, String title, String message) {
         //This will crash if we use null or getApplicationContext() as the context
@@ -128,7 +127,8 @@ public final class VerifyUtil {
                 if (chunks[2].length() == 1) { //assume it's 2004 if they put in a 4
                     chunks[2] = "200" + chunks[2];
                 } else if (chunks[2].length() == 2) {
-                    if(chunks[2].toCharArray()[0] == '0'){ //assume it's 200X if they put in a 0X
+                    //assume it's 20XX if they put in a 0X or 1X
+                    if(chunks[2].toCharArray()[0] == '0' || chunks[2].toCharArray()[0] == '1'){
                         chunks[2] = "20" + chunks[2];
                     } else { //assume it's 19XX if they put in a XX (ex: 1984 if 84)
                         chunks[2] = "19" + chunks[2];
@@ -142,6 +142,7 @@ public final class VerifyUtil {
             str = chunks[0] + "/" + chunks[1] + "/" + chunks[2];
         }
 
+        //Ensure the fixes fixed the problems
         if(str.length() != 10) { //then they forgot something, like a / or a section of the date,
             //otherwise it would have been fixed by the above check
             return null;

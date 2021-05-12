@@ -170,7 +170,9 @@ public class IssueActivity extends AppCompatActivity {
                 issue.setStatusId(dbHelper.getClosedIssueStatusId());
                 dbHelper.updateIssue(issue);
 
-                //Todo: Delete when the status is visible
+                /*
+
+                //Makes a toast and displays what the issue status is after the attempt to set it to closed
                 List<IssueStatus> issueStatuses = dbHelper.getPossibleIssueStatuses();
                 issue = dbHelper.getIssueByIssueId(issueId);
                 String description = "None";
@@ -181,6 +183,8 @@ public class IssueActivity extends AppCompatActivity {
                     }
                 }
                 Toast.makeText(context, "Set to: " + description, Toast.LENGTH_SHORT).show();
+
+                 */
 
                 if (context instanceof IssueActivity) {
                     ((IssueActivity) context).populateRecyclerView();

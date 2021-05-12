@@ -22,8 +22,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 4;
     private final Context context;
 
-    //TODO: Insert issue priorities if we use Jasper's method instead of Alex's
-
     public DBHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
 
@@ -785,8 +783,10 @@ public class DBHelper extends SQLiteOpenHelper {
             int idPosition = cursor.getColumnIndex(IssueStatusSQL._ID);
             int id = -1;
 
-            cursor.moveToFirst();
-            id = cursor.getInt(idPosition);
+            try {
+                cursor.moveToFirst();
+                id = cursor.getInt(idPosition);
+            } catch (Exception ex) {}
 
             cursor.close();
             db.close();
@@ -794,7 +794,7 @@ public class DBHelper extends SQLiteOpenHelper {
             if(id == -1) {
                 //Check if there are issue statuses in the DB
                 List<IssueStatus> issueStatuses = getPossibleIssueStatuses();
-                if(!issueStatuses.isEmpty()) {
+                if(issueStatuses.size() > 0) {
                     //see if it's in the list
                     for(int i = 0; i < issueStatuses.size(); i++) {
                         if (issueStatuses.get(i).getDescription().equals("Fixed")) {
