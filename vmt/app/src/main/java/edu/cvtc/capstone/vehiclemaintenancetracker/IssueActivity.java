@@ -250,7 +250,6 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
 
         final TextView title;
         final TextView description;
-        final TextView date;
         final TextView priority;
 
         public ViewHolder(@NonNull View itemView) {
@@ -259,7 +258,6 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
             context = itemView.getContext();
             title = itemView.findViewById(R.id.card_issueActivity_title);
             description = itemView.findViewById(R.id.card_issueActivity_description);
-            date = itemView.findViewById(R.id.card_issueActivity_date);
             priority = itemView.findViewById(R.id.card_issueActivity_priority);
 
             Button buttonEdit = itemView.findViewById(R.id.card_issueActivity_buttonEdit);
@@ -282,12 +280,11 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
 
                     // Start the activity
                     context.startActivity(intent);
-                    //Snackbar.make(title, "Edit button tapped on RecyclerView element: " + getLayoutPosition(), Snackbar.LENGTH_SHORT).show();
                     break;
 
                 case R.id.card_issueActivity_buttonComplete :
                     IssueActivity.setIssueStatusToComplete(issueId);
-                    //((View)v.getParent()).setVisibility(View.GONE); //TODO: Fix this
+                    //((View)v.getParent()).setVisibility(View.GONE);
                     break;
 
                 default:
