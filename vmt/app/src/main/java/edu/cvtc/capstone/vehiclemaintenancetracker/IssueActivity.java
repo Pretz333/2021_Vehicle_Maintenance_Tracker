@@ -41,6 +41,7 @@ public class IssueActivity extends AppCompatActivity {
     private int vehicleId;
     Toolbar toolbar;
     public static boolean viewingClosed = false;
+    TextView noIssues; //Used to display a message when there are no issues to be displayed
 
     // A custom preference util used to set/get
     // a key-value pair. In this case, the amount
@@ -48,7 +49,7 @@ public class IssueActivity extends AppCompatActivity {
     PreferenceUtil preferenceUtil;
 
     // The adapter used by the RecyclerView.
-    // It's used to notify the adapter when the dataset has changed.
+    // It's used to notify the adapter when the data set has changed.
     IssueRecyclerAdapter issueRecyclerAdapter;
 
     // An array of logs used to populate the RecyclerView
@@ -70,27 +71,23 @@ public class IssueActivity extends AppCompatActivity {
         // Initialize the custom preference util
         preferenceUtil = new PreferenceUtil(this);
 
-        // Back button, better than the Manifest way for
-        // reasons... - Alexander
+        // Back button, better than the Manifest way for reasons... - Alexander
         toolbar.setNavigationIcon(R.drawable.ic_back);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IssueActivity.super.finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> IssueActivity.super.finish());
 
         // Grab the vehicleId from the received intent
         vehicleId = getIntent().getIntExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, -1);
 
+        // Find the noIssues TextView
+        noIssues = findViewById(R.id.noIssuesTextView);
+
         // Only pull logs of the vehicleId is valid.
-        // In other words, we can't get logs from a
-        // vehicle that doesn't exist
+        // In other words, we can't get logs from a vehicle that doesn't exist
         if (vehicleId != -1) {
-            // Initialize the log list
+            // Initialize the list
             issueArrayList = new ArrayList<>();
 
-            // Generate logs as demo-data
+            // Populate the list
             populateRecyclerView(viewingClosed);
 
         } else {
@@ -112,8 +109,7 @@ public class IssueActivity extends AppCompatActivity {
         context = null;
     }
 
-    // Add a few fake issue logs to the logArrayList
-    // to be used in the RecyclerView for demo
+    // Populate the issue list
     private void populateRecyclerView(boolean viewingClosed) {
 
         // Only display issues if the vehicleId is valid!
@@ -134,20 +130,16 @@ public class IssueActivity extends AppCompatActivity {
             }
 
             // If there aren't any issues, notify the user!
-            // TODO: Use a textView like William did, not this.
-            //  But this works for now.
             if (issueArrayList.size() < 1) {
-                String message = "";
+                noIssues.setVisibility(View.VISIBLE);
 
                 if(viewingClosed) {
-                    message = getResources().getString(R.string.no_closed_issues);
+                    noIssues.setText(getResources().getString(R.string.no_closed_issues));
                 } else {
-                    message = getResources().getString(R.string.no_open_issues);
+                    noIssues.setText(getResources().getString(R.string.no_open_issues));
                 }
-
-                if(!message.equals("")) {
-                    Snackbar.make(toolbar, message, Snackbar.LENGTH_LONG).show();
-                }
+            } else {
+                noIssues.setVisibility(View.GONE);
             }
         } else {
             // Not a valid id
