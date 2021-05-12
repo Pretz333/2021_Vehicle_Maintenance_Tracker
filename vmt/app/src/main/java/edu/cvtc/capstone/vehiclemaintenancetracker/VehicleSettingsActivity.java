@@ -245,7 +245,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
             vehicle.setColor(checkColor);
         }
 
-        //TODO: Add warnings if these fail, such as VIN being "14" or DatePurchased being "/////"
+        //TODO: Add warnings if these fail, for example DatePurchased being "/////"
 
         if (!mMileage.getText().toString().equals("")) {
             vehicle.setMileage(Integer.parseInt(mMileage.getText().toString()));
@@ -255,9 +255,9 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
             vehicle.setValue(Double.parseDouble(mValue.getText().toString()));
         }
 
-        if (isStringEmpty(checkVIN)) {
-            retVal = false;
-            eVIN.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
+        if (isStringEmpty(checkVIN)) { //we don't need a VIN
+            //retVal = false;
+            //eVIN.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
         } else if (!VerifyUtil.isVINValid(checkVIN, checkYear)) {
             retVal = false;
             eVIN.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageInvalidVIN));
