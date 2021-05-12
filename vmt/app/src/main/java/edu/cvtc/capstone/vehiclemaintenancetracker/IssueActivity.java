@@ -43,9 +43,8 @@ public class IssueActivity extends AppCompatActivity {
     public static boolean viewingClosed = false;
     TextView noIssues; //Used to display a message when there are no issues to be displayed
 
-    // A custom preference util used to set/get
-    // a key-value pair. In this case, the amount
-    // of issues a given vehicle has.
+    // A custom preference util used to set/get a key-value pair.
+    // In this case, the amount of issues a given vehicle has.
     PreferenceUtil preferenceUtil;
 
     // The adapter used by the RecyclerView.

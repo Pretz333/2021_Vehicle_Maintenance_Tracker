@@ -127,6 +127,7 @@
         <string name="issueSettings_textViewPriorityLabel">Priority of this issue</string>
         <string name="issueSettings_buttonSave">Save Changes</string>
         <string name="issueSettings_buttonClose">Close Issue</string>
+        <string name="issueSettings_buttonReopen">Reopen Issue</string>
 
     <!-- Strings regarding LogActivity's & IssueActivity's toolbar items -->
     <string name="add_new_log">Add A New Log</string>

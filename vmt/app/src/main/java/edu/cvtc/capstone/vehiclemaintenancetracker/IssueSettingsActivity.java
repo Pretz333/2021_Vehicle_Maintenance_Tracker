@@ -77,6 +77,11 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
 
             // Since the issue was already in the database, the close button should be visible.
             Button closeButton = findViewById(R.id.issueSettings_buttonClose);
+            if(issue.getStatusId() == dbHelper.getOpenIssueStatusId()) {
+                closeButton.setText(getResources().getString(R.string.issueSettings_buttonClose));
+            } else {
+                closeButton.setText(getResources().getString(R.string.issueSettings_buttonReopen));
+            }
             closeButton.setVisibility(View.VISIBLE);
             closeButton.setOnClickListener(this);
 
@@ -125,7 +130,12 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
             }
         } else if (v.getId() == R.id.issueSettings_buttonClose){
             DBHelper dbHelper = new DBHelper(IssueSettingsActivity.this);
-            issue.setStatusId(dbHelper.getClosedIssueStatusId());
+            int openStatusId = dbHelper.getOpenIssueStatusId();
+            if(issue.getStatusId() == openStatusId) {
+                issue.setStatusId(dbHelper.getClosedIssueStatusId());
+            } else {
+                issue.setStatusId(openStatusId);
+            }
             dbHelper.updateIssue(issue);
             IssueSettingsActivity.super.finish();
         }
