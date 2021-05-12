@@ -255,10 +255,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
             vehicle.setValue(Double.parseDouble(mValue.getText().toString()));
         }
 
-        if (isStringEmpty(checkVIN)) { //we don't need a VIN
-            //retVal = false;
-            //eVIN.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
-        } else if (!VerifyUtil.isVINValid(checkVIN, checkYear)) {
+        if (!VerifyUtil.isVINValid(checkVIN, checkYear)) {
             retVal = false;
             eVIN.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageInvalidVIN));
         } else {
