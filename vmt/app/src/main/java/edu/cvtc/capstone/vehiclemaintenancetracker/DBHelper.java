@@ -418,9 +418,10 @@ public class DBHelper extends SQLiteOpenHelper {
         return logs;
     }
 
-    public ArrayList<Issue> getAllIssuesByVehicleId(int id, boolean includeClosed) {
+    public ArrayList<Issue> getAllIssuesByVehicleId(int id, boolean viewClosed) {
         //Above so we don't have two open databases
         int closedIssueId = getClosedIssueStatusId();
+        int openIssueId = getOpenIssueStatusId();
 
         // Get a readable database
         SQLiteDatabase db = getReadableDatabase();
@@ -440,8 +441,10 @@ public class DBHelper extends SQLiteOpenHelper {
         String[] filterArgs = {String.valueOf(id)};
 
         //Don't include closed if the user doesn't want them
-        if(!includeClosed) {
-            filter += " AND " + IssueSQL.COLUMN_ISSUE_STATUS_ID + " != " + closedIssueId;
+        if(viewClosed) {
+            filter += " AND " + IssueSQL.COLUMN_ISSUE_STATUS_ID + " = " + closedIssueId;
+        } else {
+            filter += " AND " + IssueSQL.COLUMN_ISSUE_STATUS_ID + " = " + openIssueId;
         }
 
         ArrayList<Issue> issues = new ArrayList<>();
