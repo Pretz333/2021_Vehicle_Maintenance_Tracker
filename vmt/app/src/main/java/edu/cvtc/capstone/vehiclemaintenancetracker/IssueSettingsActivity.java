@@ -110,11 +110,9 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
                     Snackbar.make(v, "The issue failed to be created", Snackbar.LENGTH_SHORT).show();
                 } else if (issue.getId() == -1) {
                     dbHelper.insertIssue(issue);
-                    IssueSettingsActivity.super.setResult(RESULT_OK);
                     IssueSettingsActivity.super.finish();
                 } else {
                     dbHelper.updateIssue(issue);
-                    IssueSettingsActivity.super.setResult(RESULT_OK);
                     IssueSettingsActivity.super.finish();
                 }
             } else {
@@ -129,7 +127,6 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
             DBHelper dbHelper = new DBHelper(IssueSettingsActivity.this);
             issue.setStatusId(dbHelper.getClosedIssueStatusId());
             dbHelper.updateIssue(issue);
-            IssueSettingsActivity.super.setResult(RESULT_CANCELED);
             IssueSettingsActivity.super.finish();
         }
     }

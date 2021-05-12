@@ -104,8 +104,8 @@ public class IssueActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //populateRecyclerView();
         context = this;
+        populateRecyclerView();
     }
 
     @Override
@@ -218,21 +218,6 @@ public class IssueActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Check if the request code was from the AddIssue activity (IssueSettingsActivity)
-        if (requestCode == REQUEST_ADD_ISSUE) {
-            // Check the result code, and act upon it accordingly
-            if (resultCode == RESULT_OK) {
-                // Update the recycler view
-                // As interesting as it sounds, we are just going to re-read
-                // the whole database into the recyclerview.
-                populateRecyclerView();
-            }
-        }
-    }
 }
 
 
