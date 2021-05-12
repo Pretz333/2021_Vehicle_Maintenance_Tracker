@@ -1,6 +1,7 @@
 package edu.cvtc.capstone.vehiclemaintenancetracker;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,6 +34,10 @@ public class IssueActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     public static Context context;
 
+    // The request code of the child activity when an issue
+    // is created.
+    public static final int REQUEST_ADD_ISSUE = 420;
+
     // Member variables
     private int vehicleId;
     Toolbar toolbar;
@@ -41,6 +46,11 @@ public class IssueActivity extends AppCompatActivity {
     // a key-value pair. In this case, the amount
     // of issues a given vehicle has.
     PreferenceUtil preferenceUtil;
+
+    // The adapter used by the RecyclerView.
+    // It's used to notify the adapter when
+    // the dataset has changed.
+    IssueRecyclerAdapter issueRecyclerAdapter;
 
     // An array of logs used to populate the
     // RecyclerView
@@ -83,7 +93,7 @@ public class IssueActivity extends AppCompatActivity {
             issueArrayList = new ArrayList<>();
 
             // Generate logs as demo-data
-            //populateRecyclerView();
+            populateRecyclerView();
 
         } else {
             // Not a valid id
@@ -94,7 +104,8 @@ public class IssueActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        populateRecyclerView();
+        //populateRecyclerView();
+        context = this;
     }
 
     @Override
@@ -127,7 +138,9 @@ public class IssueActivity extends AppCompatActivity {
             // TODO: Use a textView like William did, not this.
             //  But this works for now.
             if (issueArrayList.size() < 1) {
-                Snackbar.make(toolbar, "You don't have any issues for this vehicle. To create one, tap the plus icon in the toolbar.", Snackbar.LENGTH_INDEFINITE).show();
+                Snackbar.make(toolbar, "You don't have any issues for this vehicle. To create one, tap the plus icon in the toolbar.",
+                        Snackbar.LENGTH_LONG)
+                        .show();
             }
         } else {
             // Not a valid id
@@ -145,8 +158,8 @@ public class IssueActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Create the adapter and make the RecyclerView use it
-        IssueRecyclerAdapter IssueRecyclerAdapter = new IssueRecyclerAdapter(issueArrayList);
-        recyclerView.setAdapter(IssueRecyclerAdapter);
+        issueRecyclerAdapter = new IssueRecyclerAdapter(issueArrayList);
+        recyclerView.setAdapter(issueRecyclerAdapter);
     }
 
     public static void setIssueStatusToComplete(int issueId){
@@ -168,8 +181,11 @@ public class IssueActivity extends AppCompatActivity {
                     }
                 }
                 Toast.makeText(context, "Set to: " + description, Toast.LENGTH_SHORT).show();
-            } else {
-                //TODO: alert the user something funky is going on
+
+                if (context instanceof IssueActivity) {
+                    ((IssueActivity) context).populateRecyclerView();
+                }
+
             }
         }
     }
@@ -187,7 +203,7 @@ public class IssueActivity extends AppCompatActivity {
                 Intent intent = new Intent(IssueActivity.this, IssueSettingsActivity.class);
                 intent.putExtra(IssueActivity.EXTRA_ISSUE_ID, -1);
                 intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, vehicleId);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_ADD_ISSUE);
                 break;
             case R.id.menuItem_log_filter:
                 Snackbar.make(toolbar, "Filter button tapped", Snackbar.LENGTH_SHORT).show();
@@ -201,7 +217,25 @@ public class IssueActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Check if the request code was from the AddIssue activity (IssueSettingsActivity)
+        if (requestCode == REQUEST_ADD_ISSUE) {
+            // Check the result code, and act upon it accordingly
+            if (resultCode == RESULT_OK) {
+                // Update the recycler view
+                // As interesting as it sounds, we are just going to re-read
+                // the whole database into the recyclerview.
+                populateRecyclerView();
+            }
+        }
+    }
 }
+
+
 
 
 // The adapter for this activity's RecyclerView
@@ -265,7 +299,7 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
 
                 case R.id.card_issueActivity_buttonComplete :
                     IssueActivity.setIssueStatusToComplete(issueId);
-                    ((View)v.getParent()).setVisibility(View.GONE); //TODO: Fix this
+                    //((View)v.getParent()).setVisibility(View.GONE); //TODO: Fix this
                     break;
 
                 default:
