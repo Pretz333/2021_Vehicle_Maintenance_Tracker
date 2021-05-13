@@ -67,9 +67,10 @@
 
     <string name="vehicleSettingsActivity_errorValidationEditTextMessage">This field cannot be empty.</string>
     <string name="vehicleSettingsActivity_errorValidationEditTextMessageInvalidCharacters">Only letters and numbers are allowed.</string>
+    <string name="vehicleSettingsActivity_errorValidationEditTextMessageOnlyLetters">Only letters are allowed.</string>
     <string name="vehicleSettingsActivity_errorValidationEditTextMessageDifferentValue">Make sure this is entered correctly.</string>
     <string name="vehicleSettingsActivity_errorValidationEditTextMessageInvalidDate">Please enter a valid date using the mm/dd/yyyy pattern.</string>
-    <string name="vehicleSettingsActivity_errorValidationEditTextMessageInvalidYear">Please enter a numeric year after 1900.</string>
+    <string name="vehicleSettingsActivity_errorValidationEditTextMessageInvalidYear">Please enter a 4 digit numeric year after 1800.</string>
     <string name="vehicleSettingsActivity_errorValidationEditTextMessageInvalidVIN">Please enter a valid VIN.</string>
 
     <string name="vehicleSettingsActivity_errorValidationTitle">Let\'s check over this…</string>

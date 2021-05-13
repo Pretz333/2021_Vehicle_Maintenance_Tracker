@@ -93,7 +93,7 @@ public final class VerifyUtil {
             return true;
         }
 
-        return year.length() == 4 && Integer.parseInt(year) > 1900;
+        return year.length() == 4 && Integer.parseInt(year) > 1800;
     }
 
     public static Date parseStringToDate(String str){

@@ -238,7 +238,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
             eColor.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
         } else if (!VerifyUtil.isStringLettersOnly(checkColor)) {
             retVal = false;
-            eColor.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageInvalidCharacters));
+            eColor.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageOnlyLetters));
         } else {
             eColor.setError(null);
             // Set this attribute to the vehicle object
