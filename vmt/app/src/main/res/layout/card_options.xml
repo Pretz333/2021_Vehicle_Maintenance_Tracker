@@ -25,7 +25,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:text="@string/listItem_optionActivity_Title"
-        android:textColor="@color/black"
         android:textSize="24sp"
         app:layout_constraintStart_toEndOf="@+id/card_optionActivity_Icon"
         app:layout_constraintTop_toTopOf="parent" />
@@ -36,6 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/listItem_optionActivity_Subtitle"
+        android:textStyle="italic"
         app:layout_constraintStart_toStartOf="@id/card_optionActivity_title"
         app:layout_constraintTop_toBottomOf="@id/card_optionActivity_title" />
 
