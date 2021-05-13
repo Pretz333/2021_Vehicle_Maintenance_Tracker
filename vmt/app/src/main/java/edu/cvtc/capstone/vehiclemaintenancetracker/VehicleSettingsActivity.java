@@ -268,20 +268,6 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
             vehicle.setVIN(checkVIN);
         }
 
-
-        // This is for the DatePurchased editText
-        //
-        // Check for how many slashes it contains.
-        // Although regex is a good idea, I don't
-        // think it can know if there are more than 3
-        // in the string.
-        int slashCount = 0;
-        for (int i=0; i<checkDatePurchased.length(); i++) {
-            if (checkDatePurchased.charAt(i) == '/') {
-                slashCount += 1;
-            }
-        }
-
         if (VerifyUtil.parseStringToDate(checkDatePurchased) != null) {
             vehicle.setPurchaseDate(VerifyUtil.parseStringToDate(checkDatePurchased));
             eDatePurchased.setError(null);
