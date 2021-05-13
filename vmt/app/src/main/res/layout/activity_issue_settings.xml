@@ -88,7 +88,7 @@
                     android:enabled="false"
                     android:hint="@string/issueSettings_textViewPriorityLabel"
                     android:inputType="none"
-                    android:textColor="@color/black" />
+                    style="@style/Style.Custom.TextInputSpinner"/>
 
 
             </com.google.android.material.textfield.TextInputLayout>

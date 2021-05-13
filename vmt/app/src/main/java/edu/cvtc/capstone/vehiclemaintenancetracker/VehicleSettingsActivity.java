@@ -50,7 +50,8 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
                     eYear,
                     ePlate,
                     eColor,
-                    eVIN;
+                    eVIN,
+                    eDatePurchased;
 
     int vehicleId;
 
@@ -94,6 +95,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
         ePlate = findViewById(R.id.vehicleSettings_textInputPlate);
         eColor = findViewById(R.id.vehicleSettings_textInputColor);
         eVIN = findViewById(R.id.vehicleSettings_textInputVin);
+        eDatePurchased = findViewById(R.id.vehicleSettings_textInputDate);
 
         // Initialize listener for this activity
         buttonSave.setOnClickListener(this);
@@ -156,6 +158,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
         String checkPlate = mPlate.getText().toString();
         String checkColor = mColor.getText().toString();
         String checkVIN = mVIN.getText().toString().toUpperCase();
+        String checkDatePurchased = mDatePurchased.getText().toString();
 
         //Make the vehicle if this is a new vehicle
         if (vehicle == null) {
@@ -242,14 +245,16 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
             vehicle.setColor(checkColor);
         }
 
-        //TODO: Add warnings if these fail, for example DatePurchased being "/////"
-
         if (!mMileage.getText().toString().equals("")) {
             vehicle.setMileage(Integer.parseInt(mMileage.getText().toString()));
+        } else {
+            vehicle.setMileage(0);
         }
 
         if (!mValue.getText().toString().equals("")) {
             vehicle.setValue(Double.parseDouble(mValue.getText().toString()));
+        } else {
+            vehicle.setValue(0.00);
         }
 
         if (!VerifyUtil.isVINValid(checkVIN, checkYear)) {
@@ -260,8 +265,12 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
             vehicle.setVIN(checkVIN);
         }
 
-        if (!mDatePurchased.getText().toString().equals("")) {
-            vehicle.setPurchaseDate(VerifyUtil.parseStringToDate(mDatePurchased.getText().toString()));
+        if (VerifyUtil.parseStringToDate(checkDatePurchased) != null) {
+            vehicle.setPurchaseDate(VerifyUtil.parseStringToDate(checkDatePurchased));
+            eDatePurchased.setError(null);
+        } else if(!checkDatePurchased.isEmpty()) {
+            eDatePurchased.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageDifferentValue));
+            retVal = false;
         }
 
         return retVal;

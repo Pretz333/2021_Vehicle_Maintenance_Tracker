@@ -16,6 +16,10 @@
         <item name="toolbarStyle">@style/Style.Custom.Toolbar</item>
     </style>
 
+    <style name="Style.Custom.TextInputSpinner" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
     <style name="Style.Custom.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
         <item name="titleTextColor">@color/white</item>
     </style>

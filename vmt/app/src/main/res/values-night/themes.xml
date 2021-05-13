@@ -14,6 +14,10 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="Style.Custom.TextInputSpinner" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
     <style name="Style.Custom.Card.MaintenanceLog" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/cardColorGray</item>
     </style>
