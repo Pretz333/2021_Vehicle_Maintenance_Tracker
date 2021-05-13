@@ -28,9 +28,8 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
     DBHelper dbHelper = new DBHelper(VehicleSettingsActivity.this);
     Vehicle vehicle = null;
 
-    // A custom preference util used to set/get
-    // a key-value pair. In this case, the amount
-    // of issues a given vehicle has.
+    // A custom preference util used to set/get a key-value pair.
+    // In this case, the amount of issues a given vehicle has.
     private PreferenceUtil preferenceUtil;
 
     // View references to all the editText fields
@@ -169,10 +168,8 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
         // If it does, retVal will be false.
 
         // Check if the nickname is empty or contains invalid data.
-        //
         // If not, set the values to the object
-        // TODO: These are only separated because each one might have a different
-        // VerifyUtil check
+        // These are separated because each one might have a different VerifyUtil check
         if (isStringEmpty(checkNickname)) {
             retVal = false;
             eNickname.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
@@ -308,7 +305,6 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
             AlertDialog.Builder builder = new AlertDialog.Builder(VehicleSettingsActivity.this);
 
             // Create the LayoutInflater to use the custom layout.
-            LayoutInflater inflater = getLayoutInflater();
             View view = VehicleSettingsActivity.this.getLayoutInflater().inflate(R.layout.alert_dialog, null);
 
             // Get a reference to the buttons in the delete alert dialog
@@ -322,32 +318,25 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
             alertDialogText.setText(R.string.alertDialog_messageDeleteVehicle);
 
             // The yes button was clicked.
-            yesButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Delete vehicle from the database
-                    dbHelper.deleteVehicle(vehicle);
+            yesButton.setOnClickListener(v1 -> {
+                // Delete vehicle from the database
+                dbHelper.deleteVehicle(vehicle);
 
-                    // Delete the issueCounter key-value pair
-                    // associated with this vehicle
-                    preferenceUtil.deleteIssueCountByVehicleId(vehicleId);
+                // Delete the issueCounter key-value pair associated with this vehicle
+                preferenceUtil.deleteIssueCountByVehicleId(vehicleId);
 
-                    // Close the alert dialog box
-                    alert.cancel();
+                // Close the alert dialog box
+                alert.cancel();
 
-                    // Display a toast that the vehicle was deleted
-                    Toast.makeText(getApplicationContext(), "The vehicle was deleted.", Toast.LENGTH_SHORT).show();
-                    VehicleSettingsActivity.super.finish();
-                }
+                // Display a toast that the vehicle was deleted
+                Toast.makeText(getApplicationContext(), "The vehicle was deleted.", Toast.LENGTH_SHORT).show();
+                VehicleSettingsActivity.super.finish();
             });
 
             // The no button was clicked.
-            noButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Close the alert dialog
-                    alert.cancel();
-                }
+            noButton.setOnClickListener(v12 -> {
+                // Close the alert dialog
+                alert.cancel();
             });
 
             // Display the alert dialog
