@@ -282,10 +282,10 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
             }
         }
 
-        if (slashCount == 2) {
+        if (VerifyUtil.parseStringToDate(checkDatePurchased) != null) {
             vehicle.setPurchaseDate(VerifyUtil.parseStringToDate(checkDatePurchased));
             eDatePurchased.setError(null);
-        } else {
+        } else if(!checkDatePurchased.isEmpty()) {
             eDatePurchased.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageDifferentValue));
             retVal = false;
         }
