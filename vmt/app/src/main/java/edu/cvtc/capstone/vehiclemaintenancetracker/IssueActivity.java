@@ -175,7 +175,7 @@ public class IssueActivity extends AppCompatActivity {
 
                 /*
 
-                //Makes a toast and displays what the issue status is after the attempt to set it to closed
+                //Makes a toast and displays what the issue status is after the attempt to set it
                 List<IssueStatus> issueStatuses = dbHelper.getPossibleIssueStatuses();
                 issue = dbHelper.getIssueByIssueId(issueId);
                 String description = "None";
@@ -226,9 +226,6 @@ public class IssueActivity extends AppCompatActivity {
     }
 
 }
-
-
-
 
 // The adapter for this activity's RecyclerView
 class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.ViewHolder> {
@@ -292,7 +289,6 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
                     } else {
                         IssueActivity.setIssueStatus(issueId, true);
                     }
-                    //((View)v.getParent()).setVisibility(View.GONE);
                     break;
 
                 default:

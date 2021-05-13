@@ -85,53 +85,6 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
-    //Populates the Vehicle array list with some sample data.
-    private void populateVehicleList() {
-        vehicleArrayList = new ArrayList<>();
-
-        // Create three vehicle objects to be put into the list
-        Vehicle vehicle1 = new Vehicle(12,
-                "Tunbruh",
-                "Toyota",
-                "Tundra",
-                "2017",
-                "white",
-                180000,
-                "A8DM6Fl8XK01LA8F",
-                "LDA-9815",
-                new Date(1619130376711L),
-                14000);
-
-        Vehicle vehicle2 = new Vehicle(8,
-                "Pontee",
-                "Pontiac",
-                "Grand Prix",
-                "2005",
-                "blue",
-                230000,
-                "A8DM6Fl8XK01LA8F",
-                "ACF-3853",
-                new Date(1619130376711L),
-                4000);
-
-        Vehicle vehicle3 = new Vehicle(4,
-                "Redbull",
-                "Ram",
-                "Rebel",
-                "2016",
-                "red",
-                90000,
-                "A8DM6Fl8XK01LA8F",
-                "AFS-1083",
-                new Date(1619130376711L),
-                27000);
-
-        // Add the created vehicle objects to the list
-        vehicleArrayList.add(vehicle1);
-        vehicleArrayList.add(vehicle2);
-        vehicleArrayList.add(vehicle3);
-    }
-
     //Add in night mode toggle
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -202,8 +155,7 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
         // VehicleID
         private int vehicleID;
 
-        // TextView members of the card_vehicle.xml
-        // layout file.
+        // TextView members of the card_vehicle.xml layout file.
         private final TextView nickname;
         private final TextView makeAndModel;
         private final TextView colorAndYear;

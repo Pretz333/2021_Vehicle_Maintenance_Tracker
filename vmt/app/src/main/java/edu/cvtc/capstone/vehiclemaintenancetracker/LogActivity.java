@@ -73,9 +73,6 @@ public class LogActivity extends AppCompatActivity {
             // Initialize the log list
             logArrayList = dbHelper.getAllLogsByVehicleId(vehicleId);
 
-            //Display the demo-data.
-            //prepDemoData();
-
             //Refresh the RecyclerView
             prepRecyclerView();
 
@@ -89,52 +86,6 @@ public class LogActivity extends AppCompatActivity {
             // Not a valid id
             Snackbar.make(toolbar, String.format("The vehicle id of %s is not valid", vehicleId), Snackbar.LENGTH_INDEFINITE).show();
         }
-    }
-
-    // Add a few fake maintenance logs to the logArrayList to be used in the RecyclerView for demo
-    private void prepDemoData() {
-        logArrayList = new ArrayList<>();
-
-        // Create objects
-        int time = 30;
-
-        MaintenanceLog log1 = new MaintenanceLog(0,
-                "Replaced Something",
-                "I'm keeping this log here to remind myself that I replaced something but I don't know what it is",
-                new Date(1619130376711L),
-                48.00,
-                time,
-                180000,
-                -1,
-                -1
-        );
-
-        MaintenanceLog log2 = new MaintenanceLog(1,
-                "Updated Lights",
-                "I've updated the headlight bulbs for whatever reason",
-                new Date(1619130376711L),
-                24.99,
-                time,
-                180000,
-                -1,
-                -1
-        );
-
-        MaintenanceLog log3 = new MaintenanceLog(2,
-                "Tires Rotated",
-                "All of the tires were rotated, it drives smoother now",
-                new Date(1619130376711L),
-                00.00,
-                time,
-                180000,
-                -1,
-                -1
-        );
-
-        // Add the objects to the list
-        logArrayList.add(log1);
-        logArrayList.add(log2);
-        logArrayList.add(log3);
     }
 
     // Prepare the RecyclerView and its Adapter with data
