@@ -842,6 +842,54 @@ public class DBHelper extends SQLiteOpenHelper {
         return issues;
     }
 
+    public ArrayList<Issue> getAllIssuesBySearchTerm(String searchTerm, int vehicleId) {
+        // Get a readable database
+        SQLiteDatabase db = getReadableDatabase();
+
+        // Get all of the fields
+        String[] issueColumns = {
+                IssueSQL._ID,
+                IssueSQL.COLUMN_ISSUE_TITLE,
+                IssueSQL.COLUMN_ISSUE_DESCRIPTION,
+                IssueSQL.COLUMN_ISSUE_PRIORITY_ID,
+                IssueSQL.COLUMN_ISSUE_VEHICLE_ID,
+                IssueSQL.COLUMN_ISSUE_STATUS_ID
+        };
+
+        String orderBy = IssueSQL.COLUMN_ISSUE_PRIORITY_ID;
+        String filter = IssueSQL.COLUMN_ISSUE_TITLE + " LIKE ? AND " +
+                IssueSQL.COLUMN_ISSUE_VEHICLE_ID + " = ?";
+        String[] filterArgs = {"%" + searchTerm + "%", String.valueOf(vehicleId)};
+
+        ArrayList<Issue> issues = new ArrayList<>();
+
+        Cursor cursor = db.query(IssueSQL.TABLE_NAME_ISSUE, issueColumns, filter,
+                filterArgs, null, null, orderBy);
+
+        int idPosition = cursor.getColumnIndex(IssueSQL._ID);
+        int titlePosition = cursor.getColumnIndex(IssueSQL.COLUMN_ISSUE_TITLE);
+        int descriptionPosition = cursor.getColumnIndex(IssueSQL.COLUMN_ISSUE_DESCRIPTION);
+        int priorityIdPosition = cursor.getColumnIndex(IssueSQL.COLUMN_ISSUE_PRIORITY_ID);
+        int vehicleIdPosition = cursor.getColumnIndex(IssueSQL.COLUMN_ISSUE_VEHICLE_ID);
+        int statusIdPosition = cursor.getColumnIndex(IssueSQL.COLUMN_ISSUE_STATUS_ID);
+
+        while (cursor.moveToNext()) {
+            issues.add(new Issue(
+                    cursor.getInt(idPosition),
+                    cursor.getString(titlePosition),
+                    cursor.getString(descriptionPosition),
+                    cursor.getInt(priorityIdPosition),
+                    cursor.getInt(vehicleIdPosition),
+                    cursor.getInt(statusIdPosition)
+            ));
+        }
+
+        cursor.close();
+        db.close();
+
+        return issues;
+    }
+
     public List<System> getAllSystems() {
         SQLiteDatabase db = getReadableDatabase();
 
