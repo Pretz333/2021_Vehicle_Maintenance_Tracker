@@ -257,9 +257,8 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
         Date verifyDate = VerifyUtil.parseStringToDate(checkDate);
         // And again...
         if (isStringEmpty(checkDate)) {
-            retVal = false;
-            eMaintenanceDate.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
-        } else if (verifyDate == null) { //TODO: This isn't verified in A's version
+            log.setDate(null); // This can be empty
+        } else if (verifyDate == null) {
             retVal = false;
             eMaintenanceDate.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageInvalidDate));
         } else {
@@ -267,17 +266,18 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
             log.setDate(verifyDate);
         }
 
-        // Simple checks for non-required fields
-        // which also sets the log object too
-        try {
-            double maintenanceCost = Double.parseDouble(mCost.getText().toString());
-            log.setCost(maintenanceCost);
-            eCost.setError(null);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            log.setCost(0.00);
-            eCost.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageDifferentValue));
-            retVal = false;
+        // Simple checks for non-required fields which also sets the log object too
+        if(!isStringEmpty(mCost.getText().toString())) {
+            try {
+                double maintenanceCost = Double.parseDouble(mCost.getText().toString());
+                log.setCost(maintenanceCost);
+                eCost.setError(null);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                log.setCost(0.00);
+                eCost.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageDifferentValue));
+                retVal = false;
+            }
         }
 
         try {
@@ -301,10 +301,6 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
             eMileage.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageDifferentValue));
             retVal = false;
         }
-
-
-
-
 
         return retVal;
     }
