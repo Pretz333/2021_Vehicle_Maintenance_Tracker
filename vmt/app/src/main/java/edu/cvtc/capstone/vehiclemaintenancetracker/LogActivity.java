@@ -145,10 +145,12 @@ public class LogActivity extends AppCompatActivity {
 
         filteredList = dbHelper.getAllLogsBySearchTerm(searchText, vehicleId);
 
-        // If the filtered list is empty, display a message. Otherwise, pass the list to the adapter.
+        // If the filtered list is empty, display a message.
         if (filteredList.isEmpty()) {
             Toast.makeText(this, "No maintenance logs found.", Toast.LENGTH_SHORT).show();
         }
+
+        // Pass the list to the adapter.
         logRecyclerAdapter = new LogRecyclerAdapter(filteredList);
         recyclerView.setAdapter(logRecyclerAdapter);
         logRecyclerAdapter.notifyDataSetChanged();

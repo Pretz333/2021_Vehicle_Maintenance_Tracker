@@ -3,11 +3,13 @@ package edu.cvtc.capstone.vehiclemaintenancetracker;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,7 +31,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class IssueActivity extends AppCompatActivity {
-
+    public static final String TAG = "IssueActivity_CLASS";
     public static final String EXTRA_ISSUE_ID = "edu.cvtc.capstone.vehiclemaintenancetracker.EXTRA_ISSUE_ID";
     @SuppressLint("StaticFieldLeak")
     public static Context context;
@@ -42,6 +44,7 @@ public class IssueActivity extends AppCompatActivity {
     Toolbar toolbar;
     public static boolean viewingClosed = false;
     TextView noIssues; //Used to display a message when there are no issues to be displayed
+    RecyclerView recyclerView;
 
     // A custom preference util used to set/get a key-value pair.
     // In this case, the amount of issues a given vehicle has.
@@ -150,7 +153,7 @@ public class IssueActivity extends AppCompatActivity {
     // Prepare the RecyclerView and its Adapter with data
     private void prepRecyclerView() {
         // Find the RecyclerView view
-        RecyclerView recyclerView = findViewById(R.id.recyclerView_issueActivity);
+        recyclerView = findViewById(R.id.recyclerView_issueActivity);
 
         // Create a LayoutManager for the RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -199,7 +202,45 @@ public class IssueActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_activity_log, menu);
+
+        // Get a reference to the search view
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.menuItem_log_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.d(TAG, "Search: " + query);
+                // Call a method to filter the RecyclerView
+                filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private void filter(String searchText) {
+        // Create a new array list to filter the data
+        ArrayList<Issue> filteredList;
+
+        filteredList = dbHelper.getAllIssuesBySearchTerm(searchText, vehicleId);
+
+        // If the filtered list is empty, display a message.
+        if (filteredList.isEmpty()) {
+            Toast.makeText(this, "No issues found.", Toast.LENGTH_SHORT).show();
+        }
+
+        // Pass the list to the adapter.
+        issueRecyclerAdapter = new IssueRecyclerAdapter(filteredList);
+        recyclerView.setAdapter(issueRecyclerAdapter);
+        issueRecyclerAdapter.notifyDataSetChanged();
     }
 
     @Override
