@@ -19,6 +19,7 @@
 
         <!-- These strings are for the Preference Util inside the RecyclerView -->
         <string name="card_mainActivity_recyclerView_noIssues">No issues</string>
+        <string name="card_mainActivity_recyclerView_withIssue">issue</string>
         <string name="card_mainActivity_recyclerView_withIssues">issues</string>
 
 
@@ -96,7 +97,8 @@
     <string name="card_log_description">Log description</string>
     <string name="card_log_date">12/12/2012</string>
     <string name="card_log_cost">Cost: $</string>
-    <string name="card_log_time">Time: </string>
+    <string name="card_log_time">Time: %1$s minutes</string>
+    <string name="card_log_single_time">Time: 1 minute</string>
     <string name="card_log_mileage">Mileage Mark: </string>
     <string name="card_log_buttonEdit">Edit</string>
     <string name="no_logs">You have no saved maintenance logs, add one to get started.</string>

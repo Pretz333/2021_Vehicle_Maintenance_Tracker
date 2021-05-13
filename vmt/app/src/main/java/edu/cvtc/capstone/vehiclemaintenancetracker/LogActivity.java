@@ -51,12 +51,7 @@ public class LogActivity extends AppCompatActivity {
 
         // Back button, better than the Manifest way for reasons... - Alexander
         toolbar.setNavigationIcon(R.drawable.ic_back);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LogActivity.super.finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> LogActivity.super.finish());
 
         // Grab the vehicleId from the received intent
         vehicleId = getIntent().getIntExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, -1);
@@ -190,7 +185,6 @@ class LogRecyclerAdapter extends RecyclerView.Adapter<LogRecyclerAdapter.ViewHol
 
     // Date formatter for the date TextView and time TextView
     static SimpleDateFormat simpleDateFormat;
-    static SimpleDateFormat simpleTimeFormat;
 
     // Constructor accepting an array
     public LogRecyclerAdapter(ArrayList<MaintenanceLog> logArrayList) {
@@ -249,11 +243,11 @@ class LogRecyclerAdapter extends RecyclerView.Adapter<LogRecyclerAdapter.ViewHol
             cost.setText(context.getResources()
                     .getString(R.string.card_log_cost)
                     .concat(String.format(Locale.US, "%.2f", log.getCost())));
-            time.setText(context.getResources()
-                    .getString(R.string.card_log_time)
-                    .concat(" ") // Empty space
-                    .concat(String.valueOf(log.getTime()))
-                    .concat(" minutes"));
+            if(log.getTime() == 1){
+                time.setText(context.getResources().getString(R.string.card_log_single_time));
+            } else {
+                time.setText(context.getResources().getString(R.string.card_log_time, String.valueOf(log.getTime())));
+            }
             mileage.setText(String.format(context.getResources()
                     .getString(R.string.card_log_mileage) + " %s", log.getMileage()));
         }

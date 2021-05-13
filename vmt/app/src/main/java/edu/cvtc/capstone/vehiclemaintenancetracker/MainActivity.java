@@ -209,7 +209,6 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
         private final TextView colorAndYear;
         private final TextView plateNumber;
 
-        private final TextView logDescription;
         private final TextView issueDescription;
 
         public ViewHolder(@NonNull View itemView) {
@@ -229,8 +228,6 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
             makeAndModel = itemView.findViewById(R.id.card_mainActivity_vehicleMakeAndModel);
             colorAndYear = itemView.findViewById(R.id.card_mainActivity_vehicleColorAndYear);
             plateNumber = itemView.findViewById(R.id.card_mainActivity_vehiclePlateNumber);
-
-            logDescription = itemView.findViewById(R.id.card_mainActivity_logDescription);
             issueDescription = itemView.findViewById(R.id.card_mainActivity_issueDescription);
 
             Button dummyButton = itemView.findViewById(R.id.card_mainActivity_dummyButton);
@@ -258,17 +255,13 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
                             String nickname,
                             String makeAndModel,
                             String colorAndYear,
-                            String plateNumber,
-                            String logDescription) {
+                            String plateNumber) {
 
             this.vehicleID = vehicleID;
-
             this.nickname.setText(nickname);
             this.makeAndModel.setText(makeAndModel);
             this.colorAndYear.setText(colorAndYear);
             this.plateNumber.setText(plateNumber);
-
-            this.logDescription.setText(logDescription);
 
 
             // Default issue string
@@ -277,15 +270,14 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
             // Get the amount of issues this specific vehicle has
             int issueCount = preferenceUtil.getIssueCountByVehicleId(vehicleID);
 
-            // If this vehicle has any issues, set it. If not,
-            // display the default issue string.
-            if (issueCount > 0) {
+            // If this vehicle has any issues, set it. If not, display the default issue string.
+            if(issueCount == 1) {
+                this.issueDescription.setText(String.format("%s %s", issueCount, context.getResources().getString(R.string.card_mainActivity_recyclerView_withIssue)));
+            } else if (issueCount > 0) {
                 this.issueDescription.setText(String.format("%s %s", issueCount, context.getResources().getString(R.string.card_mainActivity_recyclerView_withIssues)));
             } else {
                 this.issueDescription.setText(issueString);
             }
-
-
         }
 
     }
@@ -315,8 +307,7 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
                 v.getName(),
                 v.getMake() + " " + v.getModel(),
                 v.getColor() + ", " + v.getYear(),
-                v.getLicensePlate(),
-                "No maintenance logs.");
+                v.getLicensePlate());
     }
 
     @Override
