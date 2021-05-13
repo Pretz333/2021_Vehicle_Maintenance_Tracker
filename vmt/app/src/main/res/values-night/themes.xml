@@ -13,4 +13,24 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="Style.Custom.Card.MaintenanceLog" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/cardColorGray</item>
+    </style>
+
+    <style name="Style.Custom.Card.Issue" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/cardColorGray</item>
+    </style>
+
+    <style name="Style.Custom.Button.MaintenanceLog" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@color/colorLogLight</item>
+        <item name="android:backgroundTint">@color/colorLogDark</item>
+    </style>
+
+
+    <style name="Style.Custom.Button.IssueLog" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@color/colorIssueLight</item>
+        <item name="android:backgroundTint">@color/colorIssueDark</item>
+    </style>
+
 </resources>
