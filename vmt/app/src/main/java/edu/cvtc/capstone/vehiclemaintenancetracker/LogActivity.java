@@ -163,7 +163,6 @@ public class LogActivity extends AppCompatActivity {
         recyclerView.setAdapter(logRecyclerAdapter);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_activity_log, menu);
@@ -172,10 +171,8 @@ public class LogActivity extends AppCompatActivity {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView = (SearchView) menu.findItem(R.id.menuItem_log_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        
 
         // TODO: Set the text color to white in the search field
-
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -214,9 +211,9 @@ public class LogActivity extends AppCompatActivity {
         if (filteredList.isEmpty()) {
             Toast.makeText(this, "No maintenance logs found.", Toast.LENGTH_SHORT).show();
         } else {
-            LogRecyclerAdapter filterAdapter = new LogRecyclerAdapter(filteredList);
-            recyclerView.setAdapter(filterAdapter);
-            filterAdapter.notifyDataSetChanged();
+            logRecyclerAdapter = new LogRecyclerAdapter(filteredList);
+            recyclerView.setAdapter(logRecyclerAdapter);
+            logRecyclerAdapter.notifyDataSetChanged();
         }
     }
 

@@ -436,7 +436,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         String orderBy = MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE + " DESC";
         String filter = MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE + " LIKE ?";
-        String[] filterArgs = {"'%" + searchTerm + "%'"};
+        String[] filterArgs = {"%" + searchTerm + "%"};
 
         ArrayList<MaintenanceLog> logs = new ArrayList<>();
 
