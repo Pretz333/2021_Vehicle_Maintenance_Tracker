@@ -435,46 +435,6 @@ public class DBHelper extends SQLiteOpenHelper {
                 if(newRowId != vehicle.getId()){
                     // Update issues and logs vehicleID FK to the new ID
                     try {
-                        // Closed issues
-                        List<Issue> issues = getAllIssuesByVehicleId(vehicle.getId(), true);
-                        for(Issue issue : issues) {
-                            issue.setVehicleId(newRowId);
-
-                            // Set all of the values
-                            ContentValues issueValues = new ContentValues();
-                            issueValues.put(IssueSQL._ID, issue.getId());
-                            issueValues.put(IssueSQL.COLUMN_ISSUE_TITLE, issue.getTitle());
-                            issueValues.put(IssueSQL.COLUMN_ISSUE_DESCRIPTION, issue.getDescription());
-                            issueValues.put(IssueSQL.COLUMN_ISSUE_PRIORITY_ID, issue.getPriority());
-                            issueValues.put(IssueSQL.COLUMN_ISSUE_VEHICLE_ID, issue.getVehicleId());
-                            issueValues.put(IssueSQL.COLUMN_ISSUE_STATUS_ID, issue.getStatusId());
-
-                            // Get the id of the issue to use for the where clause
-                            String[] args = {String.valueOf(issue.getId())};
-
-                            db.update(IssueSQL.TABLE_NAME_ISSUE, issueValues, IssueSQL._ID + "=?", args);
-                        }
-
-                        // Open issues
-                        issues = getAllIssuesByVehicleId(vehicle.getId(), false);
-                        for(Issue issue : issues) {
-                            issue.setVehicleId(newRowId);
-
-                            // Set all of the values
-                            ContentValues issueValues = new ContentValues();
-                            issueValues.put(IssueSQL._ID, issue.getId());
-                            issueValues.put(IssueSQL.COLUMN_ISSUE_TITLE, issue.getTitle());
-                            issueValues.put(IssueSQL.COLUMN_ISSUE_DESCRIPTION, issue.getDescription());
-                            issueValues.put(IssueSQL.COLUMN_ISSUE_PRIORITY_ID, issue.getPriority());
-                            issueValues.put(IssueSQL.COLUMN_ISSUE_VEHICLE_ID, issue.getVehicleId());
-                            issueValues.put(IssueSQL.COLUMN_ISSUE_STATUS_ID, issue.getStatusId());
-
-                            // Get the id of the issue to use for the where clause
-                            String[] args = {String.valueOf(issue.getId())};
-
-                            db.update(IssueSQL.TABLE_NAME_ISSUE, issueValues, IssueSQL._ID + "=?", args);
-                        }
-
                         // Logs
                         List<MaintenanceLog> logs = getAllLogsByVehicleId(vehicle.getId());
                         for(MaintenanceLog maintenanceLog : logs) {
@@ -496,6 +456,46 @@ public class DBHelper extends SQLiteOpenHelper {
                             String[] args = {String.valueOf(maintenanceLog.getId())};
 
                             db.update(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, logValues, MaintenanceLogSQL._ID + "=?", args);
+                        }
+
+                        // Open issues
+                        List<Issue> issues = getAllIssuesByVehicleId(vehicle.getId(), false);
+                        for(Issue issue : issues) {
+                            issue.setVehicleId(newRowId);
+
+                            // Set all of the values
+                            ContentValues issueValues = new ContentValues();
+                            issueValues.put(IssueSQL._ID, issue.getId());
+                            issueValues.put(IssueSQL.COLUMN_ISSUE_TITLE, issue.getTitle());
+                            issueValues.put(IssueSQL.COLUMN_ISSUE_DESCRIPTION, issue.getDescription());
+                            issueValues.put(IssueSQL.COLUMN_ISSUE_PRIORITY_ID, issue.getPriority());
+                            issueValues.put(IssueSQL.COLUMN_ISSUE_VEHICLE_ID, issue.getVehicleId());
+                            issueValues.put(IssueSQL.COLUMN_ISSUE_STATUS_ID, issue.getStatusId());
+
+                            // Get the id of the issue to use for the where clause
+                            String[] args = {String.valueOf(issue.getId())};
+
+                            db.update(IssueSQL.TABLE_NAME_ISSUE, issueValues, IssueSQL._ID + "=?", args);
+                        }
+
+                        // Closed issues
+                        issues = getAllIssuesByVehicleId(vehicle.getId(), true);
+                        for(Issue issue : issues) {
+                            issue.setVehicleId(newRowId);
+
+                            // Set all of the values
+                            ContentValues issueValues = new ContentValues();
+                            issueValues.put(IssueSQL._ID, issue.getId());
+                            issueValues.put(IssueSQL.COLUMN_ISSUE_TITLE, issue.getTitle());
+                            issueValues.put(IssueSQL.COLUMN_ISSUE_DESCRIPTION, issue.getDescription());
+                            issueValues.put(IssueSQL.COLUMN_ISSUE_PRIORITY_ID, issue.getPriority());
+                            issueValues.put(IssueSQL.COLUMN_ISSUE_VEHICLE_ID, issue.getVehicleId());
+                            issueValues.put(IssueSQL.COLUMN_ISSUE_STATUS_ID, issue.getStatusId());
+
+                            // Get the id of the issue to use for the where clause
+                            String[] args = {String.valueOf(issue.getId())};
+
+                            db.update(IssueSQL.TABLE_NAME_ISSUE, issueValues, IssueSQL._ID + "=?", args);
                         }
                     } catch(Exception ex) {
                         // If it failed, no worries
