@@ -174,6 +174,7 @@ public class LogActivity extends AppCompatActivity {
 
         // TODO: Set the text color to white in the search field
 
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -196,25 +197,16 @@ public class LogActivity extends AppCompatActivity {
         // Create a new array list to filter the data
         ArrayList<MaintenanceLog> filteredList;
 
-        // Run a for loop to compare elements.
-        /*for (MaintenanceLog log : logArrayList) {
-            // Check if the entered string matched with any logs
-            if (log.getTitle().contains(searchText)) {
-                // If the log matches, add it to the filtered list.
-                filteredList.add(log);
-            }
-        }*/
-
-        filteredList = dbHelper.getAllLogsBySearchTerm(searchText);
+        filteredList = dbHelper.getAllLogsBySearchTerm(searchText, vehicleId);
 
         // If the filtered list is empty, display a message. Otherwise, pass the list to the adapter.
         if (filteredList.isEmpty()) {
             Toast.makeText(this, "No maintenance logs found.", Toast.LENGTH_SHORT).show();
-        } else {
-            logRecyclerAdapter = new LogRecyclerAdapter(filteredList);
-            recyclerView.setAdapter(logRecyclerAdapter);
-            logRecyclerAdapter.notifyDataSetChanged();
         }
+        logRecyclerAdapter = new LogRecyclerAdapter(filteredList);
+        recyclerView.setAdapter(logRecyclerAdapter);
+        logRecyclerAdapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -252,13 +244,6 @@ class LogRecyclerAdapter extends RecyclerView.Adapter<LogRecyclerAdapter.ViewHol
         this.logArrayList = logArrayList;
         simpleDateFormat = new SimpleDateFormat("MMM d, y", Locale.ENGLISH);
     }
-
-    // Method for filtering the RecyclerView items.
-    /*public void filterList(ArrayList<MaintenanceLog> filterList) {
-        logArrayList = new ArrayList<>();
-        logArrayList.addAll(filterList);
-        notifyDataSetChanged();
-    }*/
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         // Member variables

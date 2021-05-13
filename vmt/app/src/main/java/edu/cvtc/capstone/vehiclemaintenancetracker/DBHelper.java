@@ -418,7 +418,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return logs;
     }
 
-    public ArrayList<MaintenanceLog> getAllLogsBySearchTerm(String searchTerm) {
+    public ArrayList<MaintenanceLog> getAllLogsBySearchTerm(String searchTerm, int vehicleId) {
         SQLiteDatabase db = getReadableDatabase();
 
         //Get all of the fields
@@ -435,8 +435,9 @@ public class DBHelper extends SQLiteOpenHelper {
         };
 
         String orderBy = MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE + " DESC";
-        String filter = MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE + " LIKE ?";
-        String[] filterArgs = {"%" + searchTerm + "%"};
+        String filter = MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE + " LIKE ? AND " +
+                MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID + " = ?";
+        String[] filterArgs = {"%" + searchTerm + "%", String.valueOf(vehicleId)};
 
         ArrayList<MaintenanceLog> logs = new ArrayList<>();
 
