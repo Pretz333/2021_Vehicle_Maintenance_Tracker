@@ -85,53 +85,6 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
-    //Populates the Vehicle array list with some sample data.
-    private void populateVehicleList() {
-        vehicleArrayList = new ArrayList<>();
-
-        // Create three vehicle objects to be put into the list
-        Vehicle vehicle1 = new Vehicle(12,
-                "Tunbruh",
-                "Toyota",
-                "Tundra",
-                "2017",
-                "white",
-                180000,
-                "A8DM6Fl8XK01LA8F",
-                "LDA-9815",
-                new Date(1619130376711L),
-                14000);
-
-        Vehicle vehicle2 = new Vehicle(8,
-                "Pontee",
-                "Pontiac",
-                "Grand Prix",
-                "2005",
-                "blue",
-                230000,
-                "A8DM6Fl8XK01LA8F",
-                "ACF-3853",
-                new Date(1619130376711L),
-                4000);
-
-        Vehicle vehicle3 = new Vehicle(4,
-                "Redbull",
-                "Ram",
-                "Rebel",
-                "2016",
-                "red",
-                90000,
-                "A8DM6Fl8XK01LA8F",
-                "AFS-1083",
-                new Date(1619130376711L),
-                27000);
-
-        // Add the created vehicle objects to the list
-        vehicleArrayList.add(vehicle1);
-        vehicleArrayList.add(vehicle2);
-        vehicleArrayList.add(vehicle3);
-    }
-
     //Add in night mode toggle
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -202,14 +155,12 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
         // VehicleID
         private int vehicleID;
 
-        // TextView members of the card_vehicle.xml
-        // layout file.
+        // TextView members of the card_vehicle.xml layout file.
         private final TextView nickname;
         private final TextView makeAndModel;
         private final TextView colorAndYear;
         private final TextView plateNumber;
 
-        private final TextView logDescription;
         private final TextView issueDescription;
 
         public ViewHolder(@NonNull View itemView) {
@@ -229,8 +180,6 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
             makeAndModel = itemView.findViewById(R.id.card_mainActivity_vehicleMakeAndModel);
             colorAndYear = itemView.findViewById(R.id.card_mainActivity_vehicleColorAndYear);
             plateNumber = itemView.findViewById(R.id.card_mainActivity_vehiclePlateNumber);
-
-            logDescription = itemView.findViewById(R.id.card_mainActivity_logDescription);
             issueDescription = itemView.findViewById(R.id.card_mainActivity_issueDescription);
 
             Button dummyButton = itemView.findViewById(R.id.card_mainActivity_dummyButton);
@@ -258,17 +207,13 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
                             String nickname,
                             String makeAndModel,
                             String colorAndYear,
-                            String plateNumber,
-                            String logDescription) {
+                            String plateNumber) {
 
             this.vehicleID = vehicleID;
-
             this.nickname.setText(nickname);
             this.makeAndModel.setText(makeAndModel);
             this.colorAndYear.setText(colorAndYear);
             this.plateNumber.setText(plateNumber);
-
-            this.logDescription.setText(logDescription);
 
 
             // Default issue string
@@ -277,15 +222,14 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
             // Get the amount of issues this specific vehicle has
             int issueCount = preferenceUtil.getIssueCountByVehicleId(vehicleID);
 
-            // If this vehicle has any issues, set it. If not,
-            // display the default issue string.
-            if (issueCount > 0) {
+            // If this vehicle has any issues, set it. If not, display the default issue string.
+            if(issueCount == 1) {
+                this.issueDescription.setText(String.format("%s %s", issueCount, context.getResources().getString(R.string.card_mainActivity_recyclerView_withIssue)));
+            } else if (issueCount > 0) {
                 this.issueDescription.setText(String.format("%s %s", issueCount, context.getResources().getString(R.string.card_mainActivity_recyclerView_withIssues)));
             } else {
                 this.issueDescription.setText(issueString);
             }
-
-
         }
 
     }
@@ -315,8 +259,7 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
                 v.getName(),
                 v.getMake() + " " + v.getModel(),
                 v.getColor() + ", " + v.getYear(),
-                v.getLicensePlate(),
-                "No maintenance logs.");
+                v.getLicensePlate());
     }
 
     @Override

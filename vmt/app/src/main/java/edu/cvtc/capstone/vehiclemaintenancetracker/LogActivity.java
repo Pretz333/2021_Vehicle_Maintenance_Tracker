@@ -59,12 +59,7 @@ public class LogActivity extends AppCompatActivity {
 
         // Back button, better than the Manifest way for reasons... - Alexander
         toolbar.setNavigationIcon(R.drawable.ic_back);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LogActivity.super.finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> LogActivity.super.finish());
 
         // Grab the vehicleId from the received intent
         vehicleId = getIntent().getIntExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, -1);
@@ -86,9 +81,6 @@ public class LogActivity extends AppCompatActivity {
             // Initialize the log list
             logArrayList = dbHelper.getAllLogsByVehicleId(vehicleId);
 
-            //Display the demo-data.
-            //prepDemoData();
-
             //Refresh the RecyclerView
             prepRecyclerView();
 
@@ -102,52 +94,6 @@ public class LogActivity extends AppCompatActivity {
             // Not a valid id
             Snackbar.make(toolbar, String.format("The vehicle id of %s is not valid", vehicleId), Snackbar.LENGTH_INDEFINITE).show();
         }
-    }
-
-    // Add a few fake maintenance logs to the logArrayList to be used in the RecyclerView for demo
-    private void prepDemoData() {
-        logArrayList = new ArrayList<>();
-
-        // Create objects
-        int time = 30;
-
-        MaintenanceLog log1 = new MaintenanceLog(0,
-                "Replaced Something",
-                "I'm keeping this log here to remind myself that I replaced something but I don't know what it is",
-                new Date(1619130376711L),
-                48.00,
-                time,
-                180000,
-                -1,
-                -1
-        );
-
-        MaintenanceLog log2 = new MaintenanceLog(1,
-                "Updated Lights",
-                "I've updated the headlight bulbs for whatever reason",
-                new Date(1619130376711L),
-                24.99,
-                time,
-                180000,
-                -1,
-                -1
-        );
-
-        MaintenanceLog log3 = new MaintenanceLog(2,
-                "Tires Rotated",
-                "All of the tires were rotated, it drives smoother now",
-                new Date(1619130376711L),
-                00.00,
-                time,
-                180000,
-                -1,
-                -1
-        );
-
-        // Add the objects to the list
-        logArrayList.add(log1);
-        logArrayList.add(log2);
-        logArrayList.add(log3);
     }
 
     // Prepare the RecyclerView and its Adapter with data
@@ -237,7 +183,6 @@ class LogRecyclerAdapter extends RecyclerView.Adapter<LogRecyclerAdapter.ViewHol
 
     // Date formatter for the date TextView and time TextView
     static SimpleDateFormat simpleDateFormat;
-    static SimpleDateFormat simpleTimeFormat;
 
     // Constructor accepting an array
     public LogRecyclerAdapter(ArrayList<MaintenanceLog> logArrayList) {
@@ -296,11 +241,11 @@ class LogRecyclerAdapter extends RecyclerView.Adapter<LogRecyclerAdapter.ViewHol
             cost.setText(context.getResources()
                     .getString(R.string.card_log_cost)
                     .concat(String.format(Locale.US, "%.2f", log.getCost())));
-            time.setText(context.getResources()
-                    .getString(R.string.card_log_time)
-                    .concat(" ") // Empty space
-                    .concat(String.valueOf(log.getTime()))
-                    .concat(" minutes"));
+            if(log.getTime() == 1){
+                time.setText(context.getResources().getString(R.string.card_log_single_time));
+            } else {
+                time.setText(context.getResources().getString(R.string.card_log_time, String.valueOf(log.getTime())));
+            }
             mileage.setText(String.format(context.getResources()
                     .getString(R.string.card_log_mileage) + " %s", log.getMileage()));
         }

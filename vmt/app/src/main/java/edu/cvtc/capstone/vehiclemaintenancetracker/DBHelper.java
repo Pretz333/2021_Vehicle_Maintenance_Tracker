@@ -43,8 +43,52 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //TODO: not lose user data
-        //drop it all
+        if(oldVersion == 1) { // Upgrade to version 2
+            // Version 1 to version 2's change was that some fields in the vehicle table and log table
+            // were changed from NOT NULL to nullable, so we'll change both here. For more info, see
+            // https://github.com/Pretz333/2021_Vehicle_Maintenance_Tracker/commit/196894d5e725cb78e4974baa15941eb43d8dfe36
+            // NOTE: We no longer need to change the log table, as we have to do it again from v2 to v3
+
+            if(updateVehicleTableToV2(db)) {
+                oldVersion = 2; // We're now caught up to DB version 2.
+            } else {
+                // We failed to update the DB, so we'll start from scratch.
+                // This means the user looses all data
+                // TODO: Consider alternatives
+                resetDB(db);
+                oldVersion = newVersion; // We are using the newest table definitions
+            }
+        }
+
+        if(oldVersion == 2) { // Upgrade to version 3
+            // This was modifying one column in the logs table to be nullable. For more info, see
+            // https://github.com/Pretz333/2021_Vehicle_Maintenance_Tracker/commit/d1afd991e8f4414ed518d481be3613e21626279a
+            // We'll do the same process as above.
+
+            if(updateLogTableToV3(db)) {
+                oldVersion = 3; // We're now caught up to DB version 3.
+            } else {
+                // We failed to update the DB, so we'll start from scratch.
+                // This means the user looses all data
+                // TODO: Consider alternatives
+                resetDB(db);
+                oldVersion = newVersion; // We are using the newest table definitions
+            }
+        }
+
+        if(oldVersion == 3) { // Upgrade to version 4
+            // This was adding in issue priorities. We'll need to create the Issue Priority table
+            // and rename the "issue_priority" to "issue_priority_id". For more info, see
+            // https://github.com/Pretz333/2021_Vehicle_Maintenance_Tracker/commit/9ee1649a63f497457b238799c161a4eb9f6bc76c
+
+            db.execSQL(IssuePrioritySQL.SQL_CREATE_TABLE_ISSUE_PRIORITY);
+            db.execSQL("ALTER TABLE " + IssueSQL.TABLE_NAME_ISSUE + " RENAME issue_priority TO " + IssueSQL.COLUMN_ISSUE_PRIORITY_ID);
+            oldVersion = 4; // Unneeded, but could save someone a sanity check later
+        }
+    }
+
+    private void resetDB(SQLiteDatabase db){
+        // Drop all tables, functionally deleting the DB
         db.execSQL(VehicleSQL.SQL_DROP_TABLE_VEHICLE);
         db.execSQL(MaintenanceLogSQL.SQL_DROP_TABLE_MAINTENANCE_LOG);
         db.execSQL(IssueSQL.SQL_DROP_TABLE_ISSUE);
@@ -53,8 +97,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(IssueLogSQL.SQL_DROP_TABLE_ISSUE_LOG);
         db.execSQL(IssuePrioritySQL.SQL_DROP_TABLE_ISSUE_PRIORITY);
 
-        //make it again
-        //copy-paste onCreate any time it's updated
+        // Create all tables
         db.execSQL(VehicleSQL.SQL_CREATE_TABLE_VEHICLE);
         db.execSQL(MaintenanceLogSQL.SQL_CREATE_TABLE_MAINTENANCE_LOG);
         db.execSQL(IssueSQL.SQL_CREATE_TABLE_ISSUE);
@@ -304,6 +347,272 @@ public class DBHelper extends SQLiteOpenHelper {
         db.update(IssueSQL.TABLE_NAME_ISSUE, values, IssueSQL._ID + "=?", args);
     }
 
+    private boolean updateVehicleTableToV2(SQLiteDatabase db) {
+        try {
+            //Start a transaction, as this would be really messy if it became messed up
+            db.execSQL("BEGIN TRANSACTION");
+
+            //Get all of the vehicle data from the vehicles table
+            String[] vehicleColumns = {
+                    VehicleSQL._ID,
+                    VehicleSQL.COLUMN_VEHICLE_MAKE,
+                    VehicleSQL.COLUMN_VEHICLE_MODEL,
+                    VehicleSQL.COLUMN_VEHICLE_YEAR,
+                    VehicleSQL.COLUMN_VEHICLE_NICKNAME,
+                    VehicleSQL.COLUMN_VEHICLE_COLOR,
+                    VehicleSQL.COLUMN_VEHICLE_MILEAGE,
+                    VehicleSQL.COLUMN_VEHICLE_VIN,
+                    VehicleSQL.COLUMN_VEHICLE_LICENSE_PLATE,
+                    VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED,
+                    VehicleSQL.COLUMN_VEHICLE_VALUE};
+            Cursor cursor = db.query(VehicleSQL.TABLE_NAME_VEHICLE, vehicleColumns, null,
+                    null, null, null, null);
+
+            int vehicleIdPosition = cursor.getColumnIndex(VehicleSQL._ID);
+            int vehicleMakePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_MAKE);
+            int vehicleModelPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_MODEL);
+            int vehicleYearPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_YEAR);
+            int vehicleNicknamePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_NICKNAME);
+            int vehicleColorPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_COLOR);
+            int vehicleMileagePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_MILEAGE);
+            int vehicleVINPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_VIN);
+            int vehicleLicensePlatePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_LICENSE_PLATE);
+            int vehicleDatePurchasedPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED);
+            int vehicleValuePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_VALUE);
+
+            ArrayList<Vehicle> vehicles = new ArrayList<>();
+
+            while (cursor.moveToNext()) {
+                if(cursor.getLong(vehicleDatePurchasedPosition) == 0L){
+                    vehicles.add(new Vehicle(cursor.getInt(vehicleIdPosition), cursor.getString(vehicleNicknamePosition),
+                            cursor.getString(vehicleMakePosition), cursor.getString(vehicleModelPosition),
+                            cursor.getString(vehicleYearPosition), cursor.getString(vehicleColorPosition),
+                            cursor.getInt(vehicleMileagePosition), cursor.getString(vehicleVINPosition),
+                            cursor.getString(vehicleLicensePlatePosition), cursor.getInt(vehicleValuePosition)));
+                } else {
+                    vehicles.add(new Vehicle(cursor.getInt(vehicleIdPosition), cursor.getString(vehicleNicknamePosition),
+                            cursor.getString(vehicleMakePosition), cursor.getString(vehicleModelPosition),
+                            cursor.getString(vehicleYearPosition), cursor.getString(vehicleColorPosition),
+                            cursor.getInt(vehicleMileagePosition), cursor.getString(vehicleVINPosition),
+                            cursor.getString(vehicleLicensePlatePosition), new Date(cursor.getLong(vehicleDatePurchasedPosition)),
+                            cursor.getInt(vehicleValuePosition)));
+                }
+            }
+
+            cursor.close();
+
+            // Drop the old table and recreate the table with the new fields as currently defined.
+            // We wouldn't need to do this if we could MODIFY, but Android only allows ADD and RENAME
+            db.execSQL(VehicleSQL.SQL_DROP_TABLE_VEHICLE);
+            db.execSQL(VehicleSQL.SQL_CREATE_TABLE_VEHICLE);
+
+            // Insert in all of the old data
+            for(Vehicle vehicle : vehicles){
+                ContentValues vehicleValues = new ContentValues();
+
+                vehicleValues.put(VehicleSQL._ID, vehicle.getId());
+                vehicleValues.put(VehicleSQL.COLUMN_VEHICLE_MAKE, vehicle.getMake());
+                vehicleValues.put(VehicleSQL.COLUMN_VEHICLE_MODEL, vehicle.getModel());
+                vehicleValues.put(VehicleSQL.COLUMN_VEHICLE_YEAR, vehicle.getYear());
+                vehicleValues.put(VehicleSQL.COLUMN_VEHICLE_NICKNAME, vehicle.getName());
+                vehicleValues.put(VehicleSQL.COLUMN_VEHICLE_COLOR, vehicle.getColor());
+                vehicleValues.put(VehicleSQL.COLUMN_VEHICLE_MILEAGE, vehicle.getMileage());
+                vehicleValues.put(VehicleSQL.COLUMN_VEHICLE_VIN, vehicle.getVIN());
+                vehicleValues.put(VehicleSQL.COLUMN_VEHICLE_LICENSE_PLATE, vehicle.getLicensePlate());
+                if(vehicle.getPurchaseDate() != null) {
+                    vehicleValues.put(VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED, vehicle.getPurchaseDate().getTime());
+                }
+                vehicleValues.put(VehicleSQL.COLUMN_VEHICLE_VALUE, vehicle.getValue());
+
+                int newRowId = (int) db.insert(VehicleSQL.TABLE_NAME_VEHICLE, null, vehicleValues);
+
+                // If the insert failed, we want to rollback as this means the
+                // user's data isn't going to properly transfer to the new table
+                if(newRowId == -1){
+                    throw new Exception("DB Insert Failed!");
+                }
+
+                if(newRowId != vehicle.getId()){
+                    // Update issues and logs vehicleID FK to the new ID
+                    try {
+                        // Logs
+                        List<MaintenanceLog> logs = getAllLogsByVehicleId(vehicle.getId());
+                        for(MaintenanceLog maintenanceLog : logs) {
+                            maintenanceLog.setVehicleId(newRowId);
+
+                            //Set all values
+                            ContentValues logValues = new ContentValues();
+                            logValues.put(MaintenanceLogSQL._ID, maintenanceLog.getId());
+                            logValues.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE, maintenanceLog.getTitle());
+                            logValues.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DESCRIPTION, maintenanceLog.getDescription());
+                            logValues.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE, maintenanceLog.getDate().getTime());
+                            logValues.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_COST, maintenanceLog.getCost());
+                            logValues.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TOTAL_TIME, maintenanceLog.getTime());
+                            logValues.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_MILEAGE, maintenanceLog.getMileage());
+                            logValues.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID, maintenanceLog.getVehicleId());
+                            logValues.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_SYSTEM_ID, maintenanceLog.getSystemId());
+
+                            //Grab the ID and put it into a String[] for the where clause
+                            String[] args = {String.valueOf(maintenanceLog.getId())};
+
+                            db.update(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, logValues, MaintenanceLogSQL._ID + "=?", args);
+                        }
+
+                        // Open issues
+                        List<Issue> issues = getAllIssuesByVehicleId(vehicle.getId(), false);
+                        for(Issue issue : issues) {
+                            issue.setVehicleId(newRowId);
+
+                            // Set all of the values
+                            ContentValues issueValues = new ContentValues();
+                            issueValues.put(IssueSQL._ID, issue.getId());
+                            issueValues.put(IssueSQL.COLUMN_ISSUE_TITLE, issue.getTitle());
+                            issueValues.put(IssueSQL.COLUMN_ISSUE_DESCRIPTION, issue.getDescription());
+                            issueValues.put(IssueSQL.COLUMN_ISSUE_PRIORITY_ID, issue.getPriority());
+                            issueValues.put(IssueSQL.COLUMN_ISSUE_VEHICLE_ID, issue.getVehicleId());
+                            issueValues.put(IssueSQL.COLUMN_ISSUE_STATUS_ID, issue.getStatusId());
+
+                            // Get the id of the issue to use for the where clause
+                            String[] args = {String.valueOf(issue.getId())};
+
+                            db.update(IssueSQL.TABLE_NAME_ISSUE, issueValues, IssueSQL._ID + "=?", args);
+                        }
+
+                        // Closed issues
+                        issues = getAllIssuesByVehicleId(vehicle.getId(), true);
+                        for(Issue issue : issues) {
+                            issue.setVehicleId(newRowId);
+
+                            // Set all of the values
+                            ContentValues issueValues = new ContentValues();
+                            issueValues.put(IssueSQL._ID, issue.getId());
+                            issueValues.put(IssueSQL.COLUMN_ISSUE_TITLE, issue.getTitle());
+                            issueValues.put(IssueSQL.COLUMN_ISSUE_DESCRIPTION, issue.getDescription());
+                            issueValues.put(IssueSQL.COLUMN_ISSUE_PRIORITY_ID, issue.getPriority());
+                            issueValues.put(IssueSQL.COLUMN_ISSUE_VEHICLE_ID, issue.getVehicleId());
+                            issueValues.put(IssueSQL.COLUMN_ISSUE_STATUS_ID, issue.getStatusId());
+
+                            // Get the id of the issue to use for the where clause
+                            String[] args = {String.valueOf(issue.getId())};
+
+                            db.update(IssueSQL.TABLE_NAME_ISSUE, issueValues, IssueSQL._ID + "=?", args);
+                        }
+                    } catch(Exception ex) {
+                        // If it failed, no worries
+                        // The only thing that could fail at this point is a retrieval of data
+                        // that doesn't exist, which means it doesn't need to be updated
+                    }
+
+                    vehicle.setId(newRowId);
+                }
+            }
+
+            db.execSQL("COMMIT");
+            return true;
+        } catch (Exception ex) {
+            // Something went wrong. Log it for debug purposes
+            // then rollback so we don't lose any user data
+            Log.e(TAG, "onUpgrade: " + ex.getMessage());
+            Log.e(TAG, "onUpgrade: " + ex.toString());
+            db.execSQL("ROLLBACK");
+            return false;
+        }
+    }
+
+    private boolean updateLogTableToV3(SQLiteDatabase db) {
+        try {
+            //Start a transaction, as this would be really messy if it became messed up
+            db.execSQL("BEGIN TRANSACTION");
+
+            //Get all of the data
+            String[] categoryColumns = {
+                    MaintenanceLogSQL._ID,
+                    MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE,
+                    MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DESCRIPTION,
+                    MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE,
+                    MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_COST,
+                    MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TOTAL_TIME,
+                    MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_MILEAGE,
+                    MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID,
+                    MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_SYSTEM_ID
+            };
+
+            ArrayList<MaintenanceLog> logs = new ArrayList<>();
+
+            Cursor cursor = db.query(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, categoryColumns, null,
+                    null, null, null, null);
+
+
+            int idPosition = cursor.getColumnIndex(MaintenanceLogSQL._ID);
+            int titlePosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE);
+            int descriptionPosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DESCRIPTION);
+            int datePosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE);
+            int costPosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_COST);
+            int timePosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TOTAL_TIME);
+            int mileagePosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_MILEAGE);
+            int vehicleIdPosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID);
+            int systemIdPosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_SYSTEM_ID);
+
+            while (cursor.moveToNext()) {
+                logs.add(new MaintenanceLog(
+                        cursor.getInt(idPosition),
+                        cursor.getString(titlePosition),
+                        cursor.getString(descriptionPosition),
+                        new Date(cursor.getLong(datePosition)),
+                        cursor.getInt(costPosition),
+                        cursor.getInt(timePosition),
+                        cursor.getInt(mileagePosition),
+                        cursor.getInt(vehicleIdPosition),
+                        cursor.getInt(systemIdPosition)
+                ));
+            }
+
+            cursor.close();
+
+            //Drop the old table and recreate the table with the new fields as we want them.
+            //We wouldn't need to do this if we could MODIFY, but Android only allows ADD and RENAME
+            db.execSQL(MaintenanceLogSQL.SQL_DROP_TABLE_MAINTENANCE_LOG);
+            db.execSQL(MaintenanceLogSQL.SQL_CREATE_TABLE_MAINTENANCE_LOG);
+
+            //Insert in all of the old data
+            for(MaintenanceLog maintenanceLog : logs){
+                ContentValues values = new ContentValues();
+
+                values.put(MaintenanceLogSQL._ID, maintenanceLog.getId());
+                values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE, maintenanceLog.getTitle());
+                values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DESCRIPTION, maintenanceLog.getDescription());
+                values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE, maintenanceLog.getDate().getTime());
+                values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_COST, maintenanceLog.getCost());
+                values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TOTAL_TIME, maintenanceLog.getTime());
+                values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_MILEAGE, maintenanceLog.getMileage());
+                values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID, maintenanceLog.getVehicleId());
+                values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_SYSTEM_ID, maintenanceLog.getSystemId());
+
+                long newRowId = db.insert(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, null, values);
+
+                // If the insert failed, we want to rollback as this means the
+                // user's data isn't going to properly transfer to the new table
+                if(newRowId == -1){
+                    throw new Exception("DB Insert Failed!");
+                }
+
+                if(newRowId != maintenanceLog.getId()){
+                    maintenanceLog.setId((int) newRowId);
+                }
+            }
+
+            db.execSQL("COMMIT");
+            return true;
+        } catch (Exception ex) {
+            // Something went wrong. Log it for debug purposes
+            // then rollback so we don't lose any user data
+            Log.e(TAG, "onUpgrade: " + ex.getMessage());
+            Log.e(TAG, "onUpgrade: " + ex.toString());
+            db.execSQL("ROLLBACK");
+            return false;
+        }
+    }
+
     // Retrievals
 
     public ArrayList<Vehicle> getAllVehicles() {
@@ -475,9 +784,10 @@ public class DBHelper extends SQLiteOpenHelper {
         return logs;
     }
 
-    public ArrayList<Issue> getAllIssuesByVehicleId(int id, boolean includeClosed) {
+    public ArrayList<Issue> getAllIssuesByVehicleId(int id, boolean viewClosed) {
         //Above so we don't have two open databases
         int closedIssueId = getClosedIssueStatusId();
+        int openIssueId = getOpenIssueStatusId();
 
         // Get a readable database
         SQLiteDatabase db = getReadableDatabase();
@@ -497,8 +807,10 @@ public class DBHelper extends SQLiteOpenHelper {
         String[] filterArgs = {String.valueOf(id)};
 
         //Don't include closed if the user doesn't want them
-        if(!includeClosed) {
-            filter += " AND " + IssueSQL.COLUMN_ISSUE_STATUS_ID + " != " + closedIssueId;
+        if(viewClosed) {
+            filter += " AND " + IssueSQL.COLUMN_ISSUE_STATUS_ID + " = " + closedIssueId;
+        } else {
+            filter += " AND " + IssueSQL.COLUMN_ISSUE_STATUS_ID + " = " + openIssueId;
         }
 
         ArrayList<Issue> issues = new ArrayList<>();
@@ -1102,12 +1414,12 @@ public class DBHelper extends SQLiteOpenHelper {
                         COLUMN_ISSUE_PRIORITY_ID + " INTEGER, " +
                         COLUMN_ISSUE_VEHICLE_ID + " INTEGER NOT NULL, " +
                         COLUMN_ISSUE_STATUS_ID + " INTEGER NOT NULL, " +
-                        "FOREIGN KEY (" + COLUMN_ISSUE_PRIORITY_ID + ") REFERENCES " +
-                        IssuePrioritySQL.TABLE_NAME_ISSUE_PRIORITY + " (" + IssuePrioritySQL._ID + "), " +
+                        //"FOREIGN KEY (" + COLUMN_ISSUE_PRIORITY_ID + ") REFERENCES " +
+                        //IssuePrioritySQL.TABLE_NAME_ISSUE_PRIORITY + " (" + IssuePrioritySQL._ID + "), " +
                         "FOREIGN KEY (" + COLUMN_ISSUE_VEHICLE_ID + ") REFERENCES " +
-                        VehicleSQL.TABLE_NAME_VEHICLE + " (" + VehicleSQL._ID + "), " +
-                        "FOREIGN KEY (" + COLUMN_ISSUE_STATUS_ID + ") REFERENCES " +
-                        IssueStatusSQL.TABLE_NAME_ISSUE_STATUS + " (" + IssueStatusSQL._ID + "))";
+                        VehicleSQL.TABLE_NAME_VEHICLE + " (" + VehicleSQL._ID + "))";
+                        //"FOREIGN KEY (" + COLUMN_ISSUE_STATUS_ID + ") REFERENCES " +
+                        //IssueStatusSQL.TABLE_NAME_ISSUE_STATUS + " (" + IssueStatusSQL._ID + "))";
 
         // Constant to drop the issue table
         private static final String SQL_DROP_TABLE_ISSUE = "DROP TABLE IF EXISTS " + TABLE_NAME_ISSUE;

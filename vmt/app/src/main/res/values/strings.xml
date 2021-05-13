@@ -19,6 +19,7 @@
 
         <!-- These strings are for the Preference Util inside the RecyclerView -->
         <string name="card_mainActivity_recyclerView_noIssues">No issues</string>
+        <string name="card_mainActivity_recyclerView_withIssue">issue</string>
         <string name="card_mainActivity_recyclerView_withIssues">issues</string>
 
 
@@ -66,8 +67,11 @@
 
     <string name="vehicleSettingsActivity_errorValidationEditTextMessage">This field cannot be empty.</string>
     <string name="vehicleSettingsActivity_errorValidationEditTextMessageInvalidCharacters">Only letters and numbers are allowed.</string>
+    <string name="vehicleSettingsActivity_errorValidationEditTextMessageDifferentValue">Make sure this is entered correctly.</string>
+    <string name="vehicleSettingsActivity_errorValidationEditTextMessageInvalidDate">Please enter a valid date using the mm/dd/yyyy pattern.</string>
     <string name="vehicleSettingsActivity_errorValidationEditTextMessageInvalidYear">Please enter a numeric year after 1900.</string>
     <string name="vehicleSettingsActivity_errorValidationEditTextMessageInvalidVIN">Please enter a valid VIN.</string>
+
     <string name="vehicleSettingsActivity_errorValidationTitle">Let\'s check over this…</string>
     <string name="vehicleSettingsActivity_errorValidationMessage">One or more of the fields contain invalid data. The fields highlighted in red must be edited before the vehicle can be added.</string>
     <string name="vehicleSettingsActivity_errorValidationButtonNeutral">Okay</string>
@@ -93,7 +97,8 @@
     <string name="card_log_description">Log description</string>
     <string name="card_log_date">12/12/2012</string>
     <string name="card_log_cost">Cost: $</string>
-    <string name="card_log_time">Time: </string>
+    <string name="card_log_time">Time: %1$s minutes</string>
+    <string name="card_log_single_time">Time: 1 minute</string>
     <string name="card_log_mileage">Mileage Mark: </string>
     <string name="card_log_buttonEdit">Edit</string>
     <string name="no_logs">You have no saved maintenance logs, add one to get started.</string>
@@ -107,6 +112,9 @@
     <string name="card_issue_priority_high">High Priority</string>
     <string name="card_issue_buttonEdit">Edit</string>
     <string name="card_issue_buttonComplete">Complete</string>
+    <string name="card_issue_buttonReopen">Reopen</string>
+    <string name="no_open_issues">You don\'t have any open issues for this vehicle. To create one, tap the plus icon in the toolbar.</string>
+    <string name="no_closed_issues">You don\'t have any closed issues for this vehicle. To close one, tap the complete button on an open issue.</string>
 
         <!-- The priority spinner -->
         <string-array name="issueSettingsActivity_spinnerPriority">
@@ -124,6 +132,7 @@
         <string name="issueSettings_textViewPriorityLabel">Priority of this issue</string>
         <string name="issueSettings_buttonSave">Save Changes</string>
         <string name="issueSettings_buttonClose">Close Issue</string>
+        <string name="issueSettings_buttonReopen">Reopen Issue</string>
 
     <!-- Strings regarding LogActivity's & IssueActivity's toolbar items -->
     <string name="add_new_log">Add A New Log</string>

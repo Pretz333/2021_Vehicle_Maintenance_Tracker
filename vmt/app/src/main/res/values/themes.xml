@@ -20,6 +20,14 @@
         <item name="titleTextColor">@color/white</item>
     </style>
 
+    <style name="Style.Custom.Card.MaintenanceLog" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/colorLogLight</item>
+    </style>
+
+    <style name="Style.Custom.Card.Issue" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/colorIssueLight</item>
+    </style>
+
     <style name="Style.Custom.Button.MaintenanceLog" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:textColor">@color/colorLogDark</item>
     </style>

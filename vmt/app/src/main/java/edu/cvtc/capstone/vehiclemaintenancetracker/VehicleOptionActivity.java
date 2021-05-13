@@ -73,13 +73,14 @@ public class VehicleOptionActivity extends AppCompatActivity {
         // Create objects
         OptionItem itemMaintenance = new OptionItem(getString(R.string.optionActivity_maintenanceTitle), getString(R.string.optionActivity_maintenanceSubtitle), R.drawable.card_options_maintenance);
         OptionItem itemIssue = new OptionItem(getString(R.string.optionActivity_issuesTitle), getString(R.string.optionActivity_issuesSubtitle), R.drawable.card_options_issue);
-        OptionItem itemSystems = new OptionItem(getString(R.string.optionActivity_systemsTitle), getString(R.string.optionActivity_systemSubtitle), R.drawable.card_options_systems);
+        //We are no longer planning on implementing systems
+        //OptionItem itemSystems = new OptionItem(getString(R.string.optionActivity_systemsTitle), getString(R.string.optionActivity_systemSubtitle), R.drawable.card_options_systems);
         OptionItem itemVehicleSettings = new OptionItem(getString(R.string.optionActivity_vehicleSettingsTitle), getString(R.string.optionActivity_vehicleSettingsSubtitle), R.drawable.card_options_vehicle_settings);
 
         // Add them to the array list
         optionItemArrayList.add(itemMaintenance);
         optionItemArrayList.add(itemIssue);
-        optionItemArrayList.add(itemSystems);
+        //optionItemArrayList.add(itemSystems);
         optionItemArrayList.add(itemVehicleSettings);
     }
 
@@ -213,11 +214,13 @@ class OptionRecyclerAdapter extends RecyclerView.Adapter<OptionRecyclerAdapter.V
                 case 1: //Issues
                     intent = new Intent(context, IssueActivity.class);
                     break;
+                    /* We are no longer planning on implementing systems
                 case 2: //Systems
                     //intent = new Intent(context, LogActivity.class);
                     Toast.makeText(context, "You selected the Systems option", Toast.LENGTH_SHORT).show();
                     break;
-                case 3: //Edit vehicle
+                     */
+                case 2: //Edit vehicle
                     intent = new Intent(context, VehicleSettingsActivity.class);
                     break;
             }

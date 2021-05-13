@@ -7,7 +7,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/colorIssueLight"
+        style="@style/Style.Custom.Card.Issue"
         app:cardCornerRadius="12dp"
         app:cardElevation="4dp"
         app:cardUseCompatPadding="true">
@@ -43,6 +43,7 @@
                 app:layout_constraintTop_toBottomOf="@id/card_issueActivity_title" />
 
             <!-- Date -->
+            <!--
             <TextView
                 android:id="@+id/card_issueActivity_date"
                 android:layout_width="wrap_content"
@@ -52,6 +53,7 @@
                 android:textColor="@color/colorIssueDark"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+            -->
 
             <!-- Priority -->
             <TextView

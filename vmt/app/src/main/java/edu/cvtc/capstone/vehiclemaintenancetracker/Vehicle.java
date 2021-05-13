@@ -156,7 +156,7 @@ public class Vehicle {
     }
 
     public void setVIN(String VIN) {
-        if(VIN != null && !VIN.equals("")) {
+        if(VIN != null) {
             VIN = VIN.toUpperCase(); //In case the user typed in lowercase letters
             if (VerifyUtil.isVINValid(VIN, this.year)) {
                 this.VIN = VIN;

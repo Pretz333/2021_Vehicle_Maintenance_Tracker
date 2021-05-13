@@ -71,7 +71,7 @@
 
             <!--
             ImageView for the log icon
-            -->
+
             <ImageView
                 android:id="@+id/card_mainActivity_logIcon"
                 android:layout_width="32dp"
@@ -82,12 +82,12 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/card_mainActivity_vehiclePlateNumber" />
 
-            <!--
+
             TextView for displaying the log description.
             The name description is misleading, but I'll think of something
             better later on. It should display "# Maintenance logs" where #
             is the number of logs this vehicle currently has.
-            -->
+
             <TextView
                 android:id="@+id/card_mainActivity_logDescription"
                 android:layout_width="wrap_content"
@@ -98,6 +98,7 @@
                 android:textSize="18sp"
                 app:layout_constraintStart_toEndOf="@+id/card_mainActivity_logIcon"
                 app:layout_constraintTop_toTopOf="@+id/card_mainActivity_logIcon" />
+            -->
 
             <!--
             ImageView for the issue icon
@@ -110,7 +111,7 @@
                 android:contentDescription="@string/card_mainActivity_issueIconDescription"
                 android:src="@drawable/ic_issue_light"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/card_mainActivity_logIcon" />
+                app:layout_constraintTop_toBottomOf="@+id/card_mainActivity_vehiclePlateNumber" />
 
             <!--
             TextView for displaying the issue description.
