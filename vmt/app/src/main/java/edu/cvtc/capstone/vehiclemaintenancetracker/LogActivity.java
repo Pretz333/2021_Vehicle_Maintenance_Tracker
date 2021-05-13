@@ -1,5 +1,6 @@
 package edu.cvtc.capstone.vehiclemaintenancetracker;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,12 +11,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,6 +43,10 @@ public class LogActivity extends AppCompatActivity {
 
     // An array of logs used to populate the RecyclerView
     ArrayList<MaintenanceLog> logArrayList;
+
+    LogRecyclerAdapter logRecyclerAdapter;
+    SearchView searchView;
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,21 +99,60 @@ public class LogActivity extends AppCompatActivity {
     // Prepare the RecyclerView and its Adapter with data
     private void prepRecyclerView() {
         // Find the RecyclerView view
-        RecyclerView recyclerView = findViewById(R.id.recyclerView_logActivity);
+        recyclerView = findViewById(R.id.recyclerView_logActivity);
 
         // Create a LayoutManager for the RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Create the adapter and make the RecyclerView use it
-        LogRecyclerAdapter logRecyclerAdapter = new LogRecyclerAdapter(logArrayList);
+        logRecyclerAdapter = new LogRecyclerAdapter(logArrayList);
         recyclerView.setAdapter(logRecyclerAdapter);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_activity_log, menu);
+
+        // Get a reference to the search view
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.menuItem_log_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        // TODO: Set the text color to white in the search field
+
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.d(TAG, "Search: " + query);
+                // Call a method to filter the RecyclerView
+                filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private void filter(String searchText) {
+        // Create a new array list to filter the data
+        ArrayList<MaintenanceLog> filteredList;
+
+        filteredList = dbHelper.getAllLogsBySearchTerm(searchText, vehicleId);
+
+        // If the filtered list is empty, display a message. Otherwise, pass the list to the adapter.
+        if (filteredList.isEmpty()) {
+            Toast.makeText(this, "No maintenance logs found.", Toast.LENGTH_SHORT).show();
+        }
+        logRecyclerAdapter = new LogRecyclerAdapter(filteredList);
+        recyclerView.setAdapter(logRecyclerAdapter);
+        logRecyclerAdapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -132,7 +179,7 @@ public class LogActivity extends AppCompatActivity {
 class LogRecyclerAdapter extends RecyclerView.Adapter<LogRecyclerAdapter.ViewHolder> {
 
     // An array holding maintenance logs
-    final private ArrayList<MaintenanceLog> logArrayList;
+    private ArrayList<MaintenanceLog> logArrayList;
 
     // Date formatter for the date TextView and time TextView
     static SimpleDateFormat simpleDateFormat;
