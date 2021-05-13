@@ -144,7 +144,7 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
         mCost = findViewById(R.id.maintenanceLogSettings_editTextCost);
         mTime = findViewById(R.id.maintenanceLogSettings_editTextTime);
         mMileage = findViewById(R.id.maintenanceLogSettings_editTextMileage);
-        mSystem = findViewById(R.id.maintenanceLogSettings_spinnerSystems);
+        //mSystem = findViewById(R.id.maintenanceLogSettings_spinnerSystems);
         Button buttonDelete = findViewById(R.id.maintenanceLogSettings_buttonDelete);
 
         // Reference to the EditText containers (We use these to highlight
@@ -156,18 +156,19 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
         eTime = findViewById(R.id.maintenanceLogSettings_textInputTime);
         eMileage = findViewById(R.id.maintenanceLogSettings_textInputMileage);
 
+        /* We are no longer planning on implementing systems
         // Set up the systems spinner if there are systems in the db
         List<System> systems = dbHelper.getAllSystems();
         if(systems.size() > 0) {
             //These default to "gone"
             mSystem.setVisibility(View.VISIBLE);
             findViewById(R.id.maintenanceLogSettings_textViewSystemLabel).setVisibility(View.VISIBLE);
-            //TODO: Fix this
             ArrayAdapter<System> dataAdapter = new ArrayAdapter(MaintenanceLogSettingsActivity.this,
                     android.R.layout.simple_spinner_item, systems);
             dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             mSystem.setAdapter(dataAdapter);
         }
+         */
 
         // Get the logId from the intent
         Intent receivedIntent = getIntent();
