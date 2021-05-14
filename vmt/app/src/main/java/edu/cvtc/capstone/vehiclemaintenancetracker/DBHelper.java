@@ -842,7 +842,10 @@ public class DBHelper extends SQLiteOpenHelper {
         return issues;
     }
 
-    public ArrayList<Issue> getAllIssuesBySearchTerm(String searchTerm, int vehicleId) {
+    public ArrayList<Issue> getAllIssuesBySearchTerm(String searchTerm, int vehicleId, boolean viewingClosed) {
+        //Above so we only have one open copy of the DB at a time
+        int status = viewingClosed ? getClosedIssueStatusId() : getOpenIssueStatusId();
+
         // Get a readable database
         SQLiteDatabase db = getReadableDatabase();
 
@@ -858,8 +861,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
         String orderBy = IssueSQL.COLUMN_ISSUE_PRIORITY_ID;
         String filter = IssueSQL.COLUMN_ISSUE_TITLE + " LIKE ? AND " +
-                IssueSQL.COLUMN_ISSUE_VEHICLE_ID + " = ?";
-        String[] filterArgs = {"%" + searchTerm + "%", String.valueOf(vehicleId)};
+                IssueSQL.COLUMN_ISSUE_VEHICLE_ID + " = ? AND " +
+                IssueSQL.COLUMN_ISSUE_STATUS_ID + "= ?";
+        String[] filterArgs = {"%" + searchTerm + "%", String.valueOf(vehicleId), String.valueOf(status)};
 
         ArrayList<Issue> issues = new ArrayList<>();
 

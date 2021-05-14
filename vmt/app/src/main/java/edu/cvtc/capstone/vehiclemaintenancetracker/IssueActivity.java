@@ -230,7 +230,7 @@ public class IssueActivity extends AppCompatActivity {
         // Create a new array list to filter the data
         ArrayList<Issue> filteredList;
 
-        filteredList = dbHelper.getAllIssuesBySearchTerm(searchText, vehicleId);
+        filteredList = dbHelper.getAllIssuesBySearchTerm(searchText, vehicleId, viewingClosed);
 
         // If the filtered list is empty, display a message.
         if (filteredList.isEmpty()) {
