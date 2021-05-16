@@ -5,9 +5,9 @@
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
+        style="@style/Style.Custom.Card.MaintenanceLog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Style.Custom.Card.MaintenanceLog"
         app:cardCornerRadius="12dp"
         app:cardElevation="4dp"
         app:cardUseCompatPadding="true">
@@ -18,50 +18,40 @@
             android:background="?android:attr/selectableItemBackground"
             android:padding="@dimen/minorPadding">
 
-
-            <!--
-            Title of the log
-            -->
+            <!-- Title of the log -->
             <TextView
                 android:id="@+id/card_logActivity_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/card_log_title"
+                android:text="@string/title"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                 android:textColor="@color/colorLogDark"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <!--
-            Description of the log
-            -->
+            <!-- Description of the log -->
             <TextView
                 android:id="@+id/card_logActivity_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/minorPadding"
-                android:text="@string/card_log_description"
+                android:text="@string/description"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                 android:textColor="@color/colorLogDark"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/card_logActivity_title" />
 
-            <!--
-            Date of the log
-            -->
+            <!-- Date of the log -->
             <TextView
                 android:id="@+id/card_logActivity_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/card_log_date"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                 android:textColor="@color/colorLogDark"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <!--
-            Cost of the log
-            -->
+            <!-- Cost of the log -->
             <TextView
                 android:id="@+id/card_logActivity_cost"
                 android:layout_width="wrap_content"
@@ -73,9 +63,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/card_logActivity_description" />
 
-            <!--
-            Time of the log
-            -->
+            <!-- Time of the log -->
             <TextView
                 android:id="@+id/card_logActivity_time"
                 android:layout_width="wrap_content"
@@ -86,9 +74,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/card_logActivity_cost" />
 
-            <!--
-            Log created at what vehicle mileage
-            -->
+            <!-- Log created at what vehicle mileage -->
             <TextView
                 android:id="@+id/card_logActivity_mileage"
                 android:layout_width="wrap_content"
@@ -99,18 +85,15 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/card_logActivity_time" />
 
-            <!--
-            Button to edit something within this log
-            -->
+            <!-- Button to edit something within this log -->
             <Button
                 android:id="@+id/card_logActivity_buttonEdit"
                 style="@style/Style.Custom.Button.MaintenanceLog"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/card_log_buttonEdit"
+                android:text="@string/edit"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -15,7 +15,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,7 +46,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-
                 <!-- Vehicle Nickname -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/vehicleSettings_textInputNickname"
@@ -55,9 +53,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/minorPadding"
                     android:hint="@string/vehicleSettingsActivity_editTextHint_nickname"
+                    app:errorEnabled="true"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textViewTitle"
-                    app:errorEnabled="true">
+                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textViewTitle">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/vehicleSettings_editTextNickname"
@@ -75,16 +73,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/minorPadding"
                     android:hint="@string/vehicleSettingsActivity_editTextHint_make"
+                    app:errorEnabled="true"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputNickname"
-                    app:errorEnabled="true">
+                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputNickname">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/vehicleSettings_editTextMake"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textCapWords"
-                        android:maxLength="16"/>
+                        android:maxLength="16" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -95,16 +93,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/minorPadding"
                     android:hint="@string/vehicleSettingsActivity_editTextHint_model"
+                    app:errorEnabled="true"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputMake"
-                    app:errorEnabled="true">
+                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputMake">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/vehicleSettings_editTextModel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textCapWords"
-                        android:maxLength="16"/>
+                        android:maxLength="16" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -115,9 +113,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/minorPadding"
                     android:hint="@string/vehicleSettingsActivity_editTextHint_year"
+                    app:errorEnabled="true"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputModel"
-                    app:errorEnabled="true">
+                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputModel">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/vehicleSettings_editTextYear"
@@ -135,9 +133,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/minorPadding"
                     android:hint="@string/vehicleSettingsActivity_editTextHint_plate"
+                    app:errorEnabled="true"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputYear"
-                    app:errorEnabled="true">
+                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputYear">
 
                     <!-- Most license plates are 5-7 characters, 8 in some
                      states according to Google-->
@@ -157,9 +155,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/minorPadding"
                     android:hint="@string/vehicleSettingsActivity_editTextHint_datePurchased"
+                    app:errorEnabled="true"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputPlate"
-                    app:errorEnabled="true">
+                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputPlate">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/vehicleSettings_editTextDatePurchased"
@@ -189,16 +187,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/minorPadding"
                     android:hint="@string/vehicleSettingsActivity_editTextHint_color"
+                    app:errorEnabled="true"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textViewTitleSub"
-                    app:errorEnabled="true">
+                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textViewTitleSub">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/vehicleSettings_editTextColor"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textCapWords"
-                        android:maxLength="16"/>
+                        android:maxLength="16" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -208,10 +206,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/minorPadding"
-                    android:hint="@string/vehicleSettingsActivity_editTextHint_mileage"
+                    android:hint="@string/settings_editTextHint_mileage"
+                    app:errorEnabled="true"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputColor"
-                    app:errorEnabled="true">
+                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputColor">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/vehicleSettings_editTextMileage"
@@ -229,9 +227,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/minorPadding"
                     android:hint="@string/vehicleSettingsActivity_editTextHint_value"
+                    app:errorEnabled="true"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputMileage"
-                    app:errorEnabled="true">
+                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputMileage">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/vehicleSettings_editTextValue"
@@ -249,19 +247,18 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/minorPadding"
                     android:hint="@string/vehicleSettingsActivity_editTextHint_vin"
+                    app:errorEnabled="true"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputValue"
-                    app:errorEnabled="true">
+                    app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputValue">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/vehicleSettings_editTextVin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textCapCharacters"
-                        android:maxLength="18"/>
+                        android:maxLength="18" />
 
                 </com.google.android.material.textfield.TextInputLayout>
-
 
                 <!-- A button to save changes -->
                 <Button
@@ -269,7 +266,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/minorPadding"
-                    android:text="@string/vehicleSettingsActivity_buttonSave"
+                    android:text="@string/save_changes"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputVin" />
 
@@ -283,7 +280,6 @@
                     android:visibility="invisible"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/vehicleSettings_textInputVin" />
-
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

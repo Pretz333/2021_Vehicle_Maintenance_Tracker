@@ -156,7 +156,7 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
             issueDescription = itemView.findViewById(R.id.card_mainActivity_issueDescription);
 
             // onClick Listener for the button
-            itemView.findViewById(R.id.card_mainActivity_dummyButton).setOnClickListener(
+            itemView.findViewById(R.id.card_mainActivity_vehicleSelectButton).setOnClickListener(
                     v -> {
                         // Go to VehicleOptionActivity and pass the vehicle ID
                         Intent intent = new Intent(context, VehicleOptionActivity.class);

@@ -10,10 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VehicleMaintenanceTracker">
 
-        <meta-data
-            android:name="android.app.searchable"
-            android:resource="@xml/searchable" />
-
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,13 +21,13 @@
             android:label="@string/optionActivity_title" />
         <activity
             android:name=".LogActivity"
-            android:label="@string/maintenanceActivity_title" />
+            android:label="@string/optionActivity_maintenanceTitle" />
         <activity
             android:name=".IssueActivity"
             android:label="@string/issueActivity_title" />
         <activity
             android:name=".VehicleSettingsActivity"
-            android:label="@string/vehicleSettingsActivity_title" />
+            android:label="@string/optionActivity_vehicleSettingsTitle" />
         <activity
             android:name=".IssueSettingsActivity"
             android:label="@string/issueSettings_appTitle" />

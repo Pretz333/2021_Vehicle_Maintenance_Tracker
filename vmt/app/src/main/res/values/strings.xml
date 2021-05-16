@@ -1,8 +1,13 @@
 <resources>
     <string name="app_name">Vehicle Maintenance Tracker</string>
+    <!-- String naming should follow the TYPE_CLASS_NAME format -->
 
-    <!-- Filler Strings for MainActivity's RecyclerView Cards -->
-    <!-- It follows the TYPE_CLASS_NAME format for naming Strings -->
+    <!-- Generic strings for use in multiple activities -->
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="edit">Edit</string>
+    <string name="settings_editTextHint_mileage">Mileage</string>
 
     <!-- Strings regarding the vehicle card in the MainActivity's RecyclerView -->
     <string name="card_mainActivity_nickname">Nickname</string>
@@ -10,28 +15,23 @@
     <string name="card_mainActivity_colorAndYear">Color, Year SubModel</string>
     <string name="card_mainActivity_plateNumber">XXX-XXXX</string>
 
-    <string name="card_mainActivity_logIconDescription">Pencil above road icon</string>
     <string name="card_mainActivity_issueIconDescription">Warning symbol</string>
     <string name="card_mainActivity_logDescription"># Maintenance Logs</string>
     <string name="card_mainActivity_issueDescription"># Unresolved Issues</string>
 
     <string name="card_mainActivity_viewDetails">View details</string>
 
-        <!-- These strings are for the Preference Util inside the RecyclerView -->
-        <string name="card_mainActivity_recyclerView_noIssues">No issues</string>
-        <string name="card_mainActivity_recyclerView_withIssue">issue</string>
-        <string name="card_mainActivity_recyclerView_withIssues">issues</string>
-
+    <!-- These strings are for the Preference Util inside the RecyclerView -->
+    <string name="card_mainActivity_recyclerView_noIssues">No issues</string>
+    <string name="card_mainActivity_recyclerView_withIssue">issue</string>
+    <string name="card_mainActivity_recyclerView_withIssues">issues</string>
 
     <!-- Strings regarding the vehicle options list in the VehicleOptionActivity page -->
     <string name="optionActivity_title">Options</string>
     <string name="listItem_optionActivity_iconDescription">A colored circle</string>
 
-    <string name="listItem_optionActivity_Title">ListItem Title</string>
-    <string name="listItem_optionActivity_Subtitle">ListItem Subtitle</string>
-
     <string name="optionActivity_maintenanceTitle">Maintenance Log</string>
-    <string name="optionActivity_maintenanceSubtitle">Add, remove and edit maintenance logs.</string>
+    <string name="optionActivity_maintenanceSubtitle">Add, remove, and edit maintenance logs.</string>
     <string name="optionActivity_issuesTitle">Issue Tracker</string>
     <string name="optionActivity_issuesSubtitle">Add issues to see what needs to be resolved.</string>
     <string name="optionActivity_systemsTitle">Systems</string>
@@ -39,14 +39,10 @@
     <string name="optionActivity_vehicleSettingsTitle">Vehicle Settings</string>
     <string name="optionActivity_vehicleSettingsSubtitle">Modify or delete this vehicle profile.</string>
 
-    <!-- Strings regarding MaintenanceLogActivity -->
-    <string name="maintenanceActivity_title">Maintenance Log</string>
-
     <!-- Strings regarding IssueActivity -->
     <string name="issueActivity_title">Issues</string>
 
     <!-- Strings regarding VehicleSettingsActivity -->
-    <string name="vehicleSettingsActivity_title">Vehicle settings</string>
     <string name="vehicleSettingsActivity_titleDisplay">Basic Settings</string>
 
     <string name="vehicleSettingsActivity_editTextHint_nickname">Vehicle Nickname</string>
@@ -58,11 +54,9 @@
 
     <string name="vehicleSettingsActivity_titleDisplayExtra">Other settings</string>
     <string name="vehicleSettingsActivity_editTextHint_color">Color</string>
-    <string name="vehicleSettingsActivity_editTextHint_mileage">Odometer mileage</string>
     <string name="vehicleSettingsActivity_editTextHint_value">Value of car $</string>
-    <string name="vehicleSettingsActivity_editTextHint_vin">Vehicle Identification Number</string>
+    <string name="vehicleSettingsActivity_editTextHint_vin">Vehicle Identification Number (VIN)</string>
 
-    <string name="vehicleSettingsActivity_buttonSave">Save Changes</string>
     <string name="vehicleSettingsActivity_buttonDelete">Delete Vehicle</string>
 
     <string name="vehicleSettingsActivity_errorValidationEditTextMessage">This field cannot be empty.</string>
@@ -74,66 +68,51 @@
     <string name="vehicleSettingsActivity_errorValidationEditTextMessageInvalidVIN">Please enter a valid VIN.</string>
 
     <string name="vehicleSettingsActivity_errorValidationTitle">Let\'s check over this…</string>
-    <string name="vehicleSettingsActivity_errorValidationMessage">One or more of the fields contain invalid data. The fields highlighted in red must be edited before the vehicle can be added.</string>
+    <string name="vehicleSettingsActivity_errorValidationMessage">The fields highlighted in red must be edited before the vehicle can be saved.</string>
     <string name="vehicleSettingsActivity_errorValidationButtonNeutral">Okay</string>
 
     <!-- Strings regarding MaintenanceLogSettingsActivity -->
     <string name="maintenanceLogSettings_titleDisplay_edit">Edit Maintenance Log</string>
     <string name="maintenanceLogSettings_titleDisplay_add">Add Maintenance Log</string>
 
-    <string name="maintenanceLogSettings_editTextHint_title">Title</string>
-    <string name="maintenanceLogSettings_editTextHint_description">Description</string>
-    <string name="maintenanceLogSettings_editTextHint_maintenanceDate">Maintenance Date (mm/dd/yyyy)</string>
+    <string name="maintenanceLogSettings_editTextHint_maintenanceDate">Date of Maintenance (mm/dd/yyyy)</string>
     <string name="maintenanceLogSettings_editTextHint_cost">Cost of Maintenance</string>
     <string name="maintenanceLogSettings_editTextHint_time">Total Time of Maintenance (in minutes)</string>
-    <string name="maintenanceLogSettings_editTextHint_mileage">Mileage</string>
 
     <string name="maintenanceLogSettings_systemLabel">System:</string>
 
-    <string name="maintenanceLogSettings_buttonSave">Save Changes</string>
     <string name="maintenanceLogSettings_buttonDelete">Delete Log</string>
 
     <!-- Strings regarding LogActivity -->
-    <string name="card_log_title">Log Title</string>
-    <string name="card_log_description">Log description</string>
-    <string name="card_log_date">12/12/2012</string>
     <string name="card_log_cost">Cost: $</string>
     <string name="card_log_time">Time: %1$s minutes</string>
     <string name="card_log_single_time">Time: 1 minute</string>
     <string name="card_log_mileage">Mileage Mark: </string>
-    <string name="card_log_buttonEdit">Edit</string>
     <string name="no_logs">You have no saved maintenance logs, add one to get started.</string>
 
     <!-- Strings regarding IssueActivity -->
-    <string name="card_issue_title">Issue Title</string>
-    <string name="card_issue_description">Issue description</string>
-    <string name="card_issue_date">12/12/2012</string>
     <string name="card_issue_priority_low">Low Priority</string>
     <string name="card_issue_priority_medium">Moderate Priority</string>
     <string name="card_issue_priority_high">High Priority</string>
-    <string name="card_issue_buttonEdit">Edit</string>
     <string name="card_issue_buttonComplete">Complete</string>
     <string name="card_issue_buttonReopen">Reopen</string>
     <string name="no_open_issues">You don\'t have any open issues for this vehicle. To create one, tap the plus icon in the toolbar.</string>
     <string name="no_closed_issues">You don\'t have any closed issues for this vehicle. To close one, tap the complete button on an open issue.</string>
 
-        <!-- The priority spinner -->
-        <string-array name="issueSettingsActivity_spinnerPriority">
-            <item name="priority_high">High Priority</item>
-            <item name="priority_high">Medium Priority</item>
-            <item name="priority_high">Low Priority</item>
-        </string-array>
+    <!-- The priority spinner -->
+    <string-array name="issueSettingsActivity_spinnerPriority">
+        <item name="priority_high">High Priority</item>
+        <item name="priority_high">Medium Priority</item>
+        <item name="priority_high">Low Priority</item>
+    </string-array>
 
-        <!-- Issue Settings strings when adding/editing -->
-        <string name="issueSettings_appTitle">Create an issue</string>
-        <string name="issueSettings_titleDisplayAdd">Add Issue</string>
-        <string name="issueSettings_titleDisplayEdit">Edit Issue</string>
-        <string name="issueSettings_editTextHint_title">Title</string>
-        <string name="issueSettings_editTextHint_description">Description</string>
-        <string name="issueSettings_textViewPriorityLabel">Priority of this issue</string>
-        <string name="issueSettings_buttonSave">Save Changes</string>
-        <string name="issueSettings_buttonClose">Close Issue</string>
-        <string name="issueSettings_buttonReopen">Reopen Issue</string>
+    <!-- Issue Settings strings when adding/editing -->
+    <string name="issueSettings_appTitle">Create an issue</string>
+    <string name="issueSettings_titleDisplayAdd">Add Issue</string>
+    <string name="issueSettings_titleDisplayEdit">Edit Issue</string>
+    <string name="issueSettings_textViewPriorityLabel">Priority of this issue</string>
+    <string name="issueSettings_buttonClose">Close Issue</string>
+    <string name="issueSettings_buttonReopen">Reopen Issue</string>
 
     <!-- Strings regarding LogActivity's & IssueActivity's toolbar items -->
     <string name="add_new_log">Add A New Log</string>
@@ -152,7 +131,6 @@
     <string name="alertDialog_messageDeleteMaintenanceLog">Do you want to delete this maintenance log?</string>
     <string name="alertDialog_buttonYes">Yes</string>
     <string name="alertDialog_buttonNo">No</string>
-
 
 
 </resources>
