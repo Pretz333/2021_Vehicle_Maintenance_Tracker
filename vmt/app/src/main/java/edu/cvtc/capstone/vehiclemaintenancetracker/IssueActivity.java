@@ -245,7 +245,7 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
     }
 
     // Removes an element from the list at the specified position
-    // TODO: Removing items causes wierd visual effects unless the whole screen is full
+    // TODO: Removing items causes weird visual effects unless the whole screen is full
     public void removeAt(int position) {
         issueArrayList.remove(position);
         notifyItemRemoved(position);
