@@ -94,18 +94,18 @@ public final class VerifyUtil {
         }
 
         try {
-            //Check that the month section is between 1 and 12
+            // Ensure the month section is between 1 and 12
             if (Integer.parseInt(chunks[0]) < 1 || Integer.parseInt(chunks[0]) > 12) {
                 return null;
             }
 
-            //Check that the day section is between 1 and 31
+            // Ensure the day section is between 1 and 31
             if (Integer.parseInt(chunks[1]) < 1 || Integer.parseInt(chunks[1]) > 31) {
                 return null;
             }
 
-            //Check that the year section is greater than 1800
-            if (Integer.parseInt(chunks[2]) > 1800) {
+            // Ensure the year section is not less than 1800
+            if (Integer.parseInt(chunks[2]) < 1800) {
                 return null;
             }
         } catch (NumberFormatException ex) {
