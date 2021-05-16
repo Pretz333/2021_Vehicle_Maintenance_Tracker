@@ -3,7 +3,6 @@ package edu.cvtc.capstone.vehiclemaintenancetracker;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
@@ -17,9 +16,15 @@ import java.util.Date;
 import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
+    // The DBHelper class exists as our way of interacting with the database.
+    // In order to get, insert (save), or delete information from the database,
+    // you should use this class. All of the tables' have a create and drop statement
+    // defined at the bottom in a class named tableSQL
+
+    // Class level variables. We save the context so we can alert the user if something goes wrong.
     public static final String TAG = "DBHELPER_CLASS";
     public static final String DATABASE_NAME = "VehicleMaintenanceTracker.db";
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 5;
     private final Context context;
 
     public DBHelper(@Nullable Context context) {
@@ -31,25 +36,25 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
+        // Create all of our tables
         db.execSQL(VehicleSQL.SQL_CREATE_TABLE_VEHICLE);
         db.execSQL(MaintenanceLogSQL.SQL_CREATE_TABLE_MAINTENANCE_LOG);
         db.execSQL(IssueSQL.SQL_CREATE_TABLE_ISSUE);
         db.execSQL(IssueStatusSQL.SQL_CREATE_TABLE_ISSUE_STATUS);
-        db.execSQL(SystemSQL.SQL_CREATE_TABLE_SYSTEM);
+        // db.execSQL(SystemSQL.SQL_CREATE_TABLE_SYSTEM);
         db.execSQL(IssueLogSQL.SQL_CREATE_TABLE_ISSUE_LOG);
-        db.execSQL(IssuePrioritySQL.SQL_CREATE_TABLE_ISSUE_PRIORITY);
 
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if(oldVersion == 1) { // Upgrade to version 2
+        if (oldVersion == 1) { // Upgrade to version 2
             // Version 1 to version 2's change was that some fields in the vehicle table and log table
             // were changed from NOT NULL to nullable, so we'll change both here. For more info, see
             // https://github.com/Pretz333/2021_Vehicle_Maintenance_Tracker/commit/196894d5e725cb78e4974baa15941eb43d8dfe36
             // NOTE: We no longer need to change the log table, as we have to do it again from v2 to v3
 
-            if(updateVehicleTableToV2(db)) {
+            if (updateVehicleTableToV2(db)) {
                 oldVersion = 2; // We're now caught up to DB version 2.
             } else {
                 // We failed to update the DB, so we'll start from scratch.
@@ -60,12 +65,12 @@ public class DBHelper extends SQLiteOpenHelper {
             }
         }
 
-        if(oldVersion == 2) { // Upgrade to version 3
+        if (oldVersion == 2) { // Upgrade to version 3
             // This was modifying one column in the logs table to be nullable. For more info, see
             // https://github.com/Pretz333/2021_Vehicle_Maintenance_Tracker/commit/d1afd991e8f4414ed518d481be3613e21626279a
             // We'll do the same process as above.
 
-            if(updateLogTableToV3(db)) {
+            if (updateLogTableToV3(db)) {
                 oldVersion = 3; // We're now caught up to DB version 3.
             } else {
                 // We failed to update the DB, so we'll start from scratch.
@@ -76,35 +81,44 @@ public class DBHelper extends SQLiteOpenHelper {
             }
         }
 
-        if(oldVersion == 3) { // Upgrade to version 4
+        if (oldVersion == 3) { // Upgrade to version 4
             // This was adding in issue priorities. We'll need to create the Issue Priority table
             // and rename the "issue_priority" to "issue_priority_id". For more info, see
             // https://github.com/Pretz333/2021_Vehicle_Maintenance_Tracker/commit/9ee1649a63f497457b238799c161a4eb9f6bc76c
 
-            db.execSQL(IssuePrioritySQL.SQL_CREATE_TABLE_ISSUE_PRIORITY);
+            // NOTE: We never ended up using the issue priority table, so we're no longer going to create it
             db.execSQL("ALTER TABLE " + IssueSQL.TABLE_NAME_ISSUE + " RENAME issue_priority TO " + IssueSQL.COLUMN_ISSUE_PRIORITY_ID);
-            oldVersion = 4; // Unneeded, but could save someone a sanity check later
+            oldVersion = 4;
+        }
+
+        if (oldVersion == 4) {
+            // This one is written out as we're not planning on using issue priorities at all,
+            // so the class that used to contain all of it's information is now gone
+            db.execSQL("DROP TABLE IF EXISTS issue_priority");
+
+            // This is being dropped for now as we're not planning on implementing systems anymore
+            db.execSQL(SystemSQL.SQL_DROP_TABLE_SYSTEM);
+            // oldVersion = 5; // Unneeded, but could save someone a sanity check later
         }
     }
 
-    private void resetDB(SQLiteDatabase db){
+    //This is called when the onUpgrade fails
+    private void resetDB(SQLiteDatabase db) {
         // Drop all tables, functionally deleting the DB
         db.execSQL(VehicleSQL.SQL_DROP_TABLE_VEHICLE);
         db.execSQL(MaintenanceLogSQL.SQL_DROP_TABLE_MAINTENANCE_LOG);
         db.execSQL(IssueSQL.SQL_DROP_TABLE_ISSUE);
         db.execSQL(IssueStatusSQL.SQL_DROP_TABLE_ISSUE_STATUS);
-        db.execSQL(SystemSQL.SQL_DROP_TABLE_SYSTEM);
+        // db.execSQL(SystemSQL.SQL_DROP_TABLE_SYSTEM);
         db.execSQL(IssueLogSQL.SQL_DROP_TABLE_ISSUE_LOG);
-        db.execSQL(IssuePrioritySQL.SQL_DROP_TABLE_ISSUE_PRIORITY);
 
-        // Create all tables
+        // Create all tables again
         db.execSQL(VehicleSQL.SQL_CREATE_TABLE_VEHICLE);
         db.execSQL(MaintenanceLogSQL.SQL_CREATE_TABLE_MAINTENANCE_LOG);
         db.execSQL(IssueSQL.SQL_CREATE_TABLE_ISSUE);
         db.execSQL(IssueStatusSQL.SQL_CREATE_TABLE_ISSUE_STATUS);
-        db.execSQL(SystemSQL.SQL_CREATE_TABLE_SYSTEM);
+        // db.execSQL(SystemSQL.SQL_CREATE_TABLE_SYSTEM);
         db.execSQL(IssueLogSQL.SQL_CREATE_TABLE_ISSUE_LOG);
-        db.execSQL(IssuePrioritySQL.SQL_CREATE_TABLE_ISSUE_PRIORITY);
     }
 
     // Inserts
@@ -114,7 +128,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        if(vehicle.getId() != -1) {
+        if (vehicle.getId() != -1) {
             values.put(VehicleSQL._ID, vehicle.getId());
         }
         values.put(VehicleSQL.COLUMN_VEHICLE_MAKE, vehicle.getMake());
@@ -125,7 +139,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(VehicleSQL.COLUMN_VEHICLE_MILEAGE, vehicle.getMileage());
         values.put(VehicleSQL.COLUMN_VEHICLE_VIN, vehicle.getVIN());
         values.put(VehicleSQL.COLUMN_VEHICLE_LICENSE_PLATE, vehicle.getLicensePlate());
-        if(vehicle.getPurchaseDate() != null) {
+        if (vehicle.getPurchaseDate() != null) { // Calling .getTime() on a null date throws an error
             values.put(VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED, vehicle.getPurchaseDate().getTime());
         }
         values.put(VehicleSQL.COLUMN_VEHICLE_VALUE, vehicle.getValue());
@@ -133,12 +147,12 @@ public class DBHelper extends SQLiteOpenHelper {
         long newRowId = db.insert(VehicleSQL.TABLE_NAME_VEHICLE, null, values);
         db.close();
 
-        if(newRowId == -1){
+        if (newRowId == -1) {
             Log.w(TAG, "DB Insert Failed!");
             VerifyUtil.alertUser(context, "Database Insert Failed", "Your data did not save, please try again");
         }
 
-        if(newRowId != vehicle.getId()){
+        if (newRowId != vehicle.getId()) {
             vehicle.setId((int) newRowId);
         }
 
@@ -149,12 +163,13 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        if(maintenanceLog.getId() != -1) {
+        if (maintenanceLog.getId() != -1) {
             values.put(MaintenanceLogSQL._ID, maintenanceLog.getId());
         }
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE, maintenanceLog.getTitle());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DESCRIPTION, maintenanceLog.getDescription());
-        if(maintenanceLog.getDate() == null) { //If they didn't set the day of the log, we'll set it to right now
+        if (maintenanceLog.getDate() == null) {
+            // If they didn't set the day of the log, we'll set it to right now
             maintenanceLog.setDate(Calendar.getInstance().getTime());
         }
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE, maintenanceLog.getDate().getTime());
@@ -167,16 +182,18 @@ public class DBHelper extends SQLiteOpenHelper {
         long newRowId = db.insert(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, null, values);
         db.close();
 
-        if(newRowId == -1){
+        if (newRowId == -1) {
             Log.w(TAG, "DB Insert Failed!");
             VerifyUtil.alertUser(context, "Database Insert Failed", "Your data did not save, please try again");
         }
 
-        if(newRowId != maintenanceLog.getId()){
+        if (newRowId != maintenanceLog.getId()) {
             maintenanceLog.setId((int) newRowId);
         }
 
     }
+
+    /* This is unused
 
     public void insertSystem(System system) {
 
@@ -202,12 +219,14 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
+     */
+
     public void insertIssue(Issue issue) {
 
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        if(issue.getId() != -1) {
+        if (issue.getId() != -1) {
             values.put(IssueSQL._ID, issue.getId());
         }
         values.put(IssueSQL.COLUMN_ISSUE_TITLE, issue.getTitle());
@@ -219,12 +238,12 @@ public class DBHelper extends SQLiteOpenHelper {
         long newRowId = db.insert(IssueSQL.TABLE_NAME_ISSUE, null, values);
         db.close();
 
-        if(newRowId == -1){
+        if (newRowId == -1) {
             Log.w(TAG, "DB Insert Failed!");
             VerifyUtil.alertUser(context, "Database Insert Failed", "Your data did not save, please try again");
         }
 
-        if(newRowId != issue.getId()){
+        if (newRowId != issue.getId()) {
             issue.setId((int) newRowId);
         }
 
@@ -235,7 +254,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        if(issueStatus.getId() != -1) {
+        if (issueStatus.getId() != -1) {
             values.put(IssueStatusSQL._ID, issueStatus.getId());
         }
         values.put(IssueStatusSQL.COLUMN_ISSUE_STATUS_DESCRIPTION, issueStatus.getDescription());
@@ -243,37 +262,13 @@ public class DBHelper extends SQLiteOpenHelper {
         long newRowId = db.insert(IssueStatusSQL.TABLE_NAME_ISSUE_STATUS, null, values);
         db.close();
 
-        if(newRowId == -1){
+        if (newRowId == -1) {
             Log.w(TAG, "DB Insert Failed!");
             VerifyUtil.alertUser(context, "Database Insert Failed", "Your data did not save, please try again");
         }
 
-        if(newRowId != issueStatus.getId()){
+        if (newRowId != issueStatus.getId()) {
             issueStatus.setId((int) newRowId);
-        }
-
-    }
-
-    private void insertIssuePriority(IssuePriority issuePriority) {
-
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-
-        if(issuePriority.getId() != -1) {
-            values.put(IssuePrioritySQL._ID, issuePriority.getId());
-        }
-        values.put(IssuePrioritySQL.COLUMN_ISSUE_PRIORITY_DESCRIPTION, issuePriority.getDescription());
-
-        long newRowId = db.insert(IssuePrioritySQL.TABLE_NAME_ISSUE_PRIORITY, null, values);
-        db.close();
-
-        if(newRowId == -1){
-            Log.w(TAG, "DB Insert Failed!");
-            VerifyUtil.alertUser(context, "Database Insert Failed", "Your data did not save, please try again");
-        }
-
-        if(newRowId != issuePriority.getId()){
-            issuePriority.setId((int) newRowId);
         }
 
     }
@@ -281,10 +276,10 @@ public class DBHelper extends SQLiteOpenHelper {
     // Updates
 
     public void updateVehicle(Vehicle vehicle) {
-        //Get a writable db
+        // Get a writable db
         SQLiteDatabase db = getWritableDatabase();
 
-        //Set all columns
+        // Set all columns
         ContentValues values = new ContentValues();
         values.put(VehicleSQL._ID, vehicle.getId());
         values.put(VehicleSQL.COLUMN_VEHICLE_MAKE, vehicle.getMake());
@@ -295,22 +290,22 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(VehicleSQL.COLUMN_VEHICLE_MILEAGE, vehicle.getMileage());
         values.put(VehicleSQL.COLUMN_VEHICLE_VIN, vehicle.getVIN());
         values.put(VehicleSQL.COLUMN_VEHICLE_LICENSE_PLATE, vehicle.getLicensePlate());
-        if(vehicle.getPurchaseDate() != null) {
+        if (vehicle.getPurchaseDate() != null) { // Calling .getTime() on a null date throws an error
             values.put(VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED, vehicle.getPurchaseDate().getTime());
         }
         values.put(VehicleSQL.COLUMN_VEHICLE_VALUE, vehicle.getValue());
 
-        //Grab the vehicle ID and put it into a String[] for the where clause
+        // Grab the vehicle ID and put it into a String[] for the where clause
         String[] args = {String.valueOf(vehicle.getId())};
 
         db.update(VehicleSQL.TABLE_NAME_VEHICLE, values, VehicleSQL._ID + "=?", args);
     }
 
     public void updateLog(MaintenanceLog maintenanceLog) {
-        //Get a writable db
+        // Get a writable db
         SQLiteDatabase db = getWritableDatabase();
 
-        //Set all values
+        // Set all values
         ContentValues values = new ContentValues();
         values.put(MaintenanceLogSQL._ID, maintenanceLog.getId());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE, maintenanceLog.getTitle());
@@ -322,7 +317,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID, maintenanceLog.getVehicleId());
         values.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_SYSTEM_ID, maintenanceLog.getSystemId());
 
-        //Grab the ID and put it into a String[] for the where clause
+        // Grab the ID and put it into a String[] for the where clause
         String[] args = {String.valueOf(maintenanceLog.getId())};
 
         db.update(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, values, MaintenanceLogSQL._ID + "=?", args);
@@ -349,10 +344,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private boolean updateVehicleTableToV2(SQLiteDatabase db) {
         try {
-            //Start a transaction, as this would be really messy if it became messed up
+            // Start a transaction, as this would be really messy if it became messed up
             db.execSQL("BEGIN TRANSACTION");
 
-            //Get all of the vehicle data from the vehicles table
+            // Get all of the vehicle data from the vehicles table
             String[] vehicleColumns = {
                     VehicleSQL._ID,
                     VehicleSQL.COLUMN_VEHICLE_MAKE,
@@ -383,7 +378,9 @@ public class DBHelper extends SQLiteOpenHelper {
             ArrayList<Vehicle> vehicles = new ArrayList<>();
 
             while (cursor.moveToNext()) {
-                if(cursor.getLong(vehicleDatePurchasedPosition) == 0L){
+                // We don't want to set the date to epoch, and since longs can't be null, we'll flip
+                // which constructor we're using based on if the time is 0, meaning it wasn't set
+                if (cursor.getLong(vehicleDatePurchasedPosition) == 0L) {
                     vehicles.add(new Vehicle(cursor.getInt(vehicleIdPosition), cursor.getString(vehicleNicknamePosition),
                             cursor.getString(vehicleMakePosition), cursor.getString(vehicleModelPosition),
                             cursor.getString(vehicleYearPosition), cursor.getString(vehicleColorPosition),
@@ -407,7 +404,7 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL(VehicleSQL.SQL_CREATE_TABLE_VEHICLE);
 
             // Insert in all of the old data
-            for(Vehicle vehicle : vehicles){
+            for (Vehicle vehicle : vehicles) {
                 ContentValues vehicleValues = new ContentValues();
 
                 vehicleValues.put(VehicleSQL._ID, vehicle.getId());
@@ -419,7 +416,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 vehicleValues.put(VehicleSQL.COLUMN_VEHICLE_MILEAGE, vehicle.getMileage());
                 vehicleValues.put(VehicleSQL.COLUMN_VEHICLE_VIN, vehicle.getVIN());
                 vehicleValues.put(VehicleSQL.COLUMN_VEHICLE_LICENSE_PLATE, vehicle.getLicensePlate());
-                if(vehicle.getPurchaseDate() != null) {
+                if (vehicle.getPurchaseDate() != null) {
                     vehicleValues.put(VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED, vehicle.getPurchaseDate().getTime());
                 }
                 vehicleValues.put(VehicleSQL.COLUMN_VEHICLE_VALUE, vehicle.getValue());
@@ -428,19 +425,19 @@ public class DBHelper extends SQLiteOpenHelper {
 
                 // If the insert failed, we want to rollback as this means the
                 // user's data isn't going to properly transfer to the new table
-                if(newRowId == -1){
+                if (newRowId == -1) {
                     throw new Exception("DB Insert Failed!");
                 }
 
-                if(newRowId != vehicle.getId()){
+                if (newRowId != vehicle.getId()) {
                     // Update issues and logs vehicleID FK to the new ID
                     try {
                         // Logs
                         List<MaintenanceLog> logs = getAllLogsByVehicleId(vehicle.getId());
-                        for(MaintenanceLog maintenanceLog : logs) {
+                        for (MaintenanceLog maintenanceLog : logs) {
                             maintenanceLog.setVehicleId(newRowId);
 
-                            //Set all values
+                            // Set all values
                             ContentValues logValues = new ContentValues();
                             logValues.put(MaintenanceLogSQL._ID, maintenanceLog.getId());
                             logValues.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE, maintenanceLog.getTitle());
@@ -452,7 +449,7 @@ public class DBHelper extends SQLiteOpenHelper {
                             logValues.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID, maintenanceLog.getVehicleId());
                             logValues.put(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_SYSTEM_ID, maintenanceLog.getSystemId());
 
-                            //Grab the ID and put it into a String[] for the where clause
+                            // Grab the ID and put it into a String[] for the where clause
                             String[] args = {String.valueOf(maintenanceLog.getId())};
 
                             db.update(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, logValues, MaintenanceLogSQL._ID + "=?", args);
@@ -460,7 +457,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
                         // Open issues
                         List<Issue> issues = getAllIssuesByVehicleId(vehicle.getId(), false);
-                        for(Issue issue : issues) {
+                        for (Issue issue : issues) {
                             issue.setVehicleId(newRowId);
 
                             // Set all of the values
@@ -480,7 +477,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
                         // Closed issues
                         issues = getAllIssuesByVehicleId(vehicle.getId(), true);
-                        for(Issue issue : issues) {
+                        for (Issue issue : issues) {
                             issue.setVehicleId(newRowId);
 
                             // Set all of the values
@@ -497,7 +494,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
                             db.update(IssueSQL.TABLE_NAME_ISSUE, issueValues, IssueSQL._ID + "=?", args);
                         }
-                    } catch(Exception ex) {
+                    } catch (Exception ex) {
                         // If it failed, no worries
                         // The only thing that could fail at this point is a retrieval of data
                         // that doesn't exist, which means it doesn't need to be updated
@@ -521,10 +518,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private boolean updateLogTableToV3(SQLiteDatabase db) {
         try {
-            //Start a transaction, as this would be really messy if it became messed up
+            // Start a transaction, as this would be really messy if it became messed up
             db.execSQL("BEGIN TRANSACTION");
 
-            //Get all of the data
+            // Get all of the data
             String[] categoryColumns = {
                     MaintenanceLogSQL._ID,
                     MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE,
@@ -569,13 +566,13 @@ public class DBHelper extends SQLiteOpenHelper {
 
             cursor.close();
 
-            //Drop the old table and recreate the table with the new fields as we want them.
-            //We wouldn't need to do this if we could MODIFY, but Android only allows ADD and RENAME
+            // Drop the old table and recreate the table with the new fields as we want them.
+            // We wouldn't need to do this if we could MODIFY, but Android only allows ADD and RENAME
             db.execSQL(MaintenanceLogSQL.SQL_DROP_TABLE_MAINTENANCE_LOG);
             db.execSQL(MaintenanceLogSQL.SQL_CREATE_TABLE_MAINTENANCE_LOG);
 
-            //Insert in all of the old data
-            for(MaintenanceLog maintenanceLog : logs){
+            // Insert in all of the old data
+            for (MaintenanceLog maintenanceLog : logs) {
                 ContentValues values = new ContentValues();
 
                 values.put(MaintenanceLogSQL._ID, maintenanceLog.getId());
@@ -592,11 +589,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
                 // If the insert failed, we want to rollback as this means the
                 // user's data isn't going to properly transfer to the new table
-                if(newRowId == -1){
+                if (newRowId == -1) {
                     throw new Exception("DB Insert Failed!");
                 }
 
-                if(newRowId != maintenanceLog.getId()){
+                if (newRowId != maintenanceLog.getId()) {
                     maintenanceLog.setId((int) newRowId);
                 }
             }
@@ -650,7 +647,9 @@ public class DBHelper extends SQLiteOpenHelper {
         ArrayList<Vehicle> vehicles = new ArrayList<>();
 
         while (cursor.moveToNext()) {
-            if(cursor.getLong(vehicleDatePurchasedPosition) == 0L){
+            // We don't want to set the date to epoch, and since longs can't be null, we'll flip
+            // which constructor we're using based on if the time is 0, meaning it wasn't set
+            if (cursor.getLong(vehicleDatePurchasedPosition) == 0L) {
                 vehicles.add(new Vehicle(cursor.getInt(vehicleIdPosition), cursor.getString(vehicleNicknamePosition),
                         cursor.getString(vehicleMakePosition), cursor.getString(vehicleModelPosition),
                         cursor.getString(vehicleYearPosition), cursor.getString(vehicleColorPosition),
@@ -674,7 +673,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public ArrayList<MaintenanceLog> getAllLogsByVehicleId(int id) {
         SQLiteDatabase db = getReadableDatabase();
 
-        //Get all of the fields
+        // Get all of the fields
         String[] categoryColumns = {
                 MaintenanceLogSQL._ID,
                 MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE,
@@ -730,7 +729,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public ArrayList<MaintenanceLog> getAllLogsBySearchTerm(String searchTerm, int vehicleId) {
         SQLiteDatabase db = getReadableDatabase();
 
-        //Get all of the fields
+        // Get all of the fields
         String[] categoryColumns = {
                 MaintenanceLogSQL._ID,
                 MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE,
@@ -743,6 +742,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_SYSTEM_ID
         };
 
+        // Only search logs where the vehicleID is the vehicle the user is looking at
         String orderBy = MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_DATE + " DESC";
         String filter = MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE + " LIKE ? AND " +
                 MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID + " = ?";
@@ -785,7 +785,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public ArrayList<Issue> getAllIssuesByVehicleId(int id, boolean viewClosed) {
-        //Above so we don't have two open databases
+        // Above so we don't have two open databases
         int closedIssueId = getClosedIssueStatusId();
         int openIssueId = getOpenIssueStatusId();
 
@@ -806,8 +806,8 @@ public class DBHelper extends SQLiteOpenHelper {
         String filter = IssueSQL.COLUMN_ISSUE_VEHICLE_ID + " = ?";
         String[] filterArgs = {String.valueOf(id)};
 
-        //Don't include closed if the user doesn't want them
-        if(viewClosed) {
+        // Don't include closed if the user doesn't want them
+        if (viewClosed) {
             filter += " AND " + IssueSQL.COLUMN_ISSUE_STATUS_ID + " = " + closedIssueId;
         } else {
             filter += " AND " + IssueSQL.COLUMN_ISSUE_STATUS_ID + " = " + openIssueId;
@@ -843,7 +843,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public ArrayList<Issue> getAllIssuesBySearchTerm(String searchTerm, int vehicleId, boolean viewingClosed) {
-        //Above so we only have one open copy of the DB at a time
+        // Above so we only have one open copy of the DB at a time
         int status = viewingClosed ? getClosedIssueStatusId() : getOpenIssueStatusId();
 
         // Get a readable database
@@ -859,6 +859,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 IssueSQL.COLUMN_ISSUE_STATUS_ID
         };
 
+        // Only return results from the current vehicle and from the status (open/closed) they are viewing
         String orderBy = IssueSQL.COLUMN_ISSUE_PRIORITY_ID;
         String filter = IssueSQL.COLUMN_ISSUE_TITLE + " LIKE ? AND " +
                 IssueSQL.COLUMN_ISSUE_VEHICLE_ID + " = ? AND " +
@@ -894,6 +895,8 @@ public class DBHelper extends SQLiteOpenHelper {
         return issues;
     }
 
+    /* This is unused
+
     public List<System> getAllSystems() {
         SQLiteDatabase db = getReadableDatabase();
 
@@ -919,11 +922,13 @@ public class DBHelper extends SQLiteOpenHelper {
         return systems;
     }
 
+     */
+
     public Vehicle getVehicleById(int id) {
         SQLiteDatabase db = getReadableDatabase();
         Vehicle v = null;
 
-        //Get all of the fields
+        // Get all of the fields
         String[] categoryColumns = {
                 VehicleSQL._ID,
                 VehicleSQL.COLUMN_VEHICLE_MAKE,
@@ -938,7 +943,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 VehicleSQL.COLUMN_VEHICLE_VALUE
         };
 
-        //Write the query in a SQL injection-proof way
+        // Write the query in a SQL injection-proof way
         String filter = VehicleSQL._ID + " = ?";
         String[] filterArgs = {String.valueOf(id)};
 
@@ -946,7 +951,7 @@ public class DBHelper extends SQLiteOpenHelper {
             Cursor cursor = db.query(VehicleSQL.TABLE_NAME_VEHICLE, categoryColumns, filter,
                     filterArgs, null, null, null);
 
-            //Get the places where all of the information is stored
+            // Get the places where all of the information is stored
             int idPosition = cursor.getColumnIndex(VehicleSQL._ID);
             int makePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_MAKE);
             int modelPosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_MODEL);
@@ -959,9 +964,12 @@ public class DBHelper extends SQLiteOpenHelper {
             int datePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_DATE_PURCHASED);
             int valuePosition = cursor.getColumnIndex(VehicleSQL.COLUMN_VEHICLE_VALUE);
 
-            //Get the information of the first matching vehicle (so be as specific as possible!)
-            cursor.moveToNext();
-            if(cursor.getLong(datePosition) == 0L) {
+            // Get the information of the first matching vehicle (so be as specific as possible!)
+            cursor.moveToFirst();
+
+            // We don't want to set the date to epoch, and since longs can't be null, we'll flip
+            // which constructor we're using based on if the time is 0, meaning it wasn't set
+            if (cursor.getLong(datePosition) == 0L) {
                 v = new Vehicle(
                         cursor.getInt(idPosition), cursor.getString(namePosition),
                         cursor.getString(makePosition), cursor.getString(modelPosition),
@@ -994,7 +1002,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         MaintenanceLog log = null;
 
-        //Get all of the fields
+        // Get all of the fields
         String[] categoryColumns = {
                 MaintenanceLogSQL._ID,
                 MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_TITLE,
@@ -1025,8 +1033,8 @@ public class DBHelper extends SQLiteOpenHelper {
             int vehicleIdPosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID);
             int systemIdPosition = cursor.getColumnIndex(MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_SYSTEM_ID);
 
-            //Get the information of the first matching log (so be as specific as possible!)
-            cursor.moveToNext();
+            // Get the information of the first matching log (so be as specific as possible!)
+            cursor.moveToFirst();
             log = new MaintenanceLog(
                     cursor.getInt(idPosition),
                     cursor.getString(titlePosition),
@@ -1118,13 +1126,13 @@ public class DBHelper extends SQLiteOpenHelper {
             possibleStatuses.add(new IssueStatus(cursor.getInt(idPosition), cursor.getString(descriptionPosition)));
         }
 
-        if(possibleStatuses.size() < 1) {
-            //This gets called if there are no issue statuses in the DB. We'll add our statuses here
-            IssueStatus issueStatus = new IssueStatus("Open"); //New issues should use this status
+        if (possibleStatuses.size() < 1) {
+            // This gets called if there are no issue statuses in the DB. We'll add our statuses here
+            IssueStatus issueStatus = new IssueStatus("Open"); // New issues should use this status
             insertIssueStatus(issueStatus);
             possibleStatuses.add(issueStatus);
 
-            issueStatus = new IssueStatus("Fixed"); //Finished/closed issues should use this one
+            issueStatus = new IssueStatus("Fixed"); // Finished/closed issues should use this one
             insertIssueStatus(issueStatus);
             possibleStatuses.add(issueStatus);
         }
@@ -1144,7 +1152,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 IssueStatusSQL.COLUMN_ISSUE_STATUS_DESCRIPTION
         };
 
-        //No need for args as it's hardcoded here. It can't change
+        // No need for args as it's hardcoded here. It can't change
         String filter = IssueStatusSQL.COLUMN_ISSUE_STATUS_DESCRIPTION + " = 'Open'";
 
         try {
@@ -1154,21 +1162,22 @@ public class DBHelper extends SQLiteOpenHelper {
             int idPosition = cursor.getColumnIndex(IssueStatusSQL._ID);
             int id = -1;
 
-            // This has to be a while, as if there is no information it'll just crash the
-            // app instead of calling getPossibleIssueStatuses() to generate the statuses
-            while(cursor.moveToNext()) {
+            // We ignore the Exception as our error handling code is right below this
+            try {
+                cursor.moveToFirst();
                 id = cursor.getInt(idPosition);
+            } catch (Exception ignored) {
             }
 
             cursor.close();
             db.close();
 
-            if(id == -1) {
-                //Check if there are issue statuses in the DB
+            if (id == -1) {
+                // Check if there are any issue statuses in the DB
                 List<IssueStatus> issueStatuses = getPossibleIssueStatuses();
-                if(!issueStatuses.isEmpty()) {
-                    //see if it's in the list
-                    for(int i = 0; i < issueStatuses.size(); i++) {
+                if (!issueStatuses.isEmpty()) {
+                    // Check if it's in the list returned
+                    for (int i = 0; i < issueStatuses.size(); i++) {
                         if (issueStatuses.get(i).getDescription().equals("Open")) {
                             return issueStatuses.get(i).getId();
                         }
@@ -1194,7 +1203,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 IssueStatusSQL.COLUMN_ISSUE_STATUS_DESCRIPTION
         };
 
-        //No need for args as it's hardcoded here. It can't change
+        // No need for args as it's hardcoded here. It can't change
         String filter = IssueStatusSQL.COLUMN_ISSUE_STATUS_DESCRIPTION + " = 'Fixed'";
 
         try {
@@ -1204,20 +1213,22 @@ public class DBHelper extends SQLiteOpenHelper {
             int idPosition = cursor.getColumnIndex(IssueStatusSQL._ID);
             int id = -1;
 
+            // We ignore the Exception as our error handling code is right below this
             try {
                 cursor.moveToFirst();
                 id = cursor.getInt(idPosition);
-            } catch (Exception ex) {}
+            } catch (Exception ignored) {
+            }
 
             cursor.close();
             db.close();
 
-            if(id == -1) {
-                //Check if there are issue statuses in the DB
+            if (id == -1) {
+                // Check if there are any issue statuses in the DB
                 List<IssueStatus> issueStatuses = getPossibleIssueStatuses();
-                if(issueStatuses.size() > 0) {
-                    //see if it's in the list
-                    for(int i = 0; i < issueStatuses.size(); i++) {
+                if (!issueStatuses.isEmpty()) {
+                    // Check if it's in the list returned
+                    for (int i = 0; i < issueStatuses.size(); i++) {
                         if (issueStatuses.get(i).getDescription().equals("Fixed")) {
                             return issueStatuses.get(i).getId();
                         }
@@ -1234,128 +1245,9 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public int getVehicleIdByNickname(String name) {
-        SQLiteDatabase db = getReadableDatabase();
-        int id;
-
-        String[] categoryColumns = {
-                VehicleSQL._ID
-        };
-
-        String filter = VehicleSQL.COLUMN_VEHICLE_NICKNAME + " = ?";
-        String[] filterArgs = {name};
-
-        //No cursor.close() in the catch (or a finally) as it's wrapped in a block
-        try {
-            Cursor cursor = db.query(VehicleSQL.TABLE_NAME_VEHICLE, categoryColumns, filter,
-                    filterArgs, null, null, null);
-
-            int idPosition = cursor.getColumnIndex(VehicleSQL._ID);
-
-            cursor.moveToNext();
-            id = cursor.getInt(idPosition);
-            cursor.close();
-        } catch (NullPointerException ex){
-            id = -1;
-            Log.e(TAG, "getVehicleIdByNickname: " + ex.getMessage());
-            VerifyUtil.alertUser(context, "Database Retrieval Failed", "Unable to fetch vehicle information, please try again");
-        }
-
-        db.close();
-
-        return id;
-    }
-
-    // Checks
-
-    public boolean checkIfVehicleIdExists(int id) {
-        SQLiteDatabase db = getReadableDatabase();
-
-        String[] categoryColumns = {
-                VehicleSQL._ID
-        };
-
-        String filter = VehicleSQL._ID + " = ?";
-        String[] filterArgs = {String.valueOf(id)};
-
-        //No cursor.close() in the catch (or a finally) as it's wrapped in a block
-        try {
-            Cursor cursor = db.query(VehicleSQL.TABLE_NAME_VEHICLE, categoryColumns, filter,
-                    filterArgs, null, null, null);
-
-            int idPosition = cursor.getColumnIndex(VehicleSQL._ID);
-
-            cursor.moveToNext();
-            cursor.getInt(idPosition);
-            cursor.close();
-            db.close();
-            return true;
-        } catch (Exception ex){
-            db.close();
-            return false;
-        }
-    }
-
-    public boolean checkIfSystemIdExists(int id) {
-        SQLiteDatabase db = getReadableDatabase();
-
-        String[] categoryColumns = {
-                SystemSQL._ID
-        };
-
-        String filter = SystemSQL._ID + " = ?";
-        String[] filterArgs = {String.valueOf(id)};
-
-        //No cursor.close() in the catch (or a finally) as it's wrapped in a block
-        try {
-            Cursor cursor = db.query(SystemSQL.TABLE_NAME_SYSTEM, categoryColumns, filter,
-                    filterArgs, null, null, null);
-
-            int idPosition = cursor.getColumnIndex(SystemSQL._ID);
-
-            cursor.moveToNext();
-            cursor.getInt(idPosition);
-            cursor.close();
-            db.close();
-            return true;
-        } catch (Exception ex){
-            db.close();
-            return false;
-        }
-    }
-
-    public boolean checkIfIssueStatusIdExists(int id) {
-        SQLiteDatabase db = getReadableDatabase();
-
-        String[] categoryColumns = {
-                IssueStatusSQL._ID
-        };
-
-        String filter = IssueStatusSQL._ID + " = ?";
-        String[] filterArgs = {String.valueOf(id)};
-
-        //No cursor.close() in the catch (or a finally) as it's wrapped in a block
-        try {
-            Cursor cursor = db.query(IssueStatusSQL.TABLE_NAME_ISSUE_STATUS, categoryColumns, filter,
-                    filterArgs, null, null, null);
-
-            int idPosition = cursor.getColumnIndex(IssueStatusSQL._ID);
-
-            cursor.moveToNext();
-            cursor.getInt(idPosition);
-            cursor.close();
-            db.close();
-            return true;
-        } catch (Exception ex){
-            db.close();
-            return false;
-        }
-
-    }
-
     // Deletions
 
-    public void deleteVehicle (Vehicle vehicle) {
+    public void deleteVehicle(Vehicle vehicle) {
         // Create the selection criteria
         final String selection = VehicleSQL._ID + " =?";
         final String[] selectionArgs = {Integer.toString(vehicle.getId())};
@@ -1368,7 +1260,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.delete(MaintenanceLogSQL.TABLE_NAME_MAINTENANCE_LOG, MaintenanceLogSQL.COLUMN_MAINTENANCE_LOG_VEHICLE_ID + "=?", selectionArgs);
     }
 
-    public void deleteMaintenanceLog (MaintenanceLog maintenanceLog) {
+    public void deleteMaintenanceLog(MaintenanceLog maintenanceLog) {
         // Create the selection criteria
         final String selection = MaintenanceLogSQL._ID + " =?";
         final String[] selectionArgs = {Integer.toString(maintenanceLog.getId())};
@@ -1505,21 +1397,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
         // Constant to drop the status table
         private static final String SQL_DROP_TABLE_ISSUE_STATUS = "DROP TABLE IF EXISTS " + TABLE_NAME_ISSUE_STATUS;
-    }
-
-    private static final class IssuePrioritySQL implements BaseColumns {
-        // Constants for issue priority table and fields
-        private static final String TABLE_NAME_ISSUE_PRIORITY = "issue_priority";
-        private static final String COLUMN_ISSUE_PRIORITY_DESCRIPTION = "issue_priority_description";
-
-        // Constant to create the issue priority table
-        private static final String SQL_CREATE_TABLE_ISSUE_PRIORITY =
-                "CREATE TABLE " + TABLE_NAME_ISSUE_PRIORITY + " (" +
-                        _ID + " INTEGER PRIMARY KEY, " +
-                        COLUMN_ISSUE_PRIORITY_DESCRIPTION + " TEXT NOT NULL)";
-
-        // Constant to drop the priority table
-        private static final String SQL_DROP_TABLE_ISSUE_PRIORITY = "DROP TABLE IF EXISTS " + TABLE_NAME_ISSUE_PRIORITY;
     }
 
     private static final class IssueLogSQL implements BaseColumns {

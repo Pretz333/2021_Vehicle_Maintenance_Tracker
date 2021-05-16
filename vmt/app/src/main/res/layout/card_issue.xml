@@ -5,9 +5,9 @@
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
+        style="@style/Style.Custom.Card.Issue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Style.Custom.Card.Issue"
         app:cardCornerRadius="12dp"
         app:cardElevation="4dp"
         app:cardUseCompatPadding="true">
@@ -18,13 +18,12 @@
             android:background="?android:attr/selectableItemBackground"
             android:padding="@dimen/minorPadding">
 
-
             <!-- Title -->
             <TextView
                 android:id="@+id/card_issueActivity_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/card_issue_title"
+                android:text="@string/title"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                 android:textColor="@color/colorIssueDark"
                 app:layout_constraintStart_toStartOf="parent"
@@ -36,24 +35,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/minorPadding"
-                android:text="@string/card_issue_description"
+                android:text="@string/description"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                 android:textColor="@color/colorIssueDark"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/card_issueActivity_title" />
-
-            <!-- Date -->
-            <!--
-            <TextView
-                android:id="@+id/card_issueActivity_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/card_issue_date"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                android:textColor="@color/colorIssueDark"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-            -->
 
             <!-- Priority -->
             <TextView
@@ -67,7 +53,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/card_issueActivity_description" />
 
-
             <!-- Button to edit the issue -->
             <Button
                 android:id="@+id/card_issueActivity_buttonEdit"
@@ -75,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/minorPadding"
-                android:text="@string/card_issue_buttonEdit"
+                android:text="@string/edit"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/card_issueActivity_buttonComplete" />
 
@@ -88,7 +73,6 @@
                 android:text="@string/card_issue_buttonComplete"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

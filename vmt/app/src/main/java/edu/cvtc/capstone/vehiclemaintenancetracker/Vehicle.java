@@ -3,7 +3,6 @@ package edu.cvtc.capstone.vehiclemaintenancetracker;
 import android.util.Log;
 
 import java.util.Date;
-import java.util.HashMap;
 
 public class Vehicle {
     private static final String TAG = "VEHICLE_CLASS";
@@ -20,14 +19,14 @@ public class Vehicle {
     private Date purchaseDate;
     private double value;
 
-    //Constructors, using sets so I can keep DRY
-    //Current minimums to be functional
+    // Constructors, using sets to keep DRY
+    // Minimum
     public Vehicle(String name) {
         this.id = -1;
         setName(name);
     }
 
-    //Everything but the id
+    // Everything but the id
     public Vehicle(String name, String make, String model, String year, String color, int mileage, String VIN, String licensePlate, Date purchaseDate, double value) {
         this.id = -1;
         setName(name);
@@ -42,7 +41,7 @@ public class Vehicle {
         setValue(value);
     }
 
-    //Everything, for use when reading from the database. Since it's in the database, it's already passed verification
+    // Everything, for use when reading from the database. Since it's in the database, it's already passed verification
     public Vehicle(int id, String name, String make, String model, String year, String color, int mileage, String VIN, String licensePlate, Date purchaseDate, double value) {
         this.id = id;
         this.name = name;
@@ -57,8 +56,8 @@ public class Vehicle {
         this.value = value;
     }
 
-    //Everything but the date, for use when reading from the database and the long date value is null.
-    //Since it's in the database, it's already passed verification
+    // Everything but the date, for use when reading from the database and the long date value is null.
+    // Since it's in the database, it's already passed verification
     public Vehicle(int id, String name, String make, String model, String year, String color, int mileage, String VIN, String licensePlate, double value) {
         this.id = id;
         this.name = name;
@@ -72,8 +71,8 @@ public class Vehicle {
         this.value = value;
     }
 
-    //Getters and Setters
-    //TODO: Capitalize first letters of makes, models, and colors
+    // Getters and Setters
+    // TODO: Capitalize first letters of makes, models, and colors
     public int getId() {
         return id;
     }
@@ -87,7 +86,7 @@ public class Vehicle {
     }
 
     public void setName(String name) {
-        if(VerifyUtil.isStringSafe(name)) {
+        if (VerifyUtil.isStringSafe(name)) {
             this.name = name;
         } else {
             Log.w(TAG, "Vehicle name unsafe");
@@ -99,7 +98,7 @@ public class Vehicle {
     }
 
     public void setMake(String make) {
-        if(VerifyUtil.isStringSafe(make)) {
+        if (VerifyUtil.isStringSafe(make)) {
             this.make = make;
         } else {
             Log.w(TAG, "Vehicle make unsafe");
@@ -111,7 +110,7 @@ public class Vehicle {
     }
 
     public void setModel(String model) {
-        if(VerifyUtil.isStringSafe(model)) {
+        if (VerifyUtil.isStringSafe(model)) {
             this.model = model;
         } else {
             Log.w(TAG, "Vehicle model unsafe");
@@ -123,7 +122,7 @@ public class Vehicle {
     }
 
     public void setYear(String year) {
-        if(VerifyUtil.isYearValid(year)) {
+        if (VerifyUtil.isYearValid(year)) {
             this.year = year;
         } else {
             Log.w(TAG, "Year was not 4 digits or was not a number");
@@ -135,7 +134,7 @@ public class Vehicle {
     }
 
     public void setColor(String color) {
-        if(VerifyUtil.isStringLettersOnly(color)) {
+        if (VerifyUtil.isStringLettersOnly(color)) {
             this.color = color;
         } else {
             Log.w(TAG, "Color unsafe");
@@ -146,7 +145,7 @@ public class Vehicle {
         return mileage;
     }
 
-    //Type casting from the TextView is all we need for verification
+    // Type casting from the TextView is all we need for verification
     public void setMileage(int mileage) {
         this.mileage = mileage;
     }
@@ -156,8 +155,9 @@ public class Vehicle {
     }
 
     public void setVIN(String VIN) {
-        if(VIN != null) {
-            VIN = VIN.toUpperCase(); //In case the user typed in lowercase letters
+        if (VIN != null) {
+            // VINs only use capitalized letters
+            VIN = VIN.toUpperCase();
             if (VerifyUtil.isVINValid(VIN, this.year)) {
                 this.VIN = VIN;
             } else {
@@ -171,7 +171,7 @@ public class Vehicle {
     }
 
     public void setLicensePlate(String licensePlate) {
-        if(VerifyUtil.isStringSafe(licensePlate)) {
+        if (VerifyUtil.isStringSafe(licensePlate)) {
             this.licensePlate = licensePlate;
         } else {
             Log.w(TAG, "License plate unsafe");
@@ -182,7 +182,7 @@ public class Vehicle {
         return purchaseDate;
     }
 
-    //Type casting from the TextView is all we need for verification
+    // Type casting from the TextView is all we need for verification
     public void setPurchaseDate(Date purchaseDate) {
         this.purchaseDate = purchaseDate;
     }
@@ -191,17 +191,14 @@ public class Vehicle {
         return value;
     }
 
-    //This is a calculated field, but even if the user types it in,
-    //type casting from the TextView is all we need for verification
+    // This is a calculated field, but even if the user types it in,
+    // type casting from the TextView is all we need for verification
     public void setValue(double value) {
         this.value = value;
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Vehicle ID:").append(id)
-                .append(", Name:").append(name);
-        return builder.toString();
+        return "Vehicle ID: " + id + ", Name: " + name;
     }
 }

@@ -16,22 +16,22 @@ public class UnitTests {
 
     //Vehicle Data Verification
     @Test
-    public void VINSimpleCheckDigitWithYearPasses(){
+    public void VINSimpleCheckDigitWithYearPasses() {
         assertTrue(VerifyUtil.isVINValid("11111111111111111", "2001"));
     }
 
     @Test
-    public void VINYearCheckIsFutureProof(){
+    public void VINYearCheckIsFutureProof() {
         assertTrue(VerifyUtil.isVINValid("11111111111111111", "2061"));
     }
 
     @Test
-    public void VINTestsFailIfLessThan17Chars(){
+    public void VINTestsFailIfLessThan17Chars() {
         assertFalse(VerifyUtil.isVINValid("B", "1999"));
     }
 
     @Test
-    public void VINTestsCatchBadCharacters(){
+    public void VINTestsCatchBadCharacters() {
         //An I, a Q, and an O
         assertFalse(VerifyUtil.isVINValid("2C3ID46R4WH170262", "1999"));
         assertFalse(VerifyUtil.isVINValid("2C3OD46R4WH170262", "1999"));
@@ -39,13 +39,13 @@ public class UnitTests {
     }
 
     @Test
-    public void VINTestsWorkWithActualVIN(){
+    public void VINTestsWorkWithActualVIN() {
         //A 1998 Chrysler Concorde, apparently
         assertTrue(VerifyUtil.isVINValid("2C3HD46R4WH170262", "1998"));
     }
 
     @Test
-    public void VehicleYearValidationPasses(){
+    public void VehicleYearValidationPasses() {
         Vehicle v = new Vehicle("Old Brick");
         v.setYear("a");
         assertNull(v.getYear());
@@ -56,27 +56,27 @@ public class UnitTests {
     }
 
     @Test
-    public void DateParserWorksWithValidDates(){
+    public void DateParserWorksWithValidDates() {
         assertNotNull(VerifyUtil.parseStringToDate("04/04/2004"));
     }
 
     @Test
-    public void DateParserWorksWithSemiValidDates(){
+    public void DateParserWorksWithSemiValidDates() {
         assertNotNull(VerifyUtil.parseStringToDate("4/4/04"));
     }
 
     @Test
-    public void DateParserReturnsNullOnInvalidDates(){
+    public void DateParserReturnsNullOnInvalidDates() {
         assertNull(VerifyUtil.parseStringToDate("444444"));
     }
 
     @Test
-    public void DateParserReturnsNullWithInvalidChars(){
+    public void DateParserReturnsNullWithInvalidChars() {
         assertNull(VerifyUtil.parseStringToDate("Jan 5th, 2007"));
     }
 
     @Test
-    public void DateParserParsesAsAProperParserWould(){
+    public void DateParserParsesAsAProperParserWould() {
         Calendar c = Calendar.getInstance();
         c.clear();
         //month starts at 0, so jan = 0, feb = 1, mar = 2, apr = 3, etc.

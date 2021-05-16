@@ -1,19 +1,9 @@
 package edu.cvtc.capstone.vehiclemaintenancetracker;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,59 +13,48 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.snackbar.Snackbar;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 public class IssueActivity extends AppCompatActivity {
     public static final String TAG = "IssueActivity_CLASS";
     public static final String EXTRA_ISSUE_ID = "edu.cvtc.capstone.vehiclemaintenancetracker.EXTRA_ISSUE_ID";
-    @SuppressLint("StaticFieldLeak")
-    public static Context context;
-
-    // The request code of the child activity when an issue is created.
-    public static final int REQUEST_ADD_ISSUE = 420;
+    public static boolean viewingClosed = false;
 
     // Member variables
-    private int vehicleId;
+    DBHelper dbHelper = new DBHelper(this);
+    int vehicleId;
     Toolbar toolbar;
-    public static boolean viewingClosed = false;
-    TextView noIssues; //Used to display a message when there are no issues to be displayed
+    TextView noIssues;
     RecyclerView recyclerView;
-
-    // A custom preference util used to set/get a key-value pair.
-    // In this case, the amount of issues a given vehicle has.
     PreferenceUtil preferenceUtil;
 
-    // The adapter used by the RecyclerView.
-    // It's used to notify the adapter when the data set has changed.
-    IssueRecyclerAdapter issueRecyclerAdapter;
-
     // An array of logs used to populate the RecyclerView
-    ArrayList<Issue> issueArrayList;
-
-    // Database helper
-    DBHelper dbHelper = new DBHelper(this);
+    ArrayList<Issue> issueArrayList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_issue);
-        context = this;
 
         // Initialize the toolbar
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Initialize the custom preference util
-        preferenceUtil = new PreferenceUtil(this);
-
         // Back button, better than the Manifest way for reasons... - Alexander
         toolbar.setNavigationIcon(R.drawable.ic_back);
         toolbar.setNavigationOnClickListener(v -> IssueActivity.super.finish());
+
+        // Initialize the custom preference util
+        preferenceUtil = new PreferenceUtil(this);
 
         // Grab the vehicleId from the received intent
         vehicleId = getIntent().getIntExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, -1);
@@ -83,40 +62,21 @@ public class IssueActivity extends AppCompatActivity {
         // Find the noIssues TextView
         noIssues = findViewById(R.id.noIssuesTextView);
 
-        // Only pull logs of the vehicleId is valid.
-        // In other words, we can't get logs from a vehicle that doesn't exist
-        if (vehicleId != -1) {
-            // Initialize the list
-            issueArrayList = new ArrayList<>();
+        // Populate the RecyclerView
+        populateRecyclerView(viewingClosed);
 
-            // Populate the list
-            populateRecyclerView(viewingClosed);
-
-        } else {
-            // Not a valid id
-            Snackbar.make(toolbar, String.format("The vehicle id of %s is not valid", vehicleId), Snackbar.LENGTH_INDEFINITE).show();
-        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        context = this;
         populateRecyclerView(viewingClosed);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        context = null;
     }
 
     // Populate the issue list
     private void populateRecyclerView(boolean viewingClosed) {
-
-        // Only display issues if the vehicleId is valid!
+        // Only pull logs if the vehicleId is valid exists (-1 means it does not exist)
         if (vehicleId != -1) {
-            // We're good to go. Let's do some database stuff.
 
             // Grab all the issues from the database and throw them into the issueArrayList
             issueArrayList = dbHelper.getAllIssuesByVehicleId(vehicleId, viewingClosed);
@@ -124,18 +84,19 @@ public class IssueActivity extends AppCompatActivity {
             // Prepare the RecyclerView
             prepRecyclerView();
 
-            // Using the custom preference util, set the key as the vehicleID
-            // and the amount of issues this vehicle has equal to the amount of
-            // currently open issues.
-            if(!viewingClosed) {
+            // Using the custom preference util, set the key as the vehicleID and the amount
+            // of issues this vehicle has equal to the amount of currently open issues.
+            // Only do this if viewing the open issues, otherwise it will say the vehicle
+            // has X amount of issues, where X is the number of closed/fixed issues
+            if (!viewingClosed) {
                 preferenceUtil.setIssueCountByVehicleId(vehicleId, issueArrayList.size());
             }
 
-            // If there aren't any issues, notify the user!
+            // Only display the logs if there are logs, otherwise display the "you have none" text
             if (issueArrayList.size() < 1) {
                 noIssues.setVisibility(View.VISIBLE);
 
-                if(viewingClosed) {
+                if (viewingClosed) {
                     noIssues.setText(getResources().getString(R.string.no_closed_issues));
                 } else {
                     noIssues.setText(getResources().getString(R.string.no_open_issues));
@@ -144,8 +105,7 @@ public class IssueActivity extends AppCompatActivity {
                 noIssues.setVisibility(View.GONE);
             }
         } else {
-            // Not a valid id
-            Snackbar.make(toolbar, String.format("The vehicle id of %s is not valid", vehicleId), Snackbar.LENGTH_INDEFINITE).show();
+            Snackbar.make(toolbar, "The vehicle ID is not valid, please try again.", Snackbar.LENGTH_INDEFINITE).show();
         }
 
     }
@@ -159,61 +119,33 @@ public class IssueActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Create the adapter and make the RecyclerView use it
-        issueRecyclerAdapter = new IssueRecyclerAdapter(issueArrayList);
-        recyclerView.setAdapter(issueRecyclerAdapter);
-    }
-
-    public static void setIssueStatus(int issueId, boolean complete){
-        if(context != null) {
-            DBHelper dbHelper = new DBHelper(context);
-            Issue issue = dbHelper.getIssueByIssueId(issueId);
-            if (issue != null) {
-                if(complete) {
-                    issue.setStatusId(dbHelper.getClosedIssueStatusId());
-                } else {
-                    issue.setStatusId(dbHelper.getOpenIssueStatusId());
-                }
-
-                dbHelper.updateIssue(issue);
-
-                /*
-
-                //Makes a toast and displays what the issue status is after the attempt to set it
-                List<IssueStatus> issueStatuses = dbHelper.getPossibleIssueStatuses();
-                issue = dbHelper.getIssueByIssueId(issueId);
-                String description = "None";
-                for (int i = 0; i < issueStatuses.size(); i++) {
-                    if (issueStatuses.get(i).getId() == issue.getStatusId()) {
-                        description = issueStatuses.get(i).getDescription();
-                        break;
-                    }
-                }
-                Toast.makeText(context, "Set to: " + description, Toast.LENGTH_SHORT).show();
-
-                 */
-
-                if (context instanceof IssueActivity) {
-                    ((IssueActivity) context).populateRecyclerView(viewingClosed);
-                }
-            }
-        }
+        recyclerView.setAdapter(new IssueRecyclerAdapter(issueArrayList));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_activity_log, menu);
+        getMenuInflater().inflate(R.menu.menu_activity_issue, menu);
 
         // Get a reference to the search view
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.menuItem_log_search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        SearchView searchView = (SearchView) menu.findItem(R.id.menuItem_search).getActionView();
+        searchView.setSearchableInfo(((SearchManager) getSystemService(Context.SEARCH_SERVICE))
+                .getSearchableInfo(getComponentName()));
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.d(TAG, "Search: " + query);
-                // Call a method to filter the RecyclerView
-                filter(query);
+                // Create a new array list to filter the data
+                ArrayList<Issue> filteredList;
+
+                filteredList = dbHelper.getAllIssuesBySearchTerm(query, vehicleId, viewingClosed);
+
+                // If the filtered list is empty, display a message.
+                if (filteredList.isEmpty()) {
+                    Toast.makeText(IssueActivity.this, "No issues found.", Toast.LENGTH_SHORT).show();
+                }
+
+                // Pass the list to the adapter.
+                recyclerView.setAdapter(new IssueRecyclerAdapter(filteredList));
                 return false;
             }
 
@@ -226,65 +158,41 @@ public class IssueActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void filter(String searchText) {
-        // Create a new array list to filter the data
-        ArrayList<Issue> filteredList;
-
-        filteredList = dbHelper.getAllIssuesBySearchTerm(searchText, vehicleId, viewingClosed);
-
-        // If the filtered list is empty, display a message.
-        if (filteredList.isEmpty()) {
-            Toast.makeText(this, "No issues found.", Toast.LENGTH_SHORT).show();
-        }
-
-        // Pass the list to the adapter.
-        issueRecyclerAdapter = new IssueRecyclerAdapter(filteredList);
-        recyclerView.setAdapter(issueRecyclerAdapter);
-        issueRecyclerAdapter.notifyDataSetChanged();
-    }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menuItem_addALog:
-                Intent intent = new Intent(IssueActivity.this, IssueSettingsActivity.class);
-                intent.putExtra(IssueActivity.EXTRA_ISSUE_ID, -1);
-                intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, vehicleId);
-                startActivityForResult(intent, REQUEST_ADD_ISSUE);
-                break;
-            case R.id.menuItem_log_filter:
-                viewingClosed = !viewingClosed;
-                populateRecyclerView(viewingClosed);
-                break;
-            case R.id.menuItem_log_search:
-                Snackbar.make(toolbar, "Search button tapped", Snackbar.LENGTH_SHORT).show();
-                break;
+        int id = item.getItemId();
 
-            default:
-                // ...
+        if (id == R.id.menuItem_add) {
+            // Go to IssueSettingsActivity and send an id of -1 so it knows we're creating a new issue
+            Intent intent = new Intent(IssueActivity.this, IssueSettingsActivity.class);
+            intent.putExtra(IssueActivity.EXTRA_ISSUE_ID, -1);
+            intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, vehicleId);
+            startActivity(intent);
+        } else if (id == R.id.menuItem_filter) {
+            // Swap to viewing the opposite status of what we are now
+            viewingClosed = !viewingClosed;
+            populateRecyclerView(viewingClosed);
         }
+
         return super.onOptionsItemSelected(item);
     }
 
 }
 
-// The adapter for this activity's RecyclerView
 class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.ViewHolder> {
 
     // An array holding issue logs
     final private ArrayList<Issue> issueArrayList;
 
-    // Constructor accepting an array
+    // Constructor
     public IssueRecyclerAdapter(ArrayList<Issue> issueArrayList) {
         this.issueArrayList = issueArrayList;
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
-        // Member variables
         Context context;
-
-        private int issueId;
+        Issue issue;
 
         final TextView title;
         final TextView description;
@@ -297,66 +205,64 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
             title = itemView.findViewById(R.id.card_issueActivity_title);
             description = itemView.findViewById(R.id.card_issueActivity_description);
             priority = itemView.findViewById(R.id.card_issueActivity_priority);
-
-            Button buttonEdit = itemView.findViewById(R.id.card_issueActivity_buttonEdit);
             Button buttonComplete = itemView.findViewById(R.id.card_issueActivity_buttonComplete);
 
-            buttonEdit.setOnClickListener(this);
-            buttonComplete.setOnClickListener(this);
+            itemView.findViewById(R.id.card_issueActivity_buttonEdit).setOnClickListener(v -> {
+                // Go to LogSettingsActivity and pass the log's ID so it knows which log we're editing
+                Intent intent = new Intent(context, IssueSettingsActivity.class);
+                intent.putExtra(IssueActivity.EXTRA_ISSUE_ID, issue.getId());
+                context.startActivity(intent);
+            });
 
-            if(IssueActivity.viewingClosed) {
+            buttonComplete.setOnClickListener(v -> {
+                if (context != null) {
+                    // Set up a DBHelper
+                    DBHelper dbHelper = new DBHelper(context);
+
+                    // Update the status with the fetched status.
+                    issue.setStatusId((!IssueActivity.viewingClosed) ? dbHelper.getClosedIssueStatusId() : dbHelper.getOpenIssueStatusId());
+
+                    // Update the DB with the new issue status
+                    dbHelper.updateIssue(issue);
+
+                    // Update the RecyclerView
+                    removeAt(getAdapterPosition());
+                }
+            });
+
+            if (IssueActivity.viewingClosed) {
                 buttonComplete.setText(R.string.card_issue_buttonReopen);
-            }
-        }
-
-        // Event handler for the buttons
-        @Override
-        public void onClick(View v) {
-            switch(v.getId()) {
-                case R.id.card_issueActivity_buttonEdit :
-                    // Create the target intent
-                    Intent intent = new Intent(context, IssueSettingsActivity.class);
-
-                    // Extras include the ID of the issue
-                    intent.putExtra(IssueActivity.EXTRA_ISSUE_ID, issueId);
-
-                    // Start the activity
-                    context.startActivity(intent);
-                    break;
-
-                case R.id.card_issueActivity_buttonComplete :
-                    if(IssueActivity.viewingClosed) {
-                        IssueActivity.setIssueStatus(issueId, false);
-                    } else {
-                        IssueActivity.setIssueStatus(issueId, true);
-                    }
-                    break;
-
-                default:
-                    // ...
             }
         }
 
         // One-hitter method for setting the data for all the TextViews
         public void setDataByObject(Issue issue) {
-            issueId = issue.getId();
+            this.issue = issue;
             title.setText(issue.getTitle());
             description.setText(issue.getDescription());
             priority.setText(issue.getPriorityAsString());
         }
     }
 
+    // Removes an element from the list at the specified position
+    // TODO: Removing items causes weird visual effects unless the whole screen is full
+    public void removeAt(int position) {
+        issueArrayList.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, issueArrayList.size());
+    }
+
     @NonNull
     @Override
     public IssueRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_issue, parent, false);
-        return new ViewHolder(v);
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.card_issue, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull IssueRecyclerAdapter.ViewHolder holder, int position) {
         // Grab an issue object at a given position
         Issue issue = issueArrayList.get(position);
+
         // Set the view holder data based upon the object
         holder.setDataByObject(issue);
     }

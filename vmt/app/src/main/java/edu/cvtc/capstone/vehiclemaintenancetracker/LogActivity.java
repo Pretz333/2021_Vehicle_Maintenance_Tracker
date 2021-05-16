@@ -4,33 +4,25 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import java.sql.Time;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 public class LogActivity extends AppCompatActivity {
@@ -44,7 +36,6 @@ public class LogActivity extends AppCompatActivity {
     // An array of logs used to populate the RecyclerView
     ArrayList<MaintenanceLog> logArrayList;
 
-    LogRecyclerAdapter logRecyclerAdapter;
     SearchView searchView;
     RecyclerView recyclerView;
 
@@ -74,9 +65,8 @@ public class LogActivity extends AppCompatActivity {
         populateRecyclerView();
     }
 
-    private void populateRecyclerView(){
-        // Only pull logs if the vehicleId is valid.
-        // In other words, we don't want to get logs from a vehicle that doesn't exist
+    private void populateRecyclerView() {
+        // Only pull logs if the vehicleId is valid exists (-1 means it does not exist)
         if (vehicleId != -1) {
             // Initialize the log list
             logArrayList = dbHelper.getAllLogsByVehicleId(vehicleId);
@@ -84,15 +74,14 @@ public class LogActivity extends AppCompatActivity {
             //Refresh the RecyclerView
             prepRecyclerView();
 
-            //Only display the logs if there are logs, otherwise we'll display the "you have none" text
-            if(logArrayList.isEmpty()){
+            // Only display the logs if there are logs, otherwise display the "you have none" text
+            if (logArrayList.isEmpty()) {
                 findViewById(R.id.noLogsTextView).setVisibility(View.VISIBLE);
             } else {
                 findViewById(R.id.noLogsTextView).setVisibility(View.INVISIBLE);
             }
         } else {
-            // Not a valid id
-            Snackbar.make(toolbar, String.format("The vehicle id of %s is not valid", vehicleId), Snackbar.LENGTH_INDEFINITE).show();
+            Snackbar.make(toolbar, "The vehicle ID is not valid, please try again.", Snackbar.LENGTH_INDEFINITE).show();
         }
     }
 
@@ -105,8 +94,7 @@ public class LogActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Create the adapter and make the RecyclerView use it
-        logRecyclerAdapter = new LogRecyclerAdapter(logArrayList);
-        recyclerView.setAdapter(logRecyclerAdapter);
+        recyclerView.setAdapter(new LogRecyclerAdapter(logArrayList));
     }
 
     @Override
@@ -114,19 +102,26 @@ public class LogActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_activity_log, menu);
 
         // Get a reference to the search view
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView) menu.findItem(R.id.menuItem_log_search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
-        // TODO: Set the text color to white in the search field
-
+        searchView = (SearchView) menu.findItem(R.id.menuItem_search).getActionView();
+        searchView.setSearchableInfo(((SearchManager) getSystemService(Context.SEARCH_SERVICE))
+                .getSearchableInfo(getComponentName()));
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.d(TAG, "Search: " + query);
-                // Call a method to filter the RecyclerView
-                filter(query);
+                // Create a new array list to store the query results
+                ArrayList<MaintenanceLog> filteredList;
+
+                // Query
+                filteredList = dbHelper.getAllLogsBySearchTerm(query, vehicleId);
+
+                // If the filtered list is empty, display a message.
+                if (filteredList.isEmpty()) {
+                    Toast.makeText(LogActivity.this, "No maintenance logs found.", Toast.LENGTH_SHORT).show();
+                }
+
+                // Pass the list to the adapter to display
+                recyclerView.setAdapter(new LogRecyclerAdapter(filteredList));
                 return false;
             }
 
@@ -139,34 +134,12 @@ public class LogActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void filter(String searchText) {
-        // Create a new array list to filter the data
-        ArrayList<MaintenanceLog> filteredList;
-
-        filteredList = dbHelper.getAllLogsBySearchTerm(searchText, vehicleId);
-
-        // If the filtered list is empty, display a message.
-        if (filteredList.isEmpty()) {
-            Toast.makeText(this, "No maintenance logs found.", Toast.LENGTH_SHORT).show();
-        }
-
-        // Pass the list to the adapter.
-        logRecyclerAdapter = new LogRecyclerAdapter(filteredList);
-        recyclerView.setAdapter(logRecyclerAdapter);
-        logRecyclerAdapter.notifyDataSetChanged();
-
-    }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int selectedItemId = item.getItemId();
 
-        if (selectedItemId == R.id.menuItem_log_filter) {
-            Snackbar.make(toolbar, "Filter button tapped", Snackbar.LENGTH_SHORT).show();
-        } else if (selectedItemId == R.id.menuItem_log_search) {
-            Snackbar.make(toolbar, "Search button tapped", Snackbar.LENGTH_SHORT).show();
-        } else if (selectedItemId == R.id.menuItem_addALog) {
-            // Go to the log settings activity and send an id of -1 so it knows we're creating a new log
+        if (selectedItemId == R.id.menuItem_add) {
+            // Go to LogSettingsActivity and send an id of -1 so it knows we're creating a new log
             Intent intent = new Intent(LogActivity.this, MaintenanceLogSettingsActivity.class);
             intent.putExtra(LogActivity.EXTRA_LOG_ID, -1);
             intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, vehicleId);
@@ -177,25 +150,22 @@ public class LogActivity extends AppCompatActivity {
     }
 }
 
-// The adapter for this activity's RecyclerView
 class LogRecyclerAdapter extends RecyclerView.Adapter<LogRecyclerAdapter.ViewHolder> {
 
     // An array holding maintenance logs
     private ArrayList<MaintenanceLog> logArrayList;
 
     // Date formatter for the date TextView and time TextView
-    static SimpleDateFormat simpleDateFormat;
+    static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM d, y", Locale.ENGLISH);
 
-    // Constructor accepting an array
+    // Constructor
     public LogRecyclerAdapter(ArrayList<MaintenanceLog> logArrayList) {
         this.logArrayList = logArrayList;
-        simpleDateFormat = new SimpleDateFormat("MMM d, y", Locale.ENGLISH);
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        // Member variables
-        Context context;
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
+        Context context;
         private int logID;
 
         final TextView title;
@@ -217,21 +187,15 @@ class LogRecyclerAdapter extends RecyclerView.Adapter<LogRecyclerAdapter.ViewHol
             time = itemView.findViewById(R.id.card_logActivity_time);
             mileage = itemView.findViewById(R.id.card_logActivity_mileage);
 
-            Button buttonEdit = itemView.findViewById(R.id.card_logActivity_buttonEdit);
-            buttonEdit.setOnClickListener(this);
-        }
-
-        // Event handler for the edit button
-        @Override
-        public void onClick(View v) {
-            // Create the target intent
-            Intent intent = new Intent(context, MaintenanceLogSettingsActivity.class);
-
-            // Extras include the ID of the vehicle and the Nickname
-            intent.putExtra(LogActivity.EXTRA_LOG_ID, logID);
-
-            // Start the activity
-            context.startActivity(intent);
+            // Set the Edit button's onClick Listener
+            itemView.findViewById(R.id.card_logActivity_buttonEdit).setOnClickListener(
+                    v -> {
+                        // Go to LogSettingsActivity and pass the log's ID so it knows which log we're editing
+                        Intent intent = new Intent(context, MaintenanceLogSettingsActivity.class);
+                        intent.putExtra(LogActivity.EXTRA_LOG_ID, logID);
+                        context.startActivity(intent);
+                    }
+            );
         }
 
         // One-hitter method for setting the data for all the TextViews
@@ -243,7 +207,7 @@ class LogRecyclerAdapter extends RecyclerView.Adapter<LogRecyclerAdapter.ViewHol
             cost.setText(context.getResources()
                     .getString(R.string.card_log_cost)
                     .concat(String.format(Locale.US, "%.2f", log.getCost())));
-            if(log.getTime() == 1){
+            if (log.getTime() == 1) {
                 time.setText(context.getResources().getString(R.string.card_log_single_time));
             } else {
                 time.setText(context.getResources().getString(R.string.card_log_time, String.valueOf(log.getTime())));
@@ -264,6 +228,7 @@ class LogRecyclerAdapter extends RecyclerView.Adapter<LogRecyclerAdapter.ViewHol
     public void onBindViewHolder(@NonNull LogRecyclerAdapter.ViewHolder holder, int position) {
         // Grab a log object at a given position
         MaintenanceLog maintenanceLog = logArrayList.get(position);
+
         // Set the view holder data based upon the object
         holder.setDataByObject(maintenanceLog);
     }

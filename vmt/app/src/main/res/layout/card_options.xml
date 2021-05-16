@@ -6,7 +6,6 @@
     android:background="?android:attr/selectableItemBackground"
     android:padding="@dimen/minorPadding">
 
-
     <!-- ImageView for the colored icon -->
     <ImageView
         android:id="@+id/card_optionActivity_Icon"
@@ -24,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:text="@string/listItem_optionActivity_Title"
+        android:text="@string/title"
         android:textSize="24sp"
         app:layout_constraintStart_toEndOf="@+id/card_optionActivity_Icon"
         app:layout_constraintTop_toTopOf="parent" />
@@ -34,10 +33,9 @@
         android:id="@+id/card_optionActivity_subTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/listItem_optionActivity_Subtitle"
+        android:text="@string/description"
         android:textStyle="italic"
         app:layout_constraintStart_toStartOf="@id/card_optionActivity_title"
         app:layout_constraintTop_toBottomOf="@id/card_optionActivity_title" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

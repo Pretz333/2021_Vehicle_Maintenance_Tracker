@@ -39,10 +39,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/minorPadding"
-                android:hint="@string/issueSettings_editTextHint_title"
+                android:hint="@string/title"
+                app:errorEnabled="true"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/issueSettings_textViewTitle"
-                app:errorEnabled="true">
+                app:layout_constraintTop_toBottomOf="@id/issueSettings_textViewTitle">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/issueSettings_editTextTitle"
@@ -58,10 +58,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/minorPadding"
-                android:hint="@string/issueSettings_editTextHint_description"
+                android:hint="@string/description"
+                app:errorEnabled="true"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/issueSettings_textInputTitle"
-                app:errorEnabled="true">
+                app:layout_constraintTop_toBottomOf="@id/issueSettings_textInputTitle">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/issueSettings_editTextDescription"
@@ -77,18 +77,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/minorPadding"
+                app:errorEnabled="true"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/issueSettings_textInputDescription"
-                app:errorEnabled="true">
+                app:layout_constraintTop_toBottomOf="@id/issueSettings_textInputDescription">
 
                 <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                     android:id="@+id/issueSettings_editTextPrioritySpinner"
+                    style="@style/Style.Custom.TextInputSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:enabled="false"
                     android:hint="@string/issueSettings_textViewPriorityLabel"
-                    android:inputType="none"
-                    style="@style/Style.Custom.TextInputSpinner"/>
+                    android:inputType="none" />
 
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -109,7 +109,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/minorPadding"
-                android:text="@string/issueSettings_buttonSave"
+                android:text="@string/save_changes"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/issueSettings_textInputPriority" />
 

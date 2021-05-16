@@ -1,38 +1,30 @@
 package edu.cvtc.capstone.vehiclemaintenancetracker;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 public class MaintenanceLogSettingsActivity extends AppCompatActivity {
+    // This is exactly like the VehicleSettingsActivity, but for Maintenance Logs.
+    // It is used to update/change a log and create new ones.
     public static final String TAG = "MaintenanceLogSettingsActivity_CLASS";
 
-    //Class variables
     DBHelper dbHelper = new DBHelper(MaintenanceLogSettingsActivity.this);
     MaintenanceLog log = null;
     int vehicleId;
@@ -40,34 +32,84 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
 
     private EditText mTitle, mDescription, mMaintenanceDate, mCost, mTime, mMileage;
     private TextInputLayout eTitle, eDescription, eMaintenanceDate, eCost, eTime, eMileage;
-    private Spinner mSystem;
+    // private Spinner mSystem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maintenance_log_settings);
 
+        // Initialize the toolbar
         toolbar = findViewById(R.id.maintenanceLogSettings_toolbar);
-
-        // Set support for the toolbar
         setSupportActionBar(toolbar);
 
         // Back button, better than the Manifest way for reasons... - Alexander
         toolbar.setNavigationIcon(R.drawable.ic_close);
         toolbar.setNavigationOnClickListener(v -> MaintenanceLogSettingsActivity.super.finish());
 
-        //Set the save button's onClickListener
+        // Get a reference to the member objects
+        mTitle = findViewById(R.id.maintenanceLogSettings_editTextTitle);
+        mDescription = findViewById(R.id.maintenanceLogSettings_editTextDescription);
+        mMaintenanceDate = findViewById(R.id.maintenanceLogSettings_editTextMaintenanceDate);
+        mCost = findViewById(R.id.maintenanceLogSettings_editTextCost);
+        mTime = findViewById(R.id.maintenanceLogSettings_editTextTime);
+        mMileage = findViewById(R.id.maintenanceLogSettings_editTextMileage);
+        Button buttonDelete = findViewById(R.id.maintenanceLogSettings_buttonDelete);
+        // mSystem = findViewById(R.id.maintenanceLogSettings_spinnerSystems);
+
+        // Reference to the EditText containers
+        eTitle = findViewById(R.id.maintenanceLogSettings_textInputTitle);
+        eDescription = findViewById(R.id.maintenanceLogSettings_textInputDescription);
+        eMaintenanceDate = findViewById(R.id.maintenanceLogSettings_textInputMaintenanceDate);
+        eCost = findViewById(R.id.maintenanceLogSettings_textInputCost);
+        eTime = findViewById(R.id.maintenanceLogSettings_textInputTime);
+        eMileage = findViewById(R.id.maintenanceLogSettings_textInputMileage);
+
+        /* We are no longer planning on implementing systems
+        // Set up the systems spinner if there are systems in the db
+        List<System> systems = dbHelper.getAllSystems();
+        if(systems.size() > 0) {
+            // These default to "gone"
+            mSystem.setVisibility(View.VISIBLE);
+            findViewById(R.id.maintenanceLogSettings_textViewSystemLabel).setVisibility(View.VISIBLE);
+            ArrayAdapter<System> dataAdapter = new ArrayAdapter(MaintenanceLogSettingsActivity.this,
+                    android.R.layout.simple_spinner_item, systems);
+            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            mSystem.setAdapter(dataAdapter);
+        }
+         */
+
+        // Get the logId and vehicleId from the intent
+        Intent receivedIntent = getIntent();
+        int logId = receivedIntent.getIntExtra(LogActivity.EXTRA_LOG_ID, -1);
+        vehicleId = receivedIntent.getIntExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, -1);
+
+        // If a valid logId was passed to this activity, we want to pre-populate the fields
+        if (logId != -1) {
+            // Since a logId was passed, we also want to grab the log from the db for later modification
+            log = dbHelper.getLogByLogId(logId);
+            populateFieldsByObject(log);
+
+            // Since the log was already in the database, the delete button should be visible.
+            buttonDelete.setVisibility(View.VISIBLE);
+
+            // And we want to change the title to say "Edit Log" instead of "Add Log"
+            TextView title = findViewById(R.id.maintenanceLogSettings_textViewTitle);
+            title.setText(getResources().getString(R.string.maintenanceLogSettings_titleDisplay_edit));
+        }
+
+        // Set the save button's onClickListener
         findViewById(R.id.maintenanceLogSettings_buttonSave).setOnClickListener(
                 v -> {
                     if (v.getId() == R.id.maintenanceLogSettings_buttonSave) {
+                        // Check if all fields are valid
+                        if (areFieldsValid()) {
+                            // If we made a new log from the id passed, insert it, otherwise update it
 
-
-                        if (hasMinimumRequirements()) {
-
-                            //updateLogWithValues();
-                            //If we found a vehicle from the id passed, update it. If not, make one
+                            // areFieldsValid() should catch this first check, so this
+                            // means the log was unable to be created as it didn't
+                            // have the minimum properties needed to be functional
                             if (log == null) {
-                                //It couldn't be made as it didn't have the minimum properties needed to be functional
                                 Snackbar.make(v, "The log must have a title", Snackbar.LENGTH_SHORT).show();
                             } else if (log.getId() == -1) {
                                 dbHelper.insertMaintenanceLog(log);
@@ -76,10 +118,8 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
                                 dbHelper.updateLog(log);
                                 MaintenanceLogSettingsActivity.super.finish();
                             }
-
-
                         } else {
-                            // Something went wrong, lets alert the user!
+                            // The user made a typo/didn't fill out a field, lets alert them!
                             MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(this);
                             alert.setTitle(getResources().getString(R.string.vehicleSettingsActivity_errorValidationTitle));
                             alert.setMessage(getResources().getString(R.string.vehicleSettingsActivity_errorValidationMessage));
@@ -96,24 +136,15 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
                     if (v.getId() == R.id.maintenanceLogSettings_buttonDelete) {
                         // Display the alert dialog to confirm the log delete.
                         AlertDialog.Builder builder = new AlertDialog.Builder(MaintenanceLogSettingsActivity.this);
-
-                        // Create the LayoutInflater to use the custom layout.
-                        LayoutInflater inflater = getLayoutInflater();
                         View view = MaintenanceLogSettingsActivity.this.getLayoutInflater().inflate(R.layout.alert_dialog, null);
-
-                        // Get a reference to the buttons in the alert dialog
-                        Button yesButton = view.findViewById(R.id.alertDialog_buttonYes);
-                        Button noButton = view.findViewById(R.id.alertDialog_buttonNo);
-
                         builder.setView(view);
                         AlertDialog alert = builder.create();
 
-                        // Set the text for the message in the alert dialog
-                        TextView alertDialogText = view.findViewById(R.id.alertDialog_message);
-                        alertDialogText.setText(R.string.alertDialog_messageDeleteMaintenanceLog);
+                        // Set the message of the alert dialog
+                        ((TextView) view.findViewById(R.id.alertDialog_message)).setText(R.string.alertDialog_messageDeleteMaintenanceLog);
 
-                        // The yes button was clicked.
-                        yesButton.setOnClickListener(v1 -> {
+                        // Confirm button click handler
+                        view.findViewById(R.id.alertDialog_buttonYes).setOnClickListener(v1 -> {
                             // Delete maintenance log from the database
                             dbHelper.deleteMaintenanceLog(log);
 
@@ -125,8 +156,8 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
                             MaintenanceLogSettingsActivity.super.finish();
                         });
 
-                        // The no button was clicked.
-                        noButton.setOnClickListener(v12 -> {
+                        // Cancel button click handler
+                        view.findViewById(R.id.alertDialog_buttonNo).setOnClickListener(v12 -> {
                             // Close the alert dialog
                             alert.cancel();
                         });
@@ -136,58 +167,6 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
                     }
                 }
         );
-
-        // Get a reference to the member objects
-        mTitle = findViewById(R.id.maintenanceLogSettings_editTextTitle);
-        mDescription = findViewById(R.id.maintenanceLogSettings_editTextDescription);
-        mMaintenanceDate = findViewById(R.id.maintenanceLogSettings_editTextMaintenanceDate);
-        mCost = findViewById(R.id.maintenanceLogSettings_editTextCost);
-        mTime = findViewById(R.id.maintenanceLogSettings_editTextTime);
-        mMileage = findViewById(R.id.maintenanceLogSettings_editTextMileage);
-        //mSystem = findViewById(R.id.maintenanceLogSettings_spinnerSystems);
-        Button buttonDelete = findViewById(R.id.maintenanceLogSettings_buttonDelete);
-
-        // Reference to the EditText containers (We use these to highlight
-        // them red if there is an error in parsing in any way
-        eTitle = findViewById(R.id.maintenanceLogSettings_textInputTitle);
-        eDescription = findViewById(R.id.maintenanceLogSettings_textInputDescription);
-        eMaintenanceDate = findViewById(R.id.maintenanceLogSettings_textInputMaintenanceDate);
-        eCost = findViewById(R.id.maintenanceLogSettings_textInputCost);
-        eTime = findViewById(R.id.maintenanceLogSettings_textInputTime);
-        eMileage = findViewById(R.id.maintenanceLogSettings_textInputMileage);
-
-        /* We are no longer planning on implementing systems
-        // Set up the systems spinner if there are systems in the db
-        List<System> systems = dbHelper.getAllSystems();
-        if(systems.size() > 0) {
-            //These default to "gone"
-            mSystem.setVisibility(View.VISIBLE);
-            findViewById(R.id.maintenanceLogSettings_textViewSystemLabel).setVisibility(View.VISIBLE);
-            ArrayAdapter<System> dataAdapter = new ArrayAdapter(MaintenanceLogSettingsActivity.this,
-                    android.R.layout.simple_spinner_item, systems);
-            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            mSystem.setAdapter(dataAdapter);
-        }
-         */
-
-        // Get the logId from the intent
-        Intent receivedIntent = getIntent();
-        int logId = receivedIntent.getIntExtra(LogActivity.EXTRA_LOG_ID, -1);
-        vehicleId = receivedIntent.getIntExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, -1);
-
-        // If a valid logId was passed to this activity, we want to pre-populate the fields
-        if (logId != -1) {
-            //Since a logId was passed, we also want to grab the log from the db for later modification
-            log = dbHelper.getLogByLogId(logId);
-            populateFieldsByObject(log);
-
-            // Since the log was already in the database, the delete button should be visible.
-            buttonDelete.setVisibility(View.VISIBLE);
-
-            //And we want to change the title to say "Edit Log" instead of "Add Log"
-            TextView title = findViewById(R.id.maintenanceLogSettings_textViewTitle);
-            title.setText(getResources().getString(R.string.maintenanceLogSettings_titleDisplay_edit));
-        }
     }
 
     private void populateFieldsByObject(MaintenanceLog maintenanceLog) {
@@ -202,35 +181,26 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
         mMaintenanceDate.setText(simpleDateFormat.format(maintenanceLog.getDate()));
 
         // Set the spinner to the id of the selected system
-        mSystem.setSelection(maintenanceLog.getSystemId());
+        // mSystem.setSelection(maintenanceLog.getSystemId());
     }
 
-    // This checks every editText field if its empty, or contains invalid data.
-    //
+    // This checks every editText field to see if it's empty or contains invalid data.
     // If it catches any issues, it will highlight the editText container field and return false.
-    private boolean hasMinimumRequirements() {
+    private boolean areFieldsValid() {
         // Whether the values from the fields can be inserted into the database without conflict.
         boolean retVal = true;
 
-
-        if (log == null){
+        // If we're creating a new log, we need to create the log object
+        if (log == null) {
             log = new MaintenanceLog(mTitle.getText().toString(), vehicleId);
-        } else if (!mTitle.getText().toString().equals("")) {
-            //since the other option adds the title to new logs, we'll set the title for edited logs
-            log.setTitle(mTitle.getText().toString());
         }
 
         // Convert the EditText fields to strings
-        String checkTitle = mTitle.getText().toString();
-        String checkDescription = mDescription.getText().toString();
-        String checkDate = mMaintenanceDate.getText().toString();
+        String checkTitle = mTitle.getText().toString().trim();
+        String checkDescription = mDescription.getText().toString().trim();
+        String checkDate = mMaintenanceDate.getText().toString().trim();
 
-
-        // Check if each field is not blank, null, or contains invalid data.
-        // If it does, retVal will be false.
-
-        // Check if the title's empty
-        if (isStringEmpty(checkTitle)) {
+        if (checkTitle.isEmpty()) {
             retVal = false;
             eTitle.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
         } else if (!VerifyUtil.isStringSafe(checkTitle)) {
@@ -238,12 +208,10 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
             eTitle.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageInvalidCharacters));
         } else {
             eTitle.setError(null);
-            // Set this attribute to the vehicle object
             log.setTitle(checkTitle);
         }
 
-        // Again...
-        if (isStringEmpty(checkDescription)) {
+        if (checkDescription.isEmpty()) {
             retVal = false;
             eDescription.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessage));
         } else if (!VerifyUtil.isTextSafe(checkDescription)) {
@@ -254,11 +222,9 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
             log.setDescription(checkDescription);
         }
 
-
         Date verifyDate = VerifyUtil.parseStringToDate(checkDate);
-        // And again...
-        if (isStringEmpty(checkDate)) {
-            log.setDate(null); // This can be empty
+        if (checkDate.isEmpty()) {
+            log.setDate(null); // We set it to the current date in the DBHelper if it is null
         } else if (verifyDate == null) {
             retVal = false;
             eMaintenanceDate.setError(getResources().getString(R.string.vehicleSettingsActivity_errorValidationEditTextMessageInvalidDate));
@@ -267,11 +233,9 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
             log.setDate(verifyDate);
         }
 
-        // Simple checks for non-required fields which also sets the log object too
-        if(!isStringEmpty(mCost.getText().toString())) {
+        if (!mCost.getText().toString().isEmpty()) {
             try {
-                double maintenanceCost = Double.parseDouble(mCost.getText().toString());
-                log.setCost(maintenanceCost);
+                log.setCost(Double.parseDouble(mCost.getText().toString()));
                 eCost.setError(null);
             } catch (NumberFormatException e) {
                 e.printStackTrace();
@@ -304,10 +268,5 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
         }
 
         return retVal;
-    }
-
-    // Simplified function to check if a string is empty
-    private boolean isStringEmpty(String string) {
-        return (string.isEmpty() || string.equals("") || string.equals(" "));
     }
 }

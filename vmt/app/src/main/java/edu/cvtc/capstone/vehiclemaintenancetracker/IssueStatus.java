@@ -8,7 +8,8 @@ public class IssueStatus {
     private int id;
     private String description;
 
-    //Pre-database insert
+    // Constructors, using a set to keep DRY
+    // Pre-database insert so there's no ID
     public IssueStatus(String description) {
         this.id = -1;
         setDescription(description);
@@ -33,10 +34,15 @@ public class IssueStatus {
     }
 
     public void setDescription(String description) {
-        if(VerifyUtil.isStringLettersOnly(description)) {
+        if (VerifyUtil.isStringLettersOnly(description)) {
             this.description = description;
         } else {
             Log.w(TAG, "Description unsafe");
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Issue Status ID: " + id + ", Description: " + description;
     }
 }
