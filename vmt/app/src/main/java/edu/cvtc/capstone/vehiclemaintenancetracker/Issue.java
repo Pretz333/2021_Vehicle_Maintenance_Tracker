@@ -12,8 +12,8 @@ public class Issue {
     private int vehicleId;
     private int statusId;
 
-    //Constructors
-    //Minimum
+    // Constructors, using sets to keep DRY
+    // Minimum
     public Issue(String title, int vehicleId, int statusId) {
         this.id = -1;
         setTitle(title);
@@ -22,17 +22,7 @@ public class Issue {
         setStatusId(statusId);
     }
 
-    //Everything but the id and priority
-    public Issue(String title, String description, int vehicleId, int statusId) {
-        this.id = -1;
-        setTitle(title);
-        setDescription(description);
-        this.priority = 0;
-        setVehicleId(vehicleId);
-        setStatusId(statusId);
-    }
-
-    //Everything but the id
+    // Everything but the id
     public Issue(String title, String description, int priority, int vehicleId, int statusId) {
         this.id = -1;
         setTitle(title);
@@ -42,7 +32,7 @@ public class Issue {
         setStatusId(statusId);
     }
 
-    //Everything, for use when reading from the database. Since it's in the database, it's already passed verification
+    // Everything, for use when reading from the database. Since it's in the database, it's already passed verification
     public Issue(int id, String title, String description, int priority, int vehicleId, int statusId) {
         this.id = id;
         this.title = title;
@@ -52,7 +42,7 @@ public class Issue {
         this.statusId = statusId;
     }
 
-    //Getters and Setters
+    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -66,7 +56,7 @@ public class Issue {
     }
 
     public void setTitle(String title) {
-        if(VerifyUtil.isStringSafe(title)) {
+        if (VerifyUtil.isStringSafe(title)) {
             this.title = title;
         } else {
             Log.w(TAG, "Issue title unsafe");
@@ -78,7 +68,7 @@ public class Issue {
     }
 
     public void setDescription(String description) {
-        if(VerifyUtil.isTextSafe(description)) {
+        if (VerifyUtil.isTextSafe(description)) {
             this.description = description;
         } else {
             Log.w(TAG, "Issue description unsafe");
@@ -90,14 +80,14 @@ public class Issue {
     }
 
     public String getPriorityAsString() {
-        switch(priority) {
-            case 0 :
+        switch (priority) {
+            case 0:
                 return "High Priority";
-            case 1 :
+            case 1:
                 return "Medium Priority";
-            case 2 :
+            case 2:
                 return "Low Priority";
-            default :
+            default:
                 return "No Priority";
         }
     }
@@ -124,10 +114,6 @@ public class Issue {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Issue ID:").append(id)
-                .append("\nTitle:").append(title)
-                .append("\nDescription:").append(description);
-        return builder.toString();
+        return "Issue ID: " + id + ", Title: " + title + ", Description: " + description;
     }
 }

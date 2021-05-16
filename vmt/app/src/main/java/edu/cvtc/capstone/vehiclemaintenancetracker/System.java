@@ -8,18 +8,20 @@ public class System {
     private int id;
     private String description;
 
-    //Pre-database insert
+    // Constructors, using a set to keep DRY
+    // Pre-database insert so there's no ID
     public System(String description) {
         this.id = -1;
         setDescription(description);
     }
 
-    //For use when reading from the database. Since it's in the database, it's already passed verification
+    // For use when reading from the database. Since it's in the database, it's already passed verification
     public System(int id, String description) {
         this.id = id;
         this.description = description;
     }
 
+    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -33,10 +35,15 @@ public class System {
     }
 
     public void setDescription(String description) {
-        if(VerifyUtil.isStringLettersOnly(description)) {
+        if (VerifyUtil.isStringLettersOnly(description)) {
             this.description = description;
         } else {
             Log.w(TAG, "Description unsafe");
         }
+    }
+
+    @Override
+    public String toString() {
+        return "System ID: " + id + ", Description: " + description;
     }
 }

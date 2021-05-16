@@ -2,7 +2,6 @@ package edu.cvtc.capstone.vehiclemaintenancetracker;
 
 import android.util.Log;
 
-import java.sql.Time;
 import java.util.Date;
 
 public class MaintenanceLog {
@@ -18,15 +17,15 @@ public class MaintenanceLog {
     private int vehicleId;
     private int systemId;
 
-    //Constructors
-    //Minimum
+    // Constructors, using sets to keep DRY
+    // Minimum
     public MaintenanceLog(String title, int vehicleId) {
         this.id = -1;
         setTitle(title);
         setVehicleId(vehicleId);
     }
 
-    //Everything but the id
+    // Everything but the id
     public MaintenanceLog(String title, String description, Date date, double cost, int time, int mileage, int vehicleId, int systemId) {
         this.id = -1;
         setTitle(title);
@@ -39,7 +38,7 @@ public class MaintenanceLog {
         setSystemId(systemId);
     }
 
-    //Everything, for use when reading from the database. Since it's in the database, it's already passed verification
+    // Everything, for use when reading from the database. Since it's in the database, it's already passed verification
     public MaintenanceLog(int id, String title, String description, Date date, double cost, int time, int mileage, int vehicleId, int systemId) {
         this.id = id;
         this.title = title;
@@ -52,7 +51,7 @@ public class MaintenanceLog {
         this.systemId = systemId;
     }
 
-    //Getters and Setters
+    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -66,7 +65,7 @@ public class MaintenanceLog {
     }
 
     public void setTitle(String title) {
-        if(VerifyUtil.isStringSafe(title)) {
+        if (VerifyUtil.isStringSafe(title)) {
             this.title = title;
         } else {
             Log.w(TAG, "Log title unsafe");
@@ -78,7 +77,7 @@ public class MaintenanceLog {
     }
 
     public void setDescription(String description) {
-        if(VerifyUtil.isTextSafe(description)) {
+        if (VerifyUtil.isTextSafe(description)) {
             this.description = description;
         } else {
             Log.w(TAG, "Log description unsafe");
@@ -89,7 +88,7 @@ public class MaintenanceLog {
         return date;
     }
 
-    //Type casting from the TextView is all we need for verification
+    // Type casting from the TextView is all we need for verification
     public void setDate(Date date) {
         this.date = date;
     }
@@ -98,8 +97,8 @@ public class MaintenanceLog {
         return cost;
     }
 
-    //This is a calculated field, but even if the user types it in,
-    //type casting from the TextView is all we need for verification
+    // This is a calculated field, but even if the user types it in,
+    // type casting from the TextView is all we need for verification
     public void setCost(double cost) {
         this.cost = cost;
     }
@@ -108,7 +107,7 @@ public class MaintenanceLog {
         return time;
     }
 
-    //Type casting from the TextView is all we need for verification
+    // Type casting from the TextView is all we need for verification
     public void setTime(int time) {
         this.time = time;
     }
@@ -117,7 +116,7 @@ public class MaintenanceLog {
         return mileage;
     }
 
-    //Type casting from the TextView is all we need for verification
+    // Type casting from the TextView is all we need for verification
     public void setMileage(int mileage) {
         this.mileage = mileage;
     }
@@ -127,12 +126,7 @@ public class MaintenanceLog {
     }
 
     public void setVehicleId(int vehicleId) {
-        //DBHelper dbHelper = new DBHelper(null);
-        //if(dbHelper.checkIfVehicleIdExists(vehicleId)) {
         this.vehicleId = vehicleId;
-        //} else {
-        //Log.w(TAG, "VehicleID did not exist");
-        //}
     }
 
     public int getSystemId() {
@@ -140,20 +134,11 @@ public class MaintenanceLog {
     }
 
     public void setSystemId(int systemId) {
-        //DBHelper dbHelper = new DBHelper(null);
-        //if(dbHelper.checkIfSystemIdExists(systemId)) {
         this.systemId = systemId;
-        //} else {
-        //Log.w(TAG, "SystemId did not exist");
-        //}
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Log ID:").append(id)
-                .append("\nTitle:").append(title)
-                .append("\nDescription:").append(description);
-        return builder.toString();
+        return "Log ID: " + id + ", Title: " + title + ", Description: " + description;
     }
 }
