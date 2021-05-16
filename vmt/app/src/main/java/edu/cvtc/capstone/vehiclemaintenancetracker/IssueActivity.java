@@ -1,6 +1,5 @@
 package edu.cvtc.capstone.vehiclemaintenancetracker;
 
-import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -28,8 +27,6 @@ import java.util.ArrayList;
 public class IssueActivity extends AppCompatActivity {
     public static final String TAG = "IssueActivity_CLASS";
     public static final String EXTRA_ISSUE_ID = "edu.cvtc.capstone.vehiclemaintenancetracker.EXTRA_ISSUE_ID";
-    @SuppressLint("StaticFieldLeak")
-    public static Context context;
     public static boolean viewingClosed = false;
 
     // Member variables
@@ -47,7 +44,6 @@ public class IssueActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_issue);
-        context = this;
 
         // Initialize the toolbar
         toolbar = findViewById(R.id.toolbar);
@@ -74,14 +70,7 @@ public class IssueActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        context = this;
         populateRecyclerView(viewingClosed);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        context = null;
     }
 
     // Populate the issue list
@@ -131,28 +120,6 @@ public class IssueActivity extends AppCompatActivity {
 
         // Create the adapter and make the RecyclerView use it
         recyclerView.setAdapter(new IssueRecyclerAdapter(issueArrayList));
-    }
-
-    // This method is accessed from the RecyclerView and abuses
-    // the stored context to reopen/close issues directly
-    public static void setIssueStatus(int issueId, boolean complete) {
-        if (context != null) {
-            // Get the issue from the DB
-            DBHelper dbHelper = new DBHelper(context);
-            Issue issue = dbHelper.getIssueByIssueId(issueId);
-            if (issue != null) {
-                // Update the status with the fetched status.
-                issue.setStatusId((complete) ? dbHelper.getClosedIssueStatusId() : dbHelper.getOpenIssueStatusId());
-
-                // Update the DB with the new issue status
-                dbHelper.updateIssue(issue);
-
-                // Update the RecyclerView
-                if (context instanceof IssueActivity) {
-                    ((IssueActivity) context).populateRecyclerView(viewingClosed);
-                }
-            }
-        }
     }
 
     @Override
@@ -222,10 +189,10 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
         this.issueArrayList = issueArrayList;
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         Context context;
-        int issueId;
+        Issue issue;
 
         final TextView title;
         final TextView description;
@@ -240,14 +207,28 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
             priority = itemView.findViewById(R.id.card_issueActivity_priority);
             Button buttonComplete = itemView.findViewById(R.id.card_issueActivity_buttonComplete);
 
-            itemView.findViewById(R.id.card_issueActivity_buttonEdit).setOnClickListener( v -> {
+            itemView.findViewById(R.id.card_issueActivity_buttonEdit).setOnClickListener(v -> {
                 // Go to LogSettingsActivity and pass the log's ID so it knows which log we're editing
                 Intent intent = new Intent(context, IssueSettingsActivity.class);
-                intent.putExtra(IssueActivity.EXTRA_ISSUE_ID, issueId);
+                intent.putExtra(IssueActivity.EXTRA_ISSUE_ID, issue.getId());
                 context.startActivity(intent);
             });
 
-            buttonComplete.setOnClickListener(v -> IssueActivity.setIssueStatus(issueId, !IssueActivity.viewingClosed));
+            buttonComplete.setOnClickListener(v -> {
+                if (context != null) {
+                    // Set up a DBHelper
+                    DBHelper dbHelper = new DBHelper(context);
+
+                    // Update the status with the fetched status.
+                    issue.setStatusId((!IssueActivity.viewingClosed) ? dbHelper.getClosedIssueStatusId() : dbHelper.getOpenIssueStatusId());
+
+                    // Update the DB with the new issue status
+                    dbHelper.updateIssue(issue);
+
+                    // Update the RecyclerView
+                    removeAt(getAdapterPosition());
+                }
+            });
 
             if (IssueActivity.viewingClosed) {
                 buttonComplete.setText(R.string.card_issue_buttonReopen);
@@ -256,11 +237,19 @@ class IssueRecyclerAdapter extends RecyclerView.Adapter<IssueRecyclerAdapter.Vie
 
         // One-hitter method for setting the data for all the TextViews
         public void setDataByObject(Issue issue) {
-            issueId = issue.getId();
+            this.issue = issue;
             title.setText(issue.getTitle());
             description.setText(issue.getDescription());
             priority.setText(issue.getPriorityAsString());
         }
+    }
+
+    // Removes an element from the list at the specified position
+    // TODO: Removing items causes wierd visual effects unless the whole screen is full
+    public void removeAt(int position) {
+        issueArrayList.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, issueArrayList.size());
     }
 
     @NonNull
