@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -140,7 +139,7 @@ public class LogActivity extends AppCompatActivity {
         int selectedItemId = item.getItemId();
 
         if (selectedItemId == R.id.menuItem_add) {
-            // Go to the log settings activity and send an id of -1 so it knows we're creating a new log
+            // Go to LogSettingsActivity and send an id of -1 so it knows we're creating a new log
             Intent intent = new Intent(LogActivity.this, MaintenanceLogSettingsActivity.class);
             intent.putExtra(LogActivity.EXTRA_LOG_ID, -1);
             intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, vehicleId);
@@ -151,7 +150,6 @@ public class LogActivity extends AppCompatActivity {
     }
 }
 
-// The adapter for this activity's RecyclerView
 class LogRecyclerAdapter extends RecyclerView.Adapter<LogRecyclerAdapter.ViewHolder> {
 
     // An array holding maintenance logs
@@ -160,7 +158,7 @@ class LogRecyclerAdapter extends RecyclerView.Adapter<LogRecyclerAdapter.ViewHol
     // Date formatter for the date TextView and time TextView
     static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM d, y", Locale.ENGLISH);
 
-    // Constructor accepting an array
+    // Constructor
     public LogRecyclerAdapter(ArrayList<MaintenanceLog> logArrayList) {
         this.logArrayList = logArrayList;
     }
@@ -192,7 +190,6 @@ class LogRecyclerAdapter extends RecyclerView.Adapter<LogRecyclerAdapter.ViewHol
             // Set the Edit button's onClick Listener
             itemView.findViewById(R.id.card_logActivity_buttonEdit).setOnClickListener(
                     v -> {
-                        // Event handler for the edit button
                         // Go to LogSettingsActivity and pass the log's ID so it knows which log we're editing
                         Intent intent = new Intent(context, MaintenanceLogSettingsActivity.class);
                         intent.putExtra(LogActivity.EXTRA_LOG_ID, logID);
