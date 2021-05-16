@@ -35,7 +35,7 @@ public final class VerifyUtil {
 
     // Strings only containing capitalized or lowercase a-z return true
     public static boolean isStringLettersOnly(String str) {
-        if (str == null || str.equals("")) {
+        if (str == null || str.isEmpty()) {
             return true;
         }
 
@@ -44,7 +44,7 @@ public final class VerifyUtil {
 
     // Strings only containing capital or lowercase a-z and numbers 0-9 return true
     public static boolean isStringLettersOrDigitsOnly(String str) {
-        if (str == null || str.equals("")) {
+        if (str == null || str.isEmpty()) {
             return true;
         }
 
@@ -53,7 +53,7 @@ public final class VerifyUtil {
 
     // Strings containing most special characters, capital or lowercase a-z, and/or numbers 0-9 return true
     public static boolean isTextSafe(String str) {
-        if (str == null || str.equals("")) {
+        if (str == null || str.isEmpty()) {
             return true;
         }
 
@@ -62,7 +62,7 @@ public final class VerifyUtil {
 
     // Strings only containing capital or lowercase a-z, numbers 0-9, a " ", or a "-" return true
     public static boolean isStringSafe(String str) {
-        if (str == null || str.equals("")) {
+        if (str == null || str.isEmpty()) {
             return true;
         }
 
@@ -71,7 +71,7 @@ public final class VerifyUtil {
 
     // For Years
     public static boolean isYearValid(String year) {
-        if (year == null || year.equals("")) {
+        if (year == null || year.isEmpty()) {
             return true;
         }
 
@@ -93,18 +93,22 @@ public final class VerifyUtil {
             return null;
         }
 
-        //Check that the month section is between 1 and 12
-        if(Integer.parseInt(chunks[0]) < 1 || Integer.parseInt(chunks[0]) > 12){
-            return null;
-        }
+        try {
+            //Check that the month section is between 1 and 12
+            if (Integer.parseInt(chunks[0]) < 1 || Integer.parseInt(chunks[0]) > 12) {
+                return null;
+            }
 
-        //Check that the day section is between 1 and 31
-        if(Integer.parseInt(chunks[1]) < 1 || Integer.parseInt(chunks[1]) > 31){
-            return null;
-        }
+            //Check that the day section is between 1 and 31
+            if (Integer.parseInt(chunks[1]) < 1 || Integer.parseInt(chunks[1]) > 31) {
+                return null;
+            }
 
-        //Check that the year section is greater than 1800
-        if(Integer.parseInt(chunks[2]) > 1800){
+            //Check that the year section is greater than 1800
+            if (Integer.parseInt(chunks[2]) > 1800) {
+                return null;
+            }
+        } catch (NumberFormatException ex) {
             return null;
         }
 
@@ -155,7 +159,7 @@ public final class VerifyUtil {
 
     // For VINs
     public static boolean isVINValid(String VIN, String strYear) {
-        if (VIN == null || VIN.equals("")) {
+        if (VIN == null || VIN.isEmpty()) {
             return true;
         }
 
@@ -165,8 +169,14 @@ public final class VerifyUtil {
         }
 
         // Vehicles pre-1981 don't follow a set standard that can be easily tested
-        int year = Integer.parseInt(strYear);
-        if (year < 1981) {
+        int year;
+        try {
+            year = Integer.parseInt(strYear);
+        } catch (NumberFormatException ex) {
+            return false;
+        }
+
+        if (year > 1800 && year < 1981) {
             // If using an API query, we can test vehicles pre-1981
             // For now, we'll just assume it's good
             return true;

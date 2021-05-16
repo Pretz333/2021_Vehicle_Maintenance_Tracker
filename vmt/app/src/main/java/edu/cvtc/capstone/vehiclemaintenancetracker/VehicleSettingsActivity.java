@@ -120,7 +120,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
 
     // This checks every editText field to see if it's empty or contains invalid data.
     // If it catches any issues, it will highlight the editText container field and return false.
-    private boolean hasMinimumRequirements() {
+    private boolean areFieldsValid() {
         // Whether the values from the fields can be inserted into the database without conflict.
         boolean retVal = true;
 
@@ -247,10 +247,10 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
     public void onClick(View v) {
         if (v.getId() == R.id.vehicleSettings_buttonSave) {
             // Check if all fields are valid
-            if (hasMinimumRequirements()) {
+            if (areFieldsValid()) {
                 // If we made a new vehicle from the id passed, insert it, otherwise update it
 
-                // hasMinimums() should catch this first check, so this means the vehicle was unable
+                // areFieldsValid() should catch this first check, so this means the vehicle was unable
                 // to be created as it didn't have the minimum properties needed to be functional
                 if (vehicle == null) {
                     Snackbar.make(v, "Vehicle must have a nickname", Snackbar.LENGTH_SHORT).show();
@@ -262,6 +262,7 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
                     VehicleSettingsActivity.super.finish();
                 }
             } else {
+                // The user made a typo/didn't fill out a field, lets alert them!
                 MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(this);
                 alert.setTitle(getResources().getString(R.string.vehicleSettingsActivity_errorValidationTitle));
                 alert.setMessage(getResources().getString(R.string.vehicleSettingsActivity_errorValidationMessage));
