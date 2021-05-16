@@ -201,11 +201,11 @@ public class IssueActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_activity_log, menu);
+        getMenuInflater().inflate(R.menu.menu_activity_issue, menu);
 
         // Get a reference to the search view
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.menuItem_log_search).getActionView();
+        SearchView searchView = (SearchView) menu.findItem(R.id.menuItem_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -246,17 +246,17 @@ public class IssueActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menuItem_addALog:
+            case R.id.menuItem_add:
                 Intent intent = new Intent(IssueActivity.this, IssueSettingsActivity.class);
                 intent.putExtra(IssueActivity.EXTRA_ISSUE_ID, -1);
                 intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, vehicleId);
                 startActivityForResult(intent, REQUEST_ADD_ISSUE);
                 break;
-            case R.id.menuItem_log_filter:
+            case R.id.menuItem_filter:
                 viewingClosed = !viewingClosed;
                 populateRecyclerView(viewingClosed);
                 break;
-            case R.id.menuItem_log_search:
+            case R.id.menuItem_search:
                 Snackbar.make(toolbar, "Search button tapped", Snackbar.LENGTH_SHORT).show();
                 break;
 

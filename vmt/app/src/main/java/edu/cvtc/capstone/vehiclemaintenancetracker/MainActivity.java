@@ -126,7 +126,7 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
     }
 
     // Provide a reference to the type of views that the RecyclerView adapter will interact with.
-    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
         Context context; // Context of super class
         private PreferenceUtil preferenceUtil;
@@ -142,7 +142,6 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            // Context used mainly for OnClickListener
             context = itemView.getContext();
 
             // TODO: Maybe this shouldn't be re-created multiple times, just sayin' - Alex
@@ -156,17 +155,15 @@ class VehicleRecyclerAdapter extends RecyclerView.Adapter<VehicleRecyclerAdapter
             plateNumber = itemView.findViewById(R.id.card_mainActivity_vehiclePlateNumber);
             issueDescription = itemView.findViewById(R.id.card_mainActivity_issueDescription);
 
-            // onClick Listener for button
-            itemView.findViewById(R.id.card_mainActivity_dummyButton).setOnClickListener(this);
-        }
-
-        // Click listener for the card
-        @Override
-        public void onClick(View v) {
-            // Go to VehicleOptionActivity and pass the vehicle ID
-            Intent intent = new Intent(context, VehicleOptionActivity.class);
-            intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, vehicleID);
-            context.startActivity(intent);
+            // onClick Listener for the button
+            itemView.findViewById(R.id.card_mainActivity_dummyButton).setOnClickListener(
+                    v -> {
+                        // Go to VehicleOptionActivity and pass the vehicle ID
+                        Intent intent = new Intent(context, VehicleOptionActivity.class);
+                        intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, vehicleID);
+                        context.startActivity(intent);
+                    }
+            );
         }
 
         // This is used to set the values for all views
