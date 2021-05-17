@@ -107,7 +107,7 @@
     </string-array>
 
     <!-- Issue Settings strings when adding/editing -->
-    <string name="issueSettings_appTitle">Create an issue</string>
+    <string name="issueSettings_appTitle">Issues</string>
     <string name="issueSettings_titleDisplayAdd">Add Issue</string>
     <string name="issueSettings_titleDisplayEdit">Edit Issue</string>
     <string name="issueSettings_textViewPriorityLabel">Priority of this issue</string>
