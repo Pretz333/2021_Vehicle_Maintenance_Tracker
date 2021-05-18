@@ -80,6 +80,7 @@
     <string name="maintenanceLogSettings_editTextHint_time">Total Time of Maintenance (in minutes)</string>
 
     <string name="maintenanceLogSettings_systemLabel">System:</string>
+    <string name="maintenanceLogSettings_issuesLabel">Issue Related to Maintenance Log:</string>
 
     <string name="maintenanceLogSettings_buttonDelete">Delete Log</string>
 

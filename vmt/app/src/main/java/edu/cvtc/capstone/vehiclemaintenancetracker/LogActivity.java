@@ -29,7 +29,7 @@ public class LogActivity extends AppCompatActivity {
     public static final String TAG = "LogActivity_CLASS";
     public static final String EXTRA_LOG_ID = "edu.cvtc.capstone.vehiclemaintenancetracker.EXTRA_LOG_ID";
 
-    int vehicleId;
+    public static int vehicleId;
     DBHelper dbHelper = new DBHelper(LogActivity.this);
     Toolbar toolbar;
 
@@ -193,6 +193,7 @@ class LogRecyclerAdapter extends RecyclerView.Adapter<LogRecyclerAdapter.ViewHol
                         // Go to LogSettingsActivity and pass the log's ID so it knows which log we're editing
                         Intent intent = new Intent(context, MaintenanceLogSettingsActivity.class);
                         intent.putExtra(LogActivity.EXTRA_LOG_ID, logID);
+                        intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, LogActivity.vehicleId);
                         context.startActivity(intent);
                     }
             );
