@@ -102,8 +102,8 @@
     <!-- The priority spinner -->
     <string-array name="issueSettingsActivity_spinnerPriority">
         <item name="priority_high">High Priority</item>
-        <item name="priority_high">Medium Priority</item>
-        <item name="priority_high">Low Priority</item>
+        <item name="priority_medium">Medium Priority</item>
+        <item name="priority_low">Low Priority</item>
     </string-array>
 
     <!-- Issue Settings strings when adding/editing -->
