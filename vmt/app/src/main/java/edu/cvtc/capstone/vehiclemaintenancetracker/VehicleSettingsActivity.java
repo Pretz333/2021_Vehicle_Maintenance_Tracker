@@ -1,6 +1,7 @@
 package edu.cvtc.capstone.vehiclemaintenancetracker;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -293,6 +294,9 @@ public class VehicleSettingsActivity extends AppCompatActivity implements View.O
                 // Display a toast that the vehicle was deleted
                 Toast.makeText(getApplicationContext(), "The vehicle was deleted.", Toast.LENGTH_SHORT).show();
                 VehicleSettingsActivity.super.finish();
+
+                Intent intent = new Intent(VehicleSettingsActivity.this, MainActivity.class);
+                startActivity(intent);
             });
 
             // Cancel button click handler
