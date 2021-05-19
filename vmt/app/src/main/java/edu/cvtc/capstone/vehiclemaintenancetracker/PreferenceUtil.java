@@ -70,5 +70,40 @@ public class PreferenceUtil {
         editor.apply();
     }
 
+    //
+    //
+    //
+    // These methods are identical above, but are more generalized
+    // to be used in other areas of this application.
+    //
+    //
+
+    public int getValueWithKey(String key) {
+        return sharedPreferences.getInt(key, -1);
+    }
+
+    // Similar to the getter above, this just sets a value to a corresponding key.
+    public void setValueWithKey(String key, int newValue) {
+        // Create an editor for the preferences
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // Update the key specified along with its new value
+        editor.putInt(key, newValue);
+
+        // Commit the changes asynchronously
+        editor.apply();
+    }
+
+    public void deleteValueWithKey(String key) {
+        // Create an editor for the preferences
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // Remove the key and its corresponding value
+        editor.remove(key);
+
+        // Commit the changes asynchronously
+        editor.apply();
+    }
+
 }
 

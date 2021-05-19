@@ -10,10 +10,10 @@
         app:showAsAction="withText|ifRoom" />
 
     <item
-        android:id="@+id/menuItem_filter"
-        android:icon="@drawable/ic_menu_filter"
+        android:id="@+id/menuItem_toggleIssues"
+        android:icon="@drawable/ic_car"
         android:orderInCategory="20"
-        android:title="@string/menuItem_filter"
+        android:title="@string/menuItem_issueToggle"
         app:showAsAction="withText|ifRoom" />
 
     <item
