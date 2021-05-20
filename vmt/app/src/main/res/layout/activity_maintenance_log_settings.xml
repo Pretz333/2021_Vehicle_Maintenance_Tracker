@@ -145,8 +145,29 @@
                         android:layout_height="wrap_content"
                         android:inputType="number"
                         android:maxLength="7" />
-
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/maintenanceLogSettings_textViewSpinnerLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/minorPadding"
+                    android:layout_weight="1"
+                    android:text="@string/maintenanceLogSettings_issuesLabel"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/maintenanceLogSettings_textInputMileage" />
+
+                    <Spinner
+                        android:id="@+id/maintenanceLogSettings_issuesSpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/minorPadding"
+                        android:layout_weight="1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/maintenanceLogSettings_textViewSpinnerLabel"/>
+
+
 
                 <!-- We are not planning on implementing systems anymore
                 <TextView
@@ -178,7 +199,7 @@
                     android:text="@string/maintenanceLogSettings_buttonDelete"
                     android:visibility="invisible"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/maintenanceLogSettings_textInputMileage" />
+                    app:layout_constraintTop_toBottomOf="@id/maintenanceLogSettings_issuesSpinner" />
 
                 <Button
                     android:id="@+id/maintenanceLogSettings_buttonSave"
@@ -187,7 +208,7 @@
                     android:layout_marginTop="@dimen/minorPadding"
                     android:text="@string/save_changes"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/maintenanceLogSettings_textInputMileage" />
+                    app:layout_constraintTop_toBottomOf="@id/maintenanceLogSettings_issuesSpinner" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

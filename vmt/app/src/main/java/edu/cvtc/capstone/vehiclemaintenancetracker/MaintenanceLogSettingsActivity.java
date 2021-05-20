@@ -3,9 +3,13 @@ package edu.cvtc.capstone.vehiclemaintenancetracker;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,9 +22,10 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
-public class MaintenanceLogSettingsActivity extends AppCompatActivity {
+public class MaintenanceLogSettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     // This is exactly like the VehicleSettingsActivity, but for Maintenance Logs.
     // It is used to update/change a log and create new ones.
     public static final String TAG = "MaintenanceLogSettingsActivity_CLASS";
@@ -29,10 +34,12 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
     MaintenanceLog log = null;
     int vehicleId;
     Toolbar toolbar;
+    int[] issueIdArray;
+    int issueArraySelectedPosition;
 
     private EditText mTitle, mDescription, mMaintenanceDate, mCost, mTime, mMileage;
     private TextInputLayout eTitle, eDescription, eMaintenanceDate, eCost, eTime, eMileage;
-    // private Spinner mSystem;
+    private Spinner mIssues;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +62,7 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
         mTime = findViewById(R.id.maintenanceLogSettings_editTextTime);
         mMileage = findViewById(R.id.maintenanceLogSettings_editTextMileage);
         Button buttonDelete = findViewById(R.id.maintenanceLogSettings_buttonDelete);
-        // mSystem = findViewById(R.id.maintenanceLogSettings_spinnerSystems);
+        mIssues = findViewById(R.id.maintenanceLogSettings_issuesSpinner);
 
         // Reference to the EditText containers
         eTitle = findViewById(R.id.maintenanceLogSettings_textInputTitle);
@@ -98,6 +105,30 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
             title.setText(getResources().getString(R.string.maintenanceLogSettings_titleDisplay_edit));
         }
 
+        // Set the listener for the selected item in the spinner if it is not null.
+        if (mIssues != null) {
+            mIssues.setOnItemSelectedListener(MaintenanceLogSettingsActivity.this);
+        }
+
+        // Get all open issues by the vehicle ID
+        List<Issue> issues = dbHelper.getAllIssuesByVehicleId(vehicleId, false);
+
+        // Convert the list of issues to a string array
+        String[] issuesArray = new String[issues.size() + 1];
+        issuesArray[0] = "None";
+        issueIdArray = new int[issues.size() + 1];
+        issueIdArray[0] = -2;
+        for (int i = 1; i < issues.size() + 1; i++) {
+            issuesArray[i] = issues.get(i - 1).getTitle();
+            issueIdArray[i] = issues.get(i - 1).getId();
+        }
+
+        // Populate the issues spinner
+        ArrayAdapter<String> issueArrayAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, issuesArray);
+        issueArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mIssues.setAdapter(issueArrayAdapter);
+
         // Set the save button's onClickListener
         findViewById(R.id.maintenanceLogSettings_buttonSave).setOnClickListener(
                 v -> {
@@ -113,9 +144,11 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
                                 Snackbar.make(v, "The log must have a title", Snackbar.LENGTH_SHORT).show();
                             } else if (log.getId() == -1) {
                                 dbHelper.insertMaintenanceLog(log);
+                                closeIssue();
                                 MaintenanceLogSettingsActivity.super.finish();
                             } else {
                                 dbHelper.updateLog(log);
+                                closeIssue();
                                 MaintenanceLogSettingsActivity.super.finish();
                             }
                         } else {
@@ -268,5 +301,37 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity {
         }
 
         return retVal;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        // If the selected item in the spinner is greater than 0 (the user did not select the "None" option),
+        // then save the position number in order to update the issue in the database.
+        if (position > 0) {
+            issueArraySelectedPosition = position;
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    private void closeIssue() {
+        // Find the issue from the issue id's provided in the array
+        int issueId = issueIdArray[issueArraySelectedPosition];
+
+        // If "None" not selected in the spinner, close the issue.
+        if (issueId != -2) {
+            // Store the issue in an object.
+            Issue issue = dbHelper.getIssueByIssueId(issueId);
+
+            // Get the closed issue status id and set that id to the new issue object.
+            int issueStatusId = dbHelper.getClosedIssueStatusId();
+            issue.setStatusId(issueStatusId);
+
+            // Update the issue in the database.
+            dbHelper.updateIssue(issue);
+        }
     }
 }
