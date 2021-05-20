@@ -154,7 +154,6 @@
                     android:layout_marginTop="@dimen/minorPadding"
                     android:layout_weight="1"
                     android:text="@string/maintenanceLogSettings_issuesLabel"
-                    android:textColor="@color/black"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/maintenanceLogSettings_textInputMileage" />
 
