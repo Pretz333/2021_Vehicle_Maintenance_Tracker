@@ -103,31 +103,36 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity implements
             // And we want to change the title to say "Edit Log" instead of "Add Log"
             TextView title = findViewById(R.id.maintenanceLogSettings_textViewTitle);
             title.setText(getResources().getString(R.string.maintenanceLogSettings_titleDisplay_edit));
+
+            // Hide mIssues
+            mIssues.setVisibility(View.GONE);
+            mIssues = null;
+            findViewById(R.id.maintenanceLogSettings_textViewSpinnerLabel).setVisibility(View.GONE);
         }
 
-        // Set the listener for the selected item in the spinner if it is not null.
+        // Set the listener and populate the selected item in the spinner if it is not null.
         if (mIssues != null) {
             mIssues.setOnItemSelectedListener(MaintenanceLogSettingsActivity.this);
+
+            // Get all open issues by the vehicle ID
+            List<Issue> issues = dbHelper.getAllIssuesByVehicleId(vehicleId, false);
+
+            // Convert the list of issues to a string array
+            String[] issuesArray = new String[issues.size() + 1];
+            issuesArray[0] = "None";
+            issueIdArray = new int[issues.size() + 1];
+            issueIdArray[0] = -2;
+            for (int i = 1; i < issues.size() + 1; i++) {
+                issuesArray[i] = issues.get(i - 1).getTitle();
+                issueIdArray[i] = issues.get(i - 1).getId();
+            }
+
+            // Populate the issues spinner
+            ArrayAdapter<String> issueArrayAdapter = new ArrayAdapter<>(this,
+                    android.R.layout.simple_spinner_item, issuesArray);
+            issueArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            mIssues.setAdapter(issueArrayAdapter);
         }
-
-        // Get all open issues by the vehicle ID
-        List<Issue> issues = dbHelper.getAllIssuesByVehicleId(vehicleId, false);
-
-        // Convert the list of issues to a string array
-        String[] issuesArray = new String[issues.size() + 1];
-        issuesArray[0] = "None";
-        issueIdArray = new int[issues.size() + 1];
-        issueIdArray[0] = -2;
-        for (int i = 1; i < issues.size() + 1; i++) {
-            issuesArray[i] = issues.get(i - 1).getTitle();
-            issueIdArray[i] = issues.get(i - 1).getId();
-        }
-
-        // Populate the issues spinner
-        ArrayAdapter<String> issueArrayAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, issuesArray);
-        issueArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mIssues.setAdapter(issueArrayAdapter);
 
         // Set the save button's onClickListener
         findViewById(R.id.maintenanceLogSettings_buttonSave).setOnClickListener(
@@ -148,7 +153,6 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity implements
                                 MaintenanceLogSettingsActivity.super.finish();
                             } else {
                                 dbHelper.updateLog(log);
-                                closeIssue();
                                 MaintenanceLogSettingsActivity.super.finish();
                             }
                         } else {
@@ -318,20 +322,21 @@ public class MaintenanceLogSettingsActivity extends AppCompatActivity implements
     }
 
     private void closeIssue() {
-        // Find the issue from the issue id's provided in the array
-        int issueId = issueIdArray[issueArraySelectedPosition];
+        if (issueIdArray != null) {
+            // Find the issue from the issue id's provided in the array
+            int issueId = issueIdArray[issueArraySelectedPosition];
 
-        // If "None" not selected in the spinner, close the issue.
-        if (issueId != -2) {
-            // Store the issue in an object.
-            Issue issue = dbHelper.getIssueByIssueId(issueId);
+            // If "None" not selected in the spinner, close the issue.
+            if (issueId != -2) {
+                // Store the issue in an object.
+                Issue issue = dbHelper.getIssueByIssueId(issueId);
 
-            // Get the closed issue status id and set that id to the new issue object.
-            int issueStatusId = dbHelper.getClosedIssueStatusId();
-            issue.setStatusId(issueStatusId);
+                // Get the closed issue status id and set that id to the new issue object.
+                issue.setStatusId(dbHelper.getClosedIssueStatusId());
 
-            // Update the issue in the database.
-            dbHelper.updateIssue(issue);
+                // Update the issue in the database.
+                dbHelper.updateIssue(issue);
+            }
         }
     }
 }
