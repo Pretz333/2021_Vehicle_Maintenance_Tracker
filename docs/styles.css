@@ -1,0 +1,60 @@
+header {
+  background-color: #F7FFFF;
+  border: 2px solid #218080;
+  color: #000000;
+  font-size: 30px;
+  padding: 10px;
+  text-align: center;
+}
+
+body {
+  color: #000000;
+  display: block;
+  font-family: Helvetica, sans-serif;
+}
+
+p {
+  font-size: 18px;
+}
+
+.what, .why, .how {
+  padding: 10px;
+}
+
+footer {
+  background-color: #FFFAFA;
+  border: 2px solid #B55D5D;
+  margin-top: 6%;
+  padding: 20px;
+  text-align: center;
+}
+
+a {
+  color: #4BB9B9;
+  text-decoration: none;
+}
+
+a:hover, a:focus {
+  color: #B94B4B;
+}
+
+img {
+  float: right;
+  padding: 20px;
+}
+
+h1, h2 {
+  font-family: Tahoma, sans-serif;
+}
+
+.what h2 {
+  text-decoration: underline solid #218080;
+}
+
+.why h2 {
+  text-decoration: underline solid #B55D5D;
+}
+
+.how h2 {
+  text-decoration: underline solid #7EB94B;
+}
