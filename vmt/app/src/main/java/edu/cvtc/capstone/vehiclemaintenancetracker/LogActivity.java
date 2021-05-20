@@ -38,6 +38,7 @@ public class LogActivity extends AppCompatActivity {
 
     SearchView searchView;
     RecyclerView recyclerView;
+    TextView totalsUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,9 @@ public class LogActivity extends AppCompatActivity {
         // Grab the vehicleId from the received intent
         vehicleId = getIntent().getIntExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, -1);
 
+        // Reference the totalsUp (Total time and money) Text view
+        totalsUp = findViewById(R.id.logActivity_totalsUp);
+
         populateRecyclerView();
     }
 
@@ -71,6 +75,11 @@ public class LogActivity extends AppCompatActivity {
             // Initialize the log list
             logArrayList = dbHelper.getAllLogsByVehicleId(vehicleId);
 
+            // Calculate the total cost and time
+            // for all logs. Then display it in a
+            // TextView.
+            calculateTotals();
+
             //Refresh the RecyclerView
             prepRecyclerView();
 
@@ -83,6 +92,24 @@ public class LogActivity extends AppCompatActivity {
         } else {
             Snackbar.make(toolbar, "The vehicle ID is not valid, please try again.", Snackbar.LENGTH_INDEFINITE).show();
         }
+    }
+
+    // Calculate the total amount of money
+    // and minutes with every log entry,
+    // then display it to the user.
+    private void calculateTotals() {
+        // Members
+        double totalCost = 0.0;
+        int totalTimeInMinutes = 0;
+
+        // Looper
+        for (MaintenanceLog log : logArrayList) {
+            totalCost += log.getCost();
+            totalTimeInMinutes += log.getTime();
+        }
+
+        // Display the stats
+        totalsUp.setText(String.format("You spent $%.2f and %d minutes total in maintenance.", totalCost, totalTimeInMinutes));
     }
 
     // Prepare the RecyclerView and its Adapter with data
