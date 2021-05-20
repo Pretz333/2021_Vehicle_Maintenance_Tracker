@@ -24,7 +24,7 @@
             android:label="@string/optionActivity_maintenanceTitle" />
         <activity
             android:name=".IssueActivity"
-            android:label="@string/issueActivity_title" />
+            android:label="@string/issueActivity_titleViewOpen" />
         <activity
             android:name=".VehicleSettingsActivity"
             android:label="@string/optionActivity_vehicleSettingsTitle" />

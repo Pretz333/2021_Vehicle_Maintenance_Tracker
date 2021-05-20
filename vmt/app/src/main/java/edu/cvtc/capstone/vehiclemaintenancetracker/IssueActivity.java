@@ -65,6 +65,32 @@ public class IssueActivity extends AppCompatActivity {
         // Populate the RecyclerView
         populateRecyclerView(viewingClosed);
 
+        // Create snackbar about open/closed issues
+        friendlyToggleReminder();
+    }
+
+    // Create a friendly snackbar to tell the user how to
+    // switch between issues. This snackbar should only appear
+    // the first three times. This utilizes the preference util.
+    private void friendlyToggleReminder() {
+        //
+        // The key for the key-value pair. This can be anything.
+        String snackbarKey = "oreos-and-milk";
+
+        // if the key-value pair doesn't exist, create it.
+        if (preferenceUtil.getValueWithKey(snackbarKey) == -1) {
+            // Let's create it
+            preferenceUtil.setValueWithKey(snackbarKey, 1);
+        }
+
+        int valueFromKey = preferenceUtil.getValueWithKey(snackbarKey);
+        if (valueFromKey > 0 && valueFromKey <= 3) {
+            // Display the friendly snackbar reminder
+            Snackbar.make(toolbar, "Toggle between open or closed issues by tapping the car icon.", Snackbar.LENGTH_LONG).show();
+
+            // Add +1 to the count
+            preferenceUtil.setValueWithKey(snackbarKey, valueFromKey + 1);
+        }
     }
 
     @Override
@@ -168,10 +194,19 @@ public class IssueActivity extends AppCompatActivity {
             intent.putExtra(IssueActivity.EXTRA_ISSUE_ID, -1);
             intent.putExtra(VehicleOptionActivity.EXTRA_VEHICLE_ID, vehicleId);
             startActivity(intent);
-        } else if (id == R.id.menuItem_filter) {
+        } else if (id == R.id.menuItem_toggleIssues) {
             // Swap to viewing the opposite status of what we are now
             viewingClosed = !viewingClosed;
             populateRecyclerView(viewingClosed);
+
+            // Change the title of this activity depending
+            // on if open issues or closed issues are being
+            // viewed.
+            if (viewingClosed) {
+                toolbar.setTitle(getResources().getString(R.string.issueActivity_titleViewClosed));
+            } else {
+                toolbar.setTitle(getResources().getString(R.string.issueActivity_titleViewOpen));
+            }
         }
 
         return super.onOptionsItemSelected(item);

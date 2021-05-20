@@ -94,8 +94,11 @@ public class IssueSettingsActivity extends AppCompatActivity implements View.OnC
         mTitle.setText(issue.getTitle());
         mDescription.setText(issue.getDescription());
 
-        // Fill the spinner with the text of the selected priority
-        // mPriority.setText(priorityIntToString(issue.getPriority())); //TODO
+        // Fill the spinner with the text of the selected priority.
+        // It's important to note that the filter argument must be set to false.
+        // otherwise it will discard the list set by the adapter in favour of
+        // the text that was set. Wacky? yes. Fixed? also yes
+        mPriority.setText(priorityIntToString(issue.getPriority()), false);
     }
 
     // Event handler for button clicks
