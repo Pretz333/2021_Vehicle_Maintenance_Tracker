@@ -42,7 +42,7 @@
     <!-- Strings regarding IssueActivity -->
     <string name="issueActivity_title">Issues</string>
     <string name="issueActivity_titleViewOpen">Open Issues</string>
-    <string name="issueActivity_titleViewClosed">Closed issues</string>
+    <string name="issueActivity_titleViewClosed">Closed Issues</string>
 
     <!-- Strings regarding VehicleSettingsActivity -->
     <string name="vehicleSettingsActivity_titleDisplay">Basic Settings</string>
